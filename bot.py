@@ -224,4 +224,8 @@ async def autoload(ctx: commands.Context, ext: str):
 bot.add_application_command(youtube)
 bot.add_application_command(covid)
 
-bot.run("OTE5MzE0MTUxNTM1NDE5NDYz.YbUABQ.E5YytI21qRog5kLfasDKJlwVKB8")
+with open("utils/json/config.json", "r") as f:
+    data = json.load(f)
+    TOKEN = data["TOKEN"]
+
+bot.run(TOKEN)
