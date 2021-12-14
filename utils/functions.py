@@ -1,4 +1,4 @@
-from ..config import pastebin_api_key
+from config import pastebin_api_key
 
 
 async def create_guest_paste_bin(session, code):
