@@ -2,7 +2,7 @@
 # Hey, I am Yuki. A Bot which works with bot Slash and Prefixed Commands!
 
 <p align="center">
-  <img width="500" height="340" src="https://i.pinimg.com/736x/ae/e1/0d/aee10def317de2eba0e22b1908916ff9.jpg">
+  <img width="460" height="400" src="https://i.pinimg.com/736x/ae/e1/0d/aee10def317de2eba0e22b1908916ff9.jpg">
 </p>
 
 ## Prerequisites
