@@ -7,6 +7,7 @@ from pytube import YouTube
 import requests
 import asyncio
 import aiosqlite
+import config
 
 
 def get_prefix(bot, message):
@@ -224,8 +225,5 @@ async def autoload(ctx: commands.Context, ext: str):
 bot.add_application_command(youtube)
 bot.add_application_command(covid)
 
-with open("utils/json/config.json", "r") as f:
-    data = json.load(f)
-    TOKEN = data["TOKEN"]
 
-bot.run(TOKEN)
+bot.run(config.TOKEN)
