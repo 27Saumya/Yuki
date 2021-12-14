@@ -15,7 +15,8 @@ You will need Python 3.
 Change the following:
 `guild_ids`: I have added ... instead of the `guild_ids`. Why guild_ids and not global? Many people might have raised this question. Slash Commands may take an hour to register whereas adding selected guilds, it registers in an instant⚡.
 
-`guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]`
+```python
+guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]```
 
 ## Built With
 
