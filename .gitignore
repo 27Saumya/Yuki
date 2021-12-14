@@ -1,3 +1,5 @@
-config.py 
-
+config.py
+*.db
 *.pyc
+*json/
+*__pycache__/
