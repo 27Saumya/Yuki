@@ -1,4 +1,7 @@
-# Hey, I am Slash Bot. A Bot which works with Slash Commands!
+
+# Hey, I am Yuki. A Bot which works with bot Slash and Prefixed Commands!
+
+![image](https://https://cdn.discordapp.com/avatars/919314151535419463/4cfbf4d99fb96fa2cdc7a6a122fedc40.png?size=4096)
 
 ## Prerequisites
 
