@@ -33,6 +33,9 @@ class Bot(commands.Bot):
             async with db.cursor() as cursor:
                 await cursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, "roles", "category")')
             await db.commit()
+        async with aiosqlite.connect("utils/databases/main.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, "bump")')
         
     async def on_guild_join(self, guild):
         with open("utils/json/prefixes.json", "r") as f:
@@ -43,17 +46,35 @@ class Bot(commands.Bot):
         with open("utils/json/prefixes.json", "w") as f:
             json.dump(prefixes, f, indent=4)
 
-    async def on_message(self, msg):
-        if msg.author == bot.user:
+    async def on_message(self, message):
+        if message.author == bot.user:
             return
+        if message.author.id == 302050872383242240 and len(message.embeds) > 0 and "Bump done! :thumbsup:" in message.embeds[0].description:
+            embed = discord.Embed(description="**<:zerolove:920425612613660753> Thanks to bump the server <3**", color=discord.Color.green())
+            await message.channel.send(embed=embed)
+            async with aiosqlite.connect("utils/databases/main.db") as db:
+                async with db.cursor() as cursor:
+                    await cursor.execute(f'SELECT bump FROM settings WHERE guild_id = {message.guild.id}')
+                    data = await cursor.fetchone()
+                    if not data:
+                        return
+                    if data:
+                        await cursor.execute(f'SELECT * FROM settings WHERE guild_id = {message.guild.id}')
+                        switch = await cursor.fetchone()
+                        if switch[1] == "off":
+                            return
+                await cursor.close()
+            await asyncio.sleep(3600*2) # Bump delay == 2 hours | 1 hour == 3600 seconds so, 2 hours == 3600*2
+            embed = discord.Embed(title="It's time to bump!", description="Use `!d bump` to bump the server!")
+            await message.channel.send(embed=embed)
         with open("utils/json/prefixes.json", "r") as f:
             prefixes = json.load(f)
-        if str(msg.guild.id) not in prefixes:
+        if str(message.guild.id) not in prefixes:
             with open("utils/json/prefixes.json", "w") as f:
-                prefixes[str(msg.guild.id)] = "+"
+                prefixes[str(message.guild.id)] = "+"
                 json.dump(prefixes, f, indent=4)
         
-        await bot.process_commands(msg)
+        await bot.process_commands(message)
             
 
 bot = Bot()
