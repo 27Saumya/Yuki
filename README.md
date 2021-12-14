@@ -1,7 +1,7 @@
 
 # Hey, I am Yuki. A Bot which works with bot Slash and Prefixed Commands!
 
-![image](https://https://cdn.discordapp.com/avatars/919314151535419463/4cfbf4d99fb96fa2cdc7a6a122fedc40.png?size=4096)
+![image](https://i.pinimg.com/736x/ae/e1/0d/aee10def317de2eba0e22b1908916ff9.jpg)
 
 ## Prerequisites
 
@@ -18,9 +18,7 @@ You will need Python 3.
 Change the following:
 `guild_ids`: I have added ... instead of the `guild_ids`. Why guild_ids and not global? Many people might have raised this question. Slash Commands may take an hour to register whereas adding selected guilds, it registers in an instant⚡.
 
-```python
-guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]
-```
+> guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]
 
 ## Built With
 
