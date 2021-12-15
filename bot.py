@@ -50,8 +50,6 @@ class Bot(commands.Bot):
         if message.author == bot.user:
             return
         if message.author.id == 302050872383242240 and len(message.embeds) > 0 and "Bump done! :thumbsup:" in message.embeds[0].description:
-            embed = discord.Embed(description="**<:zerolove:920425612613660753> Thanks to bump the server <3**", color=discord.Color.green())
-            await message.channel.send(embed=embed)
             async with aiosqlite.connect("utils/databases/main.db") as db:
                 async with db.cursor() as cursor:
                     await cursor.execute(f'SELECT bump FROM settings WHERE guild_id = {message.guild.id}')
@@ -64,6 +62,8 @@ class Bot(commands.Bot):
                         if switch[1] == "off":
                             return
                 await cursor.close()
+                embed = discord.Embed(description="**<:zerolove:920425612613660753> Thanks to bump the server <3**", color=discord.Color.green())
+            await message.channel.send(embed=embed)
             await asyncio.sleep(3600*2) # Bump delay == 2 hours | 1 hour == 3600 seconds so, 2 hours == 3600*2
             embed = discord.Embed(title="It's time to bump!", description="Use `!d bump` to bump the server!")
             await message.channel.send(embed=embed)
