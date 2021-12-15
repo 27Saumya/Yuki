@@ -29,6 +29,8 @@ class EventsCog(commands.Cog):
         elif isinstance(error, commands.errors.TooManyArguments):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Too many arguments {ctx.author.mention}!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
+        elif isinstance(error, commands.errors.MissingPermissions):
+            embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permissions!**", color=discord.Color.red())
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: commands.Context, error):
