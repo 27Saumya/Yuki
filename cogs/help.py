@@ -23,15 +23,16 @@ class HelpCog(commands.Cog):
         global startTime
         startTime = time.time()
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="View all of my commands")
+    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View all of my commands")
     async def help(self, ctx: commands.Context, command: Option(str, "The command you want the help with", required=False, default="default")):
         if command == "default":
-            embed = discord.Embed(title=" Slash Commands Help", color=discord.Color.green())
-            embed.add_field(name="Moderation", value="`nuke` `changeprefix`", inline=False)
-            embed.add_field(name="Misc", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
-            embed.add_field(name="Info", value="`covid country` `covid global` `google` `wikipedia`\n`botinfo`", inline=False)
-            embed.add_field(name="Fun", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
-            embed.set_footer(text="To view detailed information use | /help <command>")
+            embed = discord.Embed(title="Help", color=discord.Color.green())
+            embed.add_field(name="__Moderation__", value="`nuke` `changeprefix` `invite`", inline=False)
+            embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
+            embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
+            embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
+            embed.add_field(name="__Utility__", value="`settings`", inline=False)
+            embed.set_footer(text=f"To view detailed information use | +help <command>")
             await ctx.respond(embed=embed, view=InviteView())
         if command.lower().startswith('cov'):
             embed = discord.Embed(title="Covid Info", description="**__Commands__:** \n-->`global`:\nGets Global covid info\naliases: `world` `all`\n\n-->`country` \nDirectly type the country you want.\nExample: \n`+covid country India`\n`+covid country USA`", color=discord.Color.green())
@@ -69,10 +70,11 @@ class HelpCog(commands.Cog):
     async def help_(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Help", color=discord.Color.green())
-            embed.add_field(name="Moderation", value="`nuke` `changeprefix` `invite`", inline=False)
-            embed.add_field(name="Misc", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
-            embed.add_field(name="Info", value="`covid country` `covid global` `google` `wikipedia`\n`botinfo`", inline=False)
-            embed.add_field(name="Fun", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
+            embed.add_field(name="__Moderation__", value="`nuke` `changeprefix` `invite`", inline=False)
+            embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
+            embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
+            embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
+            embed.add_field(name="__Utility__", value="`settings`", inline=False)
             embed.set_footer(text=f"To view detailed information use | +help <command>")
             await ctx.send(embed=embed, view=InviteView())
         
@@ -128,7 +130,7 @@ class HelpCog(commands.Cog):
 
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Invite me to your server")
+    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="Invite me to your server")
     async def invite(self, ctx):
         await ctx.respond("Invite Here!", view=InviteView())
         
@@ -137,21 +139,21 @@ class HelpCog(commands.Cog):
         await ctx.send("Invite Here!", view=InviteView())
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="View the bot's info")
+    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View the bot's info")
     async def botinfo(self, ctx: commands.Context):
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
         embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n59.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.respond(embed=embed)
 
-    @commands.command(name="botinfo", aliases=['bot', 'stats'])
+    @commands.command(name="botinfo", aliases=['bot', 'stats', 'info'])
     async def botinfo_(self, ctx: commands.Context):
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
         embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n59.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
-
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="🏓 Check the bot's latency")
+        
+    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="🏓 Check the bot's latency")
     async def ping(self, ctx: commands.Context):
         interaction: discord.Interaction = ctx.interaction
         before = time.monotonic()
@@ -170,6 +172,7 @@ class HelpCog(commands.Cog):
         ping = (time.monotonic() - before) * 1000
         embed2 = discord.Embed(description=f"**:ping_pong: Bot Latency: `{int(ping)}` ms**", color=discord.Color.green())
         await message.edit(embed=embed2)
+
 
 def setup(bot):
     bot.add_cog(HelpCog(bot))
