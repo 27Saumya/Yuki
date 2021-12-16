@@ -39,8 +39,6 @@ class SettingsCog(commands.Cog):
                 data = await cursor.fetchone()
                 if not data:
                     await cursor.execute('INSERT INTO settings (guild_id, bump) VALUES(?,?)', (ctx.guild.id, "off"))
-                if data:
-                    print("Done")
             await db.commit()
             await cursor.close()
         async with aiosqlite.connect("utils/databases/main.db") as db:

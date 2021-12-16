@@ -23,7 +23,7 @@ class TicketCog(commands.Cog):
     @commands.group(name="ticket")
     async def ticket_(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`**", color=discord.Color.green())
+            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`**", color=discord.Color.green())
             await ctx.send(embed=embed)
 
     @panel_.command(name="create", aliases=['c', 'make', 'add'])
@@ -57,17 +57,20 @@ class TicketCog(commands.Cog):
             )
             panel.set_footer(text=f"{self.bot.user.name} - Ticket Panel", icon_url=self.bot.user.avatar.url)
 
-            message = await channel.send(embed=panel, view=TicketPanelView())
-            await channel.send(f"Panel id of the panel you just created in <#{channel.id}>: {message.id}")
+            message = await channel.send(embed=panel, view=TicketPanelView(self.bot))
+            try:
+                await ctx.author.send(f"Panel id of the panel you just created in <#{channel.id}>: {message.id}")
+            except discord.Forbidden:
+                print("Couldn't DM that user!")
         if channel != ctx.channel:
-            panel = discord.Embed(
+            panel1 = discord.Embed(
                 title=name,
                 description="To create a ticket react with 📩",
                 color=discord.Color.green(),
             )
-            panel.set_footer(text=f"{self.bot.user.name} - Ticket Panel", icon_url=self.bot.user.avatar.url)
+            panel1.set_footer(text=f"{self.bot.user.name} - Ticket Panel", icon_url=self.bot.user.avatar.url)
 
-            message = await channel.send(embed=panel, view=TicketPanelView())
+            message = await channel.send(embed=panel1, view=TicketPanelView(self.bot))
             embed2 = discord.Embed(description=f"**<:tick:897382645321850920> Successfully posted the panel in {channel.mention}\n\nPanel ID: `{message.id}`**", color=discord.Color.green())
             await ctx.send(embed=embed2)
 
@@ -127,11 +130,44 @@ class TicketCog(commands.Cog):
         message = await ctx.send(embed=embed)
         await message.edit(embed=embed, view=TicketResetView(ctx, message))
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def clean(self, ctx: commands.Context):
+    @ticket_.command(name="clean")
+    @commands.has_permissions(manage_channels=True)
+    async def clean_(self, ctx: commands.Context):
         await cleanup(ctx.guild)
-        await ctx.send("<:tick:897382645321850920> Cleaned up the server!")
+        await ctx.send("<:tick:897382645321850920> Cleaned up all tickets!")
+
+    @ticket_.command(name="category")
+    @commands.has_permissions(manage_channels=True)
+    async def category_(self, ctx: commands.Context, categoryID: int):
+        category = discord.utils.get(ctx.guild.categories, id=categoryID)
+        async with aiosqlite.connect("utils/databases/main.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
+                data = await cursor.fetchone()
+                if not data:
+                    await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID))
+                if data:
+                    await cursor.execute(f'UPDATE ticket SET category = {categoryID} WHERE guild_id = {ctx.guild.id}')
+            await db.commit()
+            await cursor.close()
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
+        await ctx.send(embed=embed)
+
+    @ticket_.command(name="remove")
+    @commands.has_guild_permissions(manage_channels=True)
+    async def remove_(self, ctx: commands.Context, object: str):
+        if object.lower().startswith('cat'):
+            async with aiosqlite.connect("utils/databases/main.db") as db:
+                async with db.cursor() as cursor:
+                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
+                    data = await cursor.fetchone()
+                    if not data:
+                        return await ctx.send("**<:error:897382665781669908> This server doesn't have any ticket category**", delete_after=10)
+                    if data:
+                        await cursor.execute(f'UPDATE category SET category = {None} WHERE guild_id = {ctx.guild.id}')
+                await db.commit()
+                await cursor.close()
+            await ctx.send("**<:tick:897382645321850920> Removed Category!**")
 
 
 def setup(bot):
