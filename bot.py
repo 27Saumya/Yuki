@@ -31,11 +31,12 @@ class Bot(commands.Bot):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Slash Commands! | +help"))
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, "roles", "category")')
+                await cursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, category INTEGER)')
             await db.commit()
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
                 await cursor.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, "bump")')
+            await db.commit()
         
     async def on_guild_join(self, guild):
         with open("utils/json/prefixes.json", "r") as f:
@@ -65,7 +66,7 @@ class Bot(commands.Bot):
                 embed = discord.Embed(description="**<:zerolove:920425612613660753> Thanks to bump the server <3**", color=discord.Color.green())
             await message.channel.send(embed=embed)
             await asyncio.sleep(3600*2) # Bump delay == 2 hours | 1 hour == 3600 seconds so, 2 hours == 3600*2
-            embed = discord.Embed(title="It's time to bump!", description="Use `!d bump` to bump the server!")
+            embed = discord.Embed(title="It's time to bump!", description="Use `!d bump` to bump the server!", color=discord.Color.green())
             await message.channel.send(embed=embed)
         with open("utils/json/prefixes.json", "r") as f:
             prefixes = json.load(f)
