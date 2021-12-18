@@ -8,6 +8,7 @@ import requests
 import asyncio
 import aiosqlite
 import config
+from utils.buttons import TicketControlsView
 
 
 def get_prefix(bot, message):
@@ -37,6 +38,9 @@ class Bot(commands.Bot):
             async with db.cursor() as cursor:
                 await cursor.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, "bump")')
             await db.commit()
+        async with aiosqlite.connect("utils/databases/tickets.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute(f'CREATE TABLE IF NOT EXISTS tickets (guild_id INTEGER, channel_id INTEGER, opener INTEGER, switch TEXT)')
         
     async def on_guild_join(self, guild):
         with open("utils/json/prefixes.json", "r") as f:
@@ -47,9 +51,20 @@ class Bot(commands.Bot):
         with open("utils/json/prefixes.json", "w") as f:
             json.dump(prefixes, f, indent=4)
 
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
+        if message.author.id == bot.user.id and len(message.embeds) > 0 and message.embeds[0].description.startswith('**Ticket closed by'):
+            async with aiosqlite.connect("utils/databases/tickets.db") as db:
+                async with db.cursor() as cursor:
+                    await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {message.guild.id} AND channel_id = {message.channel.id}')
+                    data = await cursor.fetchone()
+            member = await bot.fetch_user(data[2])
+            embed = discord.Embed(description="```py\n[Support team ticket controls]```", color=discord.Color.embed_background(theme="dark"))
+            message2 = await message.channel.send(embed=embed)
+            await message2.edit(view=TicketControlsView(member, message2, message.channel.name))
+
         if message.author == bot.user:
             return
+
         if message.author.id == 302050872383242240 and len(message.embeds) > 0 and "Bump done! :thumbsup:" in message.embeds[0].description:
             async with aiosqlite.connect("utils/databases/main.db") as db:
                 async with db.cursor() as cursor:

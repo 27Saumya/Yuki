@@ -12,7 +12,7 @@ class EventsCog(commands.Cog):
             embed = discord.Embed(description="**<:error:897382665781669908> You are missing required arguments!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.errors.CommandNotFound):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> Couldn't find a command named {ctx.command}!**", color=discord.Color.red())
+            embed = discord.Embed(description=f"**<:error:897382665781669908> Couldn't find that command!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.errors.BadArgument):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Invalid datatype passed in.\nError: `{str(error)}`**", color=discord.Color.red())

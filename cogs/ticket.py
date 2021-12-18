@@ -1,7 +1,7 @@
 import discord
+from discord.commands.permissions import permission
 from discord.ext import commands
-from discord.commands import permissions, slash_command, Option
-from utils.buttons import TicketPanelView, TicketResetView
+from utils.buttons import TicketPanelView, TicketResetView, TicketCloseCommand
 import aiosqlite
 
 async def cleanup(guild: discord.Guild):
@@ -17,13 +17,13 @@ class TicketCog(commands.Cog):
     @commands.group(name="panel")
     async def panel_(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`**", color=discord.Color.green())
+            embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed)
     
     @commands.group(name="ticket")
     async def ticket_(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`**", color=discord.Color.green())
+            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed)
 
     @panel_.command(name="create", aliases=['c', 'make', 'add'])
@@ -106,23 +106,6 @@ class TicketCog(commands.Cog):
             await ctx.send(embed=embed)
 
 
-    # @ticket_.command(name="role")
-    # async def role_(self, ctx: commands.Context, type: str, *, role: discord.Role):
-    #     if type.lower() == "add":
-    #         async with aiosqlite.connect("utils/databases/main.db") as db:
-    #             async with db.cursor() as cursor:
-    #                 await cursor.execute(f'INSERT INTO ticket(roles) WHERE guild_id = {ctx.guild.id} VALUES(?)', (role.id))
-    #             await db.commit()
-    #             await cursor.close()
-    #             await ctx.send("Done!")
-    #     if type.lower() == "remove":
-    #         async with aiosqlite.connect("utils/databases/main.db") as db:
-    #             async with db.cursor() as cursor:
-    #                 await cursor.execute(f'DELETE FROM ticket(role) WHERE guild_id = {ctx.guild.id} VALUES(?)', (role.id))
-    #             await db.commit()
-    #             await cursor.close()
-    #             await ctx.send("Done!")
-
     @ticket_.command(name="reset")
     @commands.has_permissions(manage_channels=True)
     async def reset_(self, ctx: commands.Context):
@@ -131,43 +114,107 @@ class TicketCog(commands.Cog):
         await message.edit(embed=embed, view=TicketResetView(ctx, message))
 
     @ticket_.command(name="clean")
-    @commands.has_permissions(manage_channels=True)
+    @commands.is_owner()
     async def clean_(self, ctx: commands.Context):
         await cleanup(ctx.guild)
         await ctx.send("<:tick:897382645321850920> Cleaned up all tickets!")
 
     @ticket_.command(name="category")
     @commands.has_permissions(manage_channels=True)
-    async def category_(self, ctx: commands.Context, categoryID: int):
-        category = discord.utils.get(ctx.guild.categories, id=categoryID)
+    async def category_(self, ctx: commands.Context, categoryID: int=None):
+        if categoryID is None:
+            async with aiosqlite.connect("utils/databases/main.db") as db:
+                async with db.cursor() as cursor:
+                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
+                    dataCheck = await cursor.fetchone()
+                    if not dataCheck:
+                        return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
+                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id = {ctx.guild.id}')
+                    categoryFind = await cursor.fetchone()
+                    await ctx.send(embed=discord.Embed(description=f"**The category assinged for the server is: {categoryFind[2]} **", color=discord.Color.green()))
+                await cursor.close()
+
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
                 await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
                 data = await cursor.fetchone()
                 if not data:
-                    await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID))
+                    await cursor.execute(f'INSERT INTO ticket (category) VALUES(?);', (categoryID))
                 if data:
                     await cursor.execute(f'UPDATE ticket SET category = {categoryID} WHERE guild_id = {ctx.guild.id}')
             await db.commit()
             await cursor.close()
+            category = discord.utils.get(ctx.guild.categories, id=categoryID)
         embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
         await ctx.send(embed=embed)
+    
+    @ticket_.command()
+    @commands.has_permissions(manage_channels=True)
+    async def close(self, ctx: commands.Context):
+        async with aiosqlite.connect("utils/databases/tickets.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                data = await cursor.fetchone()
+            if data[3] == "close":
+                return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The ticket is already closed**", color=discord.Color.red()))
+            if ctx.channel.id != data[1]:
+                await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
+        embed = discord.Embed(description="**Are you sure you want to close the ticket?**", color=discord.Color.orange())
+        message = await ctx.send(embed=embed)
+        guild: discord.Guild = ctx.guild
+        member = guild.get_member(data[2])
+        await message.edit(view=TicketCloseCommand(ctx.author, member, message))
 
-    @ticket_.command(name="remove")
-    @commands.has_guild_permissions(manage_channels=True)
-    async def remove_(self, ctx: commands.Context, object: str):
-        if object.lower().startswith('cat'):
-            async with aiosqlite.connect("utils/databases/main.db") as db:
-                async with db.cursor() as cursor:
-                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
-                    data = await cursor.fetchone()
-                    if not data:
-                        return await ctx.send("**<:error:897382665781669908> This server doesn't have any ticket category**", delete_after=10)
-                    if data:
-                        await cursor.execute(f'UPDATE category SET category = {None} WHERE guild_id = {ctx.guild.id}')
-                await db.commit()
-                await cursor.close()
-            await ctx.send("**<:tick:897382645321850920> Removed Category!**")
+    @ticket_.command()
+    async def add(self, ctx: commands.Context, user: discord.Member):
+        async with aiosqlite.connect("utils/databases/tickets.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                data = await cursor.fetchone()
+            
+        if ctx.channel.id != data[1]:
+            await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
+
+        if user in ctx.channel.members:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> That user is already in the ticket**", color=discord.Color.red))
+        
+        channel: discord.TextChannel = ctx.channel
+        perms = channel.overwrites_for(user)
+        perms.view_channel = True
+        perms.send_messages = True
+        perms.read_message_history = True
+        await channel.set_permissions(user, overwrite=perms)
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added {user.mention} in the ticket!**", color=discord.Color.green())
+        await ctx.send(embed=embed)
+
+    @ticket_.command(aliases=['rm'])
+    async def remove(self, ctx: commands.Context, user: discord.Member):
+        async with aiosqlite.connect("utils/databases/tickets.db") as db:
+            async with db.cursor() as cursor:
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                data = await cursor.fetchone()
+            
+        if ctx.channel.id != data[1]:
+            await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
+
+        if user.id == data[2]:
+            embed2 = discord.Embed(description=f"**<:error:897382665781669908> {user.mention} is the one who opened a ticket\nYou can't remove them from the ticket!**", color=discord.Color.red())
+            await ctx.send(embed=embed2)
+        
+        if user.guild_permissions.administrator or user.guild_permissions.manage_channels:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> That user is a *MOD/ADMIN*.**", color=discord.Color.red()))
+
+        if not user in ctx.channel.members:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> That user is already not in the ticket**", color=discord.Color.red))
+        
+        channel: discord.TextChannel = ctx.channel
+        perms = channel.overwrites_for(user)
+        perms.view_channel = False
+        perms.send_messages = False
+        perms.read_message_history = False
+        await channel.set_permissions(user, overwrite=perms)
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully removed {user.mention} from the ticket!**", color=discord.Color.green())
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

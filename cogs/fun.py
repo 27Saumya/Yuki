@@ -3,11 +3,19 @@ from discord.ext import commands
 from discord.commands import slash_command, Option
 import random
 from utils.buttons import NitroView, TicTacToe, BeerView, BeerPartyView
+import asyncio
+import akinator as ak
 
 
+emojis_c = ['<:tick:897382645321850920>', '<:error:897382665781669908>', '<:idk:921509553953185832>', '👍', '👎', '⏮', '🔴']
+emojis_w = ['<:tick:897382645321850920>', '<:error:897382665781669908>']
+
+def w(name, desc, picture):
+    embed_win = discord.Embed(description=f"**Is it {name}\n{desc}**", color=discord.Color.orange()).set_image(url=picture)
+    return embed_win
 
 class FunCog(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Generates a nitro link!")
@@ -49,13 +57,13 @@ class FunCog(commands.Cog):
                 "Outlook good.":0x2ecc71,
                 "Yes.":0x2ecc71,
                 "Signs point to yes.":0x2ecc71,
-                "Reply hazy, try again.":0xe67e22,
+                "send hazy, try again.":0xe67e22,
                 "Ask again later.":0xe74c3c,
                 "Better not tell you now.":0xe74c3c,
                 "Cannot predict now.":0xe74c3c,
                 "Concentrate and ask again.":0xe74c3c,
                 "Don't count on it.":0xe74c3c,
-                "My reply is no.":0xe74c3c,
+                "My send is no.":0xe74c3c,
                 "My sources say no.":0xe74c3c,
                 "Outlook not so good.":0xe74c3c,
                 "Very doubtful.":0xe67e22,
@@ -80,13 +88,13 @@ class FunCog(commands.Cog):
                 "Outlook good.":0x2ecc71,
                 "Yes.":0x2ecc71,
                 "Signs point to yes.":0x2ecc71,
-                "Reply hazy, try again.":0xe67e22,
+                "send hazy, try again.":0xe67e22,
                 "Ask again later.":0xe74c3c,
                 "Better not tell you now.":0xe74c3c,
                 "Cannot predict now.":0xe74c3c,
                 "Concentrate and ask again.":0xe74c3c,
                 "Don't count on it.":0xe74c3c,
-                "My reply is no.":0xe74c3c,
+                "My send is no.":0xe74c3c,
                 "My sources say no.":0xe74c3c,
                 "Outlook not so good.":0xe74c3c,
                 "Very doubtful.":0xe67e22,
@@ -104,8 +112,8 @@ class FunCog(commands.Cog):
     async def beer(self, ctx: commands.Context, user: Option(discord.Member, "The user you want to drink with")):
         user = user if user else ctx.author
         interaction: discord.Interaction = ctx.interaction
-        if user.bot:
-            embed = discord.Embed(description=f"**Hey {ctx.author.mention},\nBots don't have beer!\n-------------\nTry having it with a human!**", color=discord.Color.red())
+        if user.self.bot:
+            embed = discord.Embed(description=f"**Hey {ctx.author.mention},\nself.bots don't have beer!\n-------------\nTry having it with a human!**", color=discord.Color.red())
             await interaction.response.send_message(embed=embed)
             return
         if user == ctx.author:
@@ -120,8 +128,8 @@ class FunCog(commands.Cog):
     @commands.command(name="beer")
     async def beer_(self, ctx: commands.Context, user: discord.Member=None):
         user = user if user else ctx.author
-        if user.bot:
-            embed = discord.Embed(description=f"**Hey {ctx.author.mention},\nBots don't have beer!\n--------------------------\nTry having it with a human!**", color=discord.Color.red())
+        if user.self.bot:
+            embed = discord.Embed(description=f"**Hey {ctx.author.mention},\nself.bots don't have beer!\n--------------------------\nTry having it with a human!**", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
         if user == ctx.author:
@@ -147,6 +155,112 @@ class FunCog(commands.Cog):
         message = await ctx.send(embed=embed)
         await message.edit(embed=embed, view=BeerPartyView(message, ctx))
     
+    @commands.command(name="coinflip")
+    async def coinflip_(self, ctx: commands.Context):
+        coinsides = ['Heads', 'Tails']
+        message = await ctx.send(embed=discord.Embed(description=f"**Flipping a coin! <a:loading:911568431315292211>**", color=discord.Color.orange()))
+        await asyncio.sleep(1)
+        await message.edit(embed=discord.Embed(description=f"**`{random.choice(coinsides)}` it is!**", color=discord.Color.green()))
+
+    @commands.command(name="akinator", aliases=['aki', 'ak', 'akinat'])
+    async def akinator_(self, ctx: commands.Context):
+        await ctx.send(embed=discord.Embed(description="**Akinator is here to guess!\n--------------------------------\nOptions: <:tick:897382645321850920>: `yes`<:error:897382665781669908>: `no`, <:idk:921509553953185832>: `Don't know`\n👍: `probably`👎: `probably not`\n⏮: `previous question`, 🔴: `end the game`**", color=discord.Color.green()).set_image(url="https://static.wikia.nocookie.net/video-game-character-database/images/9/9f/Akinator.png/revision/latest?cb=20200817020737"))
+        desc_loss = ''
+        d_loss = ''
+
+        def check_c(reaction, user):
+            return user == ctx.author and str(
+                reaction.emoji) in emojis_c and reaction.message.content == q
+
+        def check_w(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in emojis_w
+
+        try:
+            aki = ak.Akinator()    
+            q = await aki.start_game()
+
+            while aki.progression <= 85:
+                embedSend = discord.Embed(description=f"**{q}**", color=discord.Color.orange())
+                message = await ctx.send(embed=embedSend)
+
+                for m in emojis_c:
+                    await message.add_reaction(m)
+
+                try:
+                    symbol, username = await self.bot.wait_for('reaction_add',
+                                                        timeout=45.0,
+                                                        check=check_c)
+                except asyncio.TimeoutError:
+                    embed_game_ended = discord.Embed(
+                        description='**<:error:897382665781669908> You took too long,the game has ended!**',
+                        color=discord.Color.red())
+                    await ctx.send(embed=embed_game_ended)
+                    return
+
+                if str(symbol) == emojis_c[0]:
+                    a = 'y'
+                elif str(symbol) == emojis_c[1]:
+                    a = 'n'
+                elif str(symbol) == emojis_c[2]:
+                    a = 'idk'
+                elif str(symbol) == emojis_c[3]:
+                    a = 'p'
+                elif str(symbol) == emojis_c[4]:
+                    a = 'pn'
+                elif str(symbol) == emojis_c[5]:
+                    a = 'b'
+                elif str(symbol) == emojis_c[6]:
+                    embed_game_end = discord.Embed(
+                        title='I ended the game because you asked me to do it',
+                        color=discord.Color.red())
+                    await ctx.send(embed=embed_game_end)
+                    return
+
+                if a == "b":
+                    try:
+                        q = await aki.back()
+                    except ak.CantGoBackAnyFurther:
+                        pass
+                else:
+                    q = await aki.answer(a)
+
+            await aki.win()
+
+            wm = await ctx.send(
+                embed=w(aki.first_guess['name'], aki.first_guess['description'],
+                        aki.first_guess['absolute_picture_path']))
+
+            for e in emojis_w:
+                await wm.add_reaction(e)
+
+            try:
+                s, u = await self.bot.wait_for('reaction_add',
+                                        timeout=30.0,
+                                        check=check_w)
+            except asyncio.TimeoutError:
+                for times in aki.guesses:
+                    d_loss = d_loss + times['name'] + '\n'
+                t_loss = 'Here is a list of all the people I had in mind :'
+                embed_loss = discord.Embed(title=t_loss,
+                                        description=d_loss,
+                                        color=discord.Color.red())
+                await ctx.send(embed=embed_loss)
+                return
+
+            if str(s) == emojis_w[0]:
+                embed_win = discord.Embed(
+                    title='Great, guessed right one more time!', color=0x00FF00)
+                await ctx.send(embed=embed_win)
+            elif str(s) == emojis_w[1]:
+                for times in aki.guesses:
+                    desc_loss = desc_loss + times['name'] + '\n'
+                title_loss = 'No problem, I will win next time! But here is a list of all the people I had in mind :'
+                embed_loss = discord.Embed(title=title_loss,
+                                        description=desc_loss,
+                                        color=discord.Color.red())
+                await ctx.send(embed=embed_loss)
+        except Exception as error:
+            print(error)
 
 
 def setup(bot):
