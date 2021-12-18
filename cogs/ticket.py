@@ -1,7 +1,7 @@
 import discord
 from discord.commands.permissions import permission
 from discord.ext import commands
-from utils.buttons import TicketPanelView, TicketResetView, TicketCloseCommand
+from utils.buttons import TicketPanelView, TicketResetView, TicketCloseTop2
 import aiosqlite
 
 async def cleanup(guild: discord.Guild):
@@ -122,38 +122,41 @@ class TicketCog(commands.Cog):
     @ticket_.command(name="category")
     @commands.has_permissions(manage_channels=True)
     async def category_(self, ctx: commands.Context, categoryID: int=None):
-        if categoryID is None:
+        try:
+            if categoryID is None:
+                async with aiosqlite.connect("utils/databases/main.db") as db:
+                    async with db.cursor() as cursor:
+                        await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                        dataCheck = await cursor.fetchone()
+                        if not dataCheck:
+                            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
+                        await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                        categoryFind = await cursor.fetchone()
+                        await ctx.send(embed=discord.Embed(description=f"**The category assinged for the server is: {categoryFind[2]} **", color=discord.Color.green()))
+                    await cursor.close()
+
             async with aiosqlite.connect("utils/databases/main.db") as db:
                 async with db.cursor() as cursor:
-                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
-                    dataCheck = await cursor.fetchone()
-                    if not dataCheck:
-                        return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
-                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id = {ctx.guild.id}')
-                    categoryFind = await cursor.fetchone()
-                    await ctx.send(embed=discord.Embed(description=f"**The category assinged for the server is: {categoryFind[2]} **", color=discord.Color.green()))
+                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                    data = await cursor.fetchone()
+                    if not data:
+                        await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID))
+                    if data:
+                        await cursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
+                await db.commit()
                 await cursor.close()
-
-        async with aiosqlite.connect("utils/databases/main.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT category FROM ticket WHERE guild_id = {ctx.guild.id}')
-                data = await cursor.fetchone()
-                if not data:
-                    await cursor.execute(f'INSERT INTO ticket (category) VALUES(?);', (categoryID))
-                if data:
-                    await cursor.execute(f'UPDATE ticket SET category = {categoryID} WHERE guild_id = {ctx.guild.id}')
-            await db.commit()
-            await cursor.close()
-            category = discord.utils.get(ctx.guild.categories, id=categoryID)
-        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
-        await ctx.send(embed=embed)
+                category = discord.utils.get(ctx.guild.categories, id=categoryID)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
+            await ctx.send(embed=embed)
+        except Exception as e:
+            print(e)
     
     @ticket_.command()
     @commands.has_permissions(manage_channels=True)
     async def close(self, ctx: commands.Context):
         async with aiosqlite.connect("utils/databases/tickets.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
                 data = await cursor.fetchone()
             if data[3] == "close":
                 return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The ticket is already closed**", color=discord.Color.red()))
@@ -163,13 +166,13 @@ class TicketCog(commands.Cog):
         message = await ctx.send(embed=embed)
         guild: discord.Guild = ctx.guild
         member = guild.get_member(data[2])
-        await message.edit(view=TicketCloseCommand(ctx.author, member, message))
+        await message.edit(view=TicketCloseTop2(ctx.author, member, message))
 
     @ticket_.command()
     async def add(self, ctx: commands.Context, user: discord.Member):
         async with aiosqlite.connect("utils/databases/tickets.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
                 data = await cursor.fetchone()
             
         if ctx.channel.id != data[1]:
@@ -191,7 +194,7 @@ class TicketCog(commands.Cog):
     async def remove(self, ctx: commands.Context, user: discord.Member):
         async with aiosqlite.connect("utils/databases/tickets.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id = {ctx.guild.id} AND channel_id = {ctx.channel.id}')
+                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
                 data = await cursor.fetchone()
             
         if ctx.channel.id != data[1]:

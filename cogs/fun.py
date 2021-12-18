@@ -177,7 +177,7 @@ class FunCog(commands.Cog):
 
         try:
             aki = ak.Akinator()    
-            q = await aki.start_game()
+            q = aki.start_game()
 
             while aki.progression <= 85:
                 embedSend = discord.Embed(description=f"**{q}**", color=discord.Color.orange())
