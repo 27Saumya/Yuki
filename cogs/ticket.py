@@ -126,18 +126,18 @@ class TicketCog(commands.Cog):
             if categoryID is None:
                 async with aiosqlite.connect("utils/databases/main.db") as db:
                     async with db.cursor() as cursor:
-                        await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                        await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                         dataCheck = await cursor.fetchone()
                         if not dataCheck:
                             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
-                        await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                        await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                         categoryFind = await cursor.fetchone()
                         await ctx.send(embed=discord.Embed(description=f"**The category assinged for the server is: {categoryFind[2]} **", color=discord.Color.green()))
                     await cursor.close()
 
             async with aiosqlite.connect("utils/databases/main.db") as db:
                 async with db.cursor() as cursor:
-                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id))
+                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                     data = await cursor.fetchone()
                     if not data:
                         await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID))

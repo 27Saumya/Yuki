@@ -291,20 +291,20 @@ class TicketPanelView(discord.ui.View):
         message = await interaction.original_message()
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT count FROM ticket WHERE guild_id=?', (interaction.guild_id))
+                await cursor.execute(f'SELECT count FROM ticket WHERE guild_id=?', (interaction.guild_id,))
                 data = await cursor.fetchone()
                 if not data:
                     await cursor.execute(f'INSERT INTO ticket(guild_id, count) VALUES(?,?)', (interaction.guild_id, 1))
                 if data:
-                    await cursor.execute(f'UPDATE ticket SET count = count + 1 WHERE guild_id=?', (interaction.guild_id))
+                    await cursor.execute(f'UPDATE ticket SET count = count + 1 WHERE guild_id=?', (interaction.guild_id,))
             await db.commit()
             await cursor.close()
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (interaction.guild_id))
+                await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (interaction.guild_id,))
                 categoryCheck = await cursor.fetchone()
                 if not categoryCheck:
-                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id))
+                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
                     ticket_num = await cursor.fetchone()
                     ticket_channel = await interaction.guild.create_text_channel(name=f"ticket-{ticket_num[1]}")
                     await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
@@ -319,7 +319,7 @@ class TicketPanelView(discord.ui.View):
                             await db.commit()
 
                 if categoryCheck:
-                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id))
+                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
                     data = await cursor.fetchone()
                     category = discord.utils.get(interaction.guild.categories, id=data[2])
                     ticketChannel = await interaction.guild.create_text_channel(name=f"ticket-{data[1]}", category=category)
@@ -451,7 +451,7 @@ class TicketResetView(discord.ui.View):
             child.disabled = True
         async with aiosqlite.connect("utils/databases/main.db") as db:
             async with db.cursor() as cursor:
-                await cursor.execute(f'UPDATE ticket SET count = 0 WHERE guild_id=?', (interaction.guild_id))
+                await cursor.execute(f'UPDATE ticket SET count = 0 WHERE guild_id=?', (interaction.guild_id,))
             await db.commit()
             await cursor.close()
         embed = discord.Embed(description="**<:tick:897382645321850920> Succesfully resetted the ticket count!**", color=discord.Color.green())

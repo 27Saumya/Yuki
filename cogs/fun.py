@@ -199,17 +199,17 @@ class FunCog(commands.Cog):
 
                 if str(symbol) == emojis_c[0]:
                     a = 'y'
-                elif str(symbol) == emojis_c[1]:
+                if str(symbol) == emojis_c[1]:
                     a = 'n'
-                elif str(symbol) == emojis_c[2]:
+                if str(symbol) == emojis_c[2]:
                     a = 'idk'
-                elif str(symbol) == emojis_c[3]:
+                if str(symbol) == emojis_c[3]:
                     a = 'p'
-                elif str(symbol) == emojis_c[4]:
+                if str(symbol) == emojis_c[4]:
                     a = 'pn'
-                elif str(symbol) == emojis_c[5]:
+                if str(symbol) == emojis_c[5]:
                     a = 'b'
-                elif str(symbol) == emojis_c[6]:
+                if str(symbol) == emojis_c[6]:
                     embed_game_end = discord.Embed(
                         title='I ended the game because you asked me to do it',
                         color=discord.Color.red())
