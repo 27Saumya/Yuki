@@ -14,3 +14,5 @@ yarl==1.6.3
 qrcode
 pillow
 pytube
+akinator.py
+speedtest-cli
