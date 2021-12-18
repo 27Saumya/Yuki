@@ -140,7 +140,7 @@ class TicketCog(commands.Cog):
                     await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                     data = await cursor.fetchone()
                     if not data:
-                        await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID))
+                        await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID,))
                     if data:
                         await cursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
                 await db.commit()

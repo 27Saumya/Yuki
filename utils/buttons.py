@@ -395,13 +395,16 @@ class TicketCloseTop2(discord.ui.View):
         await interaction.response.edit_message(embed=discord.Embed(description=f"**<:tick:897382645321850920> Canceled closing {interaction.channel.mention}**", color=discord.Color.green()), view=self)
 
     async def on_timeout(self):
-        for child in self.children:
-            if child.disabled:
-                return
-        for child in self.children:
-            child.disabled = True
-        embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled closing the ticket!**", color=discord.Color.red())
-        await self.msg.edit(embed=embed, view=self)
+        try:
+            for child in self.children:
+                if child.disabled:
+                    return
+            for child in self.children:
+                child.disabled = True
+            embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled closing the ticket!**", color=discord.Color.red())
+            await self.msg.edit(embed=embed, view=self)
+        except discord.NotFound:
+            pass
     
 class TicketControlsView(discord.ui.View):
     def __init__(self, ticketOpener: discord.Member, message: discord.Message, channelName: discord.TextChannel):
@@ -468,10 +471,13 @@ class TicketResetView(discord.ui.View):
         await interaction.response.edit_message(embed=embed, view=self)
 
     async def on_timeout(self):
-        for child in self.children:
-            if child.disabled:
-                return
-        for child in self.children:
-            child.disabled = True
-        embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled resetting ticket count!**", color=discord.Color.red())
-        await self.msg.edit(embed=embed, view=self)
+        try:
+            for child in self.children:
+                if child.disabled:
+                    return
+            for child in self.children:
+                child.disabled = True
+            embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled resetting ticket count!**", color=discord.Color.red())
+            await self.msg.edit(embed=embed, view=self)
+        except discord.NotFound:
+            pass
