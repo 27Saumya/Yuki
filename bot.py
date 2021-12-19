@@ -30,15 +30,16 @@ class Bot(commands.Bot):
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
                 self.load_extension(f"cogs.{filename[:-3]}")
+        self.load_extension("utils.buttons")
 
 
     async def on_ready(self):
         print(f"{self.user.name} is online!")
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="+help | Slash Commands (selected guild only :())"))
         if not self.persistent_views_added:
-            self.add_view(TicketPanelView(bot))
-            self.add_view(TicketControlsView(None, None, bot))
-            self.add_view(TicketCloseTop(None, bot))
+            self.add_view(TicketPanelView(self))
+            self.add_view(TicketControlsView(self))
+            self.add_view(TicketCloseTop(self))
             self.persistent_views_added = True
 
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, category INTEGER)')
@@ -62,8 +63,7 @@ class Bot(commands.Bot):
                 data = bot.dbcursor.fetchone()
                 member = await bot.fetch_user(data[2])
                 embed = discord.Embed(description="```py\n[Support team ticket controls]```", color=discord.Color.embed_background(theme="dark"))
-                message2 = await message.channel.send(embed=embed)
-                await message2.edit(view=TicketControlsView(member, message2, bot))
+                await message.channel.send(embed=embed, view=TicketControlsView(bot))
         except AttributeError:
             print("That wasn't a ticket close message.")
 

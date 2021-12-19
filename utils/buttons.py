@@ -15,6 +15,9 @@ async def set_perms(channel: discord.TextChannel):
             await channel.set_permissions(member, read_message_history=True)
             await channel.set_permissions(member, manage_channel=True)
 
+class ButtonsCog(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
 
 class NitroView(discord.ui.View):
     def __init__(self, msg: discord.Message, ctx: commands.Context):
@@ -306,7 +309,7 @@ class TicketPanelView(discord.ui.View):
             embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticket_channel.mention}**", color=discord.Color.green())
             await message.edit(embed=embed)
             embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
-            await ticket_channel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user, self.bot))
+            await ticket_channel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(self.bot))
             await set_perms(ticket_channel)
             self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticket_channel.id, interaction.user.id, "open"))
             self.bot.db.commit()
@@ -323,15 +326,14 @@ class TicketPanelView(discord.ui.View):
             await ticketChannel.set_permissions(interaction.user, send_messages=True)
             await ticketChannel.set_permissions(interaction.user, read_message_history=True)
             embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
-            await ticketChannel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user, self.bot))
+            await ticketChannel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(self.bot))
             self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticketChannel.id, interaction.user.id, "open"))
             self.bot.db.commit()
 
 
 class TicketCloseTop(discord.ui.View):
-    def __init__(self, ticketOpener: discord.Member, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot=None):
         super().__init__(timeout=None)
-        self.member = ticketOpener
         self.bot = bot
 
     @discord.ui.button(label="Close", style=discord.ButtonStyle.gray, emoji="🔒", custom_id="top:close")
@@ -342,13 +344,12 @@ class TicketCloseTop(discord.ui.View):
             return await interaction.response.send_message(embed=discord.Embed(description=f"**<:error:897382665781669908> The ticket is already closed!**", color=discord.Color.red()), ephemeral=True)
         await interaction.response.send_message(embed=discord.Embed(description="**Are you sure you want to close the ticket?**", color=discord.Color.orange()))
         message = await interaction.original_message()
-        await message.edit(view=TicketCloseTop2(interaction.user, self.member, message, self.bot))
+        await message.edit(view=TicketCloseTop2(interaction.user, message, self.bot))
 
 class TicketCloseTop2(discord.ui.View):
-    def __init__(self, buttonUser: discord.Member, ticketOpener: discord.Member, msg: discord.Message, bot: commands.Bot):
+    def __init__(self, buttonUser: discord.Member, msg: discord.Message, bot: commands.Bot):
         super().__init__(timeout=15)
         self.user = buttonUser
-        self.member = ticketOpener
         self.msg = msg
         self.bot = bot
 
@@ -358,14 +359,17 @@ class TicketCloseTop2(discord.ui.View):
             return await interaction.channel.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You can't do that {interaction.user.mention}**", color=discord.Color.red()))
         for child in self.children:
             child.disabled = True
-        if self.member.guild_permissions.administrator or self.member.guild_permissions.manage_channels:
+        self.bot.dbcursor.execute('SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+        member_id = self.bot.dbcursor.fetchone()
+        member = interaction.guild.get_member(member_id[2])
+        if member.guild_permissions.administrator or member.guild_permissions.manage_channels:
             pass
         else:
-            perms = interaction.channel.overwrites_for(self.member)
+            perms = interaction.channel.overwrites_for(member)
             perms.view_channel = False
             perms.send_messages = False
             perms.read_message_history = False
-            await interaction.channel.set_permissions(self.member, overwrite=perms)
+            await interaction.channel.set_permissions(member, overwrite=perms)
         self.bot.dbcursor.execute(f'UPDATE tickets SET switch = "closed" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
         self.bot.db.commit()
         await self.msg.delete()
@@ -392,33 +396,32 @@ class TicketCloseTop2(discord.ui.View):
             pass
     
 class TicketControlsView(discord.ui.View):
-    def __init__(self, ticketOpener: discord.Member, message: discord.Message, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot=None):
         super().__init__(timeout=None)
-        self.member = ticketOpener
-        self.msg = message
         self.bot = bot
 
     @discord.ui.button(label="Open", style=discord.ButtonStyle.gray, emoji="🔓", custom_id="controls:open")
     async def open_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that {interaction.user.mention}!", color=discord.Color.red()))
-        perms = interaction.channel.overwrites_for(self.member)
+        self.bot.dbcursor.execute('SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+        member_id = self.bot.dbcursor.fetchone()
+        member = interaction.guild.get_member(member_id[2])
+        perms = interaction.channel.overwrites_for(member)
         perms.view_channel = True
         perms.send_messages = True
         perms.read_message_history = True
-        await interaction.channel.set_permissions(self.member, overwrite=perms)
+        await interaction.channel.set_permissions(member, overwrite=perms)
         self.bot.dbcursor.execute(f'UPDATE tickets SET switch = "open" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
         self.bot.db.commit()
-        await self.msg.delete()
-        await interaction.channel.send(embed=discord.Embed(description=f"**Ticket opened by {interaction.user.mention}**", color=discord.Color.green()))
+        await interaction.response.edit_message(embed=discord.Embed(description=f"**Ticket opened by {interaction.user.mention}**", color=discord.Color.green()), view=None)
 
     @discord.ui.button(label="Delete", style=discord.ButtonStyle.gray, emoji="⛔", custom_id="controls:close")
     async def delete_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that!", color=discord.Color.red()), ephemeral=True)
         try:
-            await self.msg.delete()
-            await interaction.channel.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> The ticket will be deleted soon**", color=discord.Color.orange()))
+            await interaction.response.edit_message(embed=discord.Embed(description=f"**<:tick:897382645321850920> The ticket will be deleted soon**", color=discord.Color.orange()), view=None)
             await asyncio.sleep(3)
             await interaction.channel.delete()
             self.bot.dbcursor.execute('DELETE FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
@@ -467,3 +470,6 @@ class TicketResetView(discord.ui.View):
             await self.msg.edit(embed=embed, view=self)
         except discord.NotFound:
             print("Ticket count reset complete")
+
+def setup(bot):
+    bot.add_cog(ButtonsCog(bot))

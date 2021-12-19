@@ -156,9 +156,7 @@ class TicketCog(commands.Cog):
             await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
         embed = discord.Embed(description="**Are you sure you want to close the ticket?**", color=discord.Color.orange())
         message = await ctx.send(embed=embed)
-        guild: discord.Guild = ctx.guild
-        member = guild.get_member(data[2])
-        await message.edit(view=TicketCloseTop2(ctx.author, member, message, self.bot))
+        await message.edit(view=TicketCloseTop2(ctx.author, message, self.bot))
 
     @ticket_.command()
     async def add(self, ctx: commands.Context, user: discord.Member):
