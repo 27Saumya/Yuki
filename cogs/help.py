@@ -80,7 +80,7 @@ class HelpCog(commands.Cog):
             embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
             embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
             embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
-            embed.add_field(name="__Utility__", value="`settings`", inline=False)
+            embed.add_field(name="__Utility__", value="`settings` `ticket`", inline=False)
             embed.set_footer(text=f"To view detailed information use | +help <command>")
             await ctx.send(embed=embed, view=InviteView())
         

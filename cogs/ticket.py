@@ -138,6 +138,7 @@ class TicketCog(commands.Cog):
                 self.bot.dbcursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID,))
             if data:
                 self.bot.dbcursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
+            self.bot.db.commit()
             category = discord.utils.get(ctx.guild.categories, id=categoryID)
             embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
             await ctx.send(embed=embed)
