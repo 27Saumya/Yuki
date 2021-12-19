@@ -283,7 +283,7 @@ class TicketPanelView(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Create Ticket", style=discord.ButtonStyle.grey, emoji="📩")
+    @discord.ui.button(label="Create Ticket", style=discord.ButtonStyle.grey, emoji="📩", custom_id="panel")
     async def callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         embed = discord.Embed(description="**<a:loading:911568431315292211> Creating ticket**", color=0x2F3136)
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -334,7 +334,7 @@ class TicketCloseTop(discord.ui.View):
         self.member = ticketOpener
         self.bot = bot
 
-    @discord.ui.button(label="Close", style=discord.ButtonStyle.gray, emoji="🔒", custom_id="Close")
+    @discord.ui.button(label="Close", style=discord.ButtonStyle.gray, emoji="🔒", custom_id="top:close")
     async def close_callback(self, button: discord.Button, interaction: discord.Interaction):
         self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
         data = self.bot.dbcursor.fetchone()
@@ -352,7 +352,7 @@ class TicketCloseTop2(discord.ui.View):
         self.msg = msg
         self.bot = bot
 
-    @discord.ui.button(label="Yes", style=discord.ButtonStyle.danger, custom_id="close_confirm")
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.danger)
     async def yes_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user != self.user:
             return await interaction.channel.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You can't do that {interaction.user.mention}**", color=discord.Color.red()))
@@ -398,7 +398,7 @@ class TicketControlsView(discord.ui.View):
         self.msg = message
         self.bot = bot
 
-    @discord.ui.button(label="Open", style=discord.ButtonStyle.gray, emoji="🔓", custom_id="open_ticket")
+    @discord.ui.button(label="Open", style=discord.ButtonStyle.gray, emoji="🔓", custom_id="controls:open")
     async def open_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that {interaction.user.mention}!", color=discord.Color.red()))
@@ -412,7 +412,7 @@ class TicketControlsView(discord.ui.View):
         await self.msg.delete()
         await interaction.channel.send(embed=discord.Embed(description=f"**Ticket opened by {interaction.user.mention}**", color=discord.Color.green()))
 
-    @discord.ui.button(label="Delete", style=discord.ButtonStyle.gray, emoji="⛔")
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.gray, emoji="⛔", custom_id="controls:close")
     async def delete_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that!", color=discord.Color.red()), ephemeral=True)

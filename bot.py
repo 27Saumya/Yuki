@@ -7,7 +7,7 @@ from pytube import YouTube
 import requests
 import asyncio
 import config
-from utils.buttons import TicketControlsView
+from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
 import sqlite3
 
 
@@ -23,6 +23,7 @@ class Bot(commands.Bot):
     def __init__(self):
         self.db = sqlite3.connect("utils/databases/main.db")
         self.dbcursor = self.db.cursor()
+        self.persistent_views_added = False
 
         super().__init__(command_prefix=get_prefix, help_command=None, intents=discord.Intents().all(), case_insensitiv1e=True)
 
@@ -34,6 +35,12 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"{self.user.name} is online!")
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="+help | Slash Commands (selected guild only :())"))
+        if not self.persistent_views_added:
+            self.add_view(TicketPanelView(bot))
+            self.add_view(TicketControlsView(None, None, bot))
+            self.add_view(TicketCloseTop(None, bot))
+            self.persistent_views_added = True
+
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, category INTEGER)')
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, "bump")')
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS tickets (guild_id INTEGER, channel_id INTEGER, opener INTEGER, switch TEXT)')

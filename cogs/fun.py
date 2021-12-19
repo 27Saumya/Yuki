@@ -169,14 +169,14 @@ class FunCog(commands.Cog):
             return (
                 msg.author == ctx.author
                 and msg.channel == ctx.channel
-                and msg.content.lower() in ["y", "n", "p", "pn", "b"]
+                and msg.content.lower() in ["y", "n", "idk", "p", "pn", "b"]
             )
 
         try:
             aki = ak.Akinator()
             q = aki.start_game()
             while aki.progression <= 80:
-                await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[y | n | p | pn | b]**", color=discord.Color.embed_background(theme="dark")))
+                await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[`y` | `n` | `idk` | `p` | `pn` | `b`]**", color=discord.Color.embed_background(theme="dark")))
                 msg = await self.bot.wait_for("message", check=check)
                 if msg.content.lower() == "b":
                     try:

@@ -130,7 +130,7 @@ class TicketCog(commands.Cog):
                 self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                 categoryFind = self.bot.dbcursor.fetchone()
                 cat = categoryFind[2]
-                await ctx.send(embed=discord.Embed(description="**The category_id set for this server is {cat}**", color=discord.Color.green()))
+                return await ctx.send(embed=discord.Embed(description=f"**The category_id set for this server is {cat}**", color=discord.Color.green()))
 
             self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
             data = self.bot.dbcursor.fetchone()
