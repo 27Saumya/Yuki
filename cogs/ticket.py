@@ -2,7 +2,6 @@ import discord
 from discord.commands.permissions import permission
 from discord.ext import commands
 from utils.buttons import TicketPanelView, TicketResetView, TicketCloseTop2
-import aiosqlite
 
 async def cleanup(guild: discord.Guild):
     for channel in guild.channels:
@@ -59,7 +58,7 @@ class TicketCog(commands.Cog):
 
             message = await channel.send(embed=panel, view=TicketPanelView(self.bot))
             try:
-                await ctx.author.send(f"Panel id of the panel you just created in <#{channel.id}>: {message.id}")
+                await ctx.author.send(embed=discord.Embed(description=f"**Panel id** of the panel you just created in <#{channel.id}>: `{message.id}`", color=discord.Color.green()))
             except discord.Forbidden:
                 print("Couldn't DM that user!")
         if channel != ctx.channel:
@@ -111,7 +110,7 @@ class TicketCog(commands.Cog):
     async def reset_(self, ctx: commands.Context):
         embed = discord.Embed(description=f"Are you sure you want to reset the **Ticket Count**?\n------------------------------------------------\nRespond Within **15** seconds!", color=discord.Color.orange())
         message = await ctx.send(embed=embed)
-        await message.edit(embed=embed, view=TicketResetView(ctx, message))
+        await message.edit(embed=embed, view=TicketResetView(ctx, message, self.bot))
 
     @ticket_.command(name="clean")
     @commands.is_owner()
@@ -124,28 +123,22 @@ class TicketCog(commands.Cog):
     async def category_(self, ctx: commands.Context, categoryID: int=None):
         try:
             if categoryID is None:
-                async with aiosqlite.connect("utils/databases/main.db") as db:
-                    async with db.cursor() as cursor:
-                        await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
-                        dataCheck = await cursor.fetchone()
-                        if not dataCheck:
-                            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
-                        await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
-                        categoryFind = await cursor.fetchone()
-                        await ctx.send(embed=discord.Embed(description=f"**The category assinged for the server is: {categoryFind[2]} **", color=discord.Color.green()))
-                    await cursor.close()
+                self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
+                dataCheck = self.bot.dbcursor.fetchone()
+                if not dataCheck:
+                    return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
+                self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
+                categoryFind = self.bot.dbcursor.fetchone()
+                cat = categoryFind[2]
+                await ctx.send(embed=discord.Embed(description="**The category_id set for this server is {cat}**", color=discord.Color.green()))
 
-            async with aiosqlite.connect("utils/databases/main.db") as db:
-                async with db.cursor() as cursor:
-                    await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
-                    data = await cursor.fetchone()
-                    if not data:
-                        await cursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID,))
-                    if data:
-                        await cursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
-                await db.commit()
-                await cursor.close()
-                category = discord.utils.get(ctx.guild.categories, id=categoryID)
+            self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
+            data = self.bot.dbcursor.fetchone()
+            if not data:
+                self.bot.dbcursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID,))
+            if data:
+                self.bot.dbcursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
+            category = discord.utils.get(ctx.guild.categories, id=categoryID)
             embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added `{category}` as the ticket category!\n\nIf you want to keep ticket view permissions, make sure to change the category permissions.**", color=discord.Color.green())
             await ctx.send(embed=embed)
         except Exception as e:
@@ -154,26 +147,22 @@ class TicketCog(commands.Cog):
     @ticket_.command()
     @commands.has_permissions(manage_channels=True)
     async def close(self, ctx: commands.Context):
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
-                data = await cursor.fetchone()
-            if data[3] == "close":
-                return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The ticket is already closed**", color=discord.Color.red()))
-            if ctx.channel.id != data[1]:
-                await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
+        self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
+        data = self.bot.dbcursor.fetchone()
+        if data[3] == "close":
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The ticket is already closed**", color=discord.Color.red()))
+        if ctx.channel.id != data[1]:
+            await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
         embed = discord.Embed(description="**Are you sure you want to close the ticket?**", color=discord.Color.orange())
         message = await ctx.send(embed=embed)
         guild: discord.Guild = ctx.guild
         member = guild.get_member(data[2])
-        await message.edit(view=TicketCloseTop2(ctx.author, member, message))
+        await message.edit(view=TicketCloseTop2(ctx.author, member, message, self.bot))
 
     @ticket_.command()
     async def add(self, ctx: commands.Context, user: discord.Member):
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
-                data = await cursor.fetchone()
+        self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
+        data = self.bot.dbcursor.fetchone()
             
         if ctx.channel.id != data[1]:
             await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
@@ -192,10 +181,8 @@ class TicketCog(commands.Cog):
 
     @ticket_.command(aliases=['rm'])
     async def remove(self, ctx: commands.Context, user: discord.Member):
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
-                data = await cursor.fetchone()
+        self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
+        data = self.bot.dbcursor.fetchone()
             
         if ctx.channel.id != data[1]:
             await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))

@@ -164,103 +164,43 @@ class FunCog(commands.Cog):
 
     @commands.command(name="akinator", aliases=['aki', 'ak', 'akinat'])
     async def akinator_(self, ctx: commands.Context):
-        await ctx.send(embed=discord.Embed(description="**Akinator is here to guess!\n--------------------------------\nOptions: <:tick:897382645321850920>: `yes`<:error:897382665781669908>: `no`, <:idk:921509553953185832>: `Don't know`\n👍: `probably`👎: `probably not`\n⏮: `previous question`, 🔴: `end the game`**", color=discord.Color.green()).set_image(url="https://static.wikia.nocookie.net/video-game-character-database/images/9/9f/Akinator.png/revision/latest?cb=20200817020737"))
-        desc_loss = ''
-        d_loss = ''
-
-        def check_c(reaction, user):
-            return user == ctx.author and str(
-                reaction.emoji) in emojis_c and reaction.message.content == q
-
-        def check_w(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in emojis_w
+        await ctx.send(embed=discord.Embed(description="**Yukinator is here to guess!\n--------------------------------\nOptions: y: `yes\n`no: `n`\nidk: `Don't know`\np: `probably`\npn: `probably not`\nb: `previous question`**", color=discord.Color.green()).set_image(url="https://static.wikia.nocookie.net/video-game-character-database/images/9/9f/Akinator.png/revision/latest?cb=20200817020737"))
+        def check(msg):
+            return (
+                msg.author == ctx.author
+                and msg.channel == ctx.channel
+                and msg.content.lower() in ["y", "n", "p", "pn", "b"]
+            )
 
         try:
-            aki = ak.Akinator()    
+            aki = ak.Akinator()
             q = aki.start_game()
-
-            while aki.progression <= 85:
-                embedSend = discord.Embed(description=f"**{q}**", color=discord.Color.orange())
-                message = await ctx.send(embed=embedSend)
-
-                for m in emojis_c:
-                    await message.add_reaction(m)
-
-                try:
-                    symbol, username = await self.bot.wait_for('reaction_add',
-                                                        timeout=45.0,
-                                                        check=check_c)
-                except asyncio.TimeoutError:
-                    embed_game_ended = discord.Embed(
-                        description='**<:error:897382665781669908> You took too long,the game has ended!**',
-                        color=discord.Color.red())
-                    await ctx.send(embed=embed_game_ended)
-                    return
-
-                if str(symbol) == emojis_c[0]:
-                    a = 'y'
-                if str(symbol) == emojis_c[1]:
-                    a = 'n'
-                if str(symbol) == emojis_c[2]:
-                    a = 'idk'
-                if str(symbol) == emojis_c[3]:
-                    a = 'p'
-                if str(symbol) == emojis_c[4]:
-                    a = 'pn'
-                if str(symbol) == emojis_c[5]:
-                    a = 'b'
-                if str(symbol) == emojis_c[6]:
-                    embed_game_end = discord.Embed(
-                        title='I ended the game because you asked me to do it',
-                        color=discord.Color.red())
-                    await ctx.send(embed=embed_game_end)
-                    return
-
-                if a == "b":
+            while aki.progression <= 80:
+                await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[y | n | p | pn | b]**", color=discord.Color.embed_background(theme="dark")))
+                msg = await self.bot.wait_for("message", check=check)
+                if msg.content.lower() == "b":
                     try:
-                        q = await aki.back()
+                        q = aki.back()
                     except ak.CantGoBackAnyFurther:
-                        pass
+                        await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
+                        continue
                 else:
-                    q = await aki.answer(a)
-
-            await aki.win()
-
-            wm = await ctx.send(
-                embed=w(aki.first_guess['name'], aki.first_guess['description'],
-                        aki.first_guess['absolute_picture_path']))
-
-            for e in emojis_w:
-                await wm.add_reaction(e)
-
-            try:
-                s, u = await self.bot.wait_for('reaction_add',
-                                        timeout=30.0,
-                                        check=check_w)
-            except asyncio.TimeoutError:
-                for times in aki.guesses:
-                    d_loss = d_loss + times['name'] + '\n'
-                t_loss = 'Here is a list of all the people I had in mind :'
-                embed_loss = discord.Embed(title=t_loss,
-                                        description=d_loss,
-                                        color=discord.Color.red())
-                await ctx.send(embed=embed_loss)
-                return
-
-            if str(s) == emojis_w[0]:
-                embed_win = discord.Embed(
-                    title='Great, guessed right one more time!', color=0x00FF00)
-                await ctx.send(embed=embed_win)
-            elif str(s) == emojis_w[1]:
-                for times in aki.guesses:
-                    desc_loss = desc_loss + times['name'] + '\n'
-                title_loss = 'No problem, I will win next time! But here is a list of all the people I had in mind :'
-                embed_loss = discord.Embed(title=title_loss,
-                                        description=desc_loss,
-                                        color=discord.Color.red())
-                await ctx.send(embed=embed_loss)
-        except Exception as error:
-            print(error)
+                    try:
+                        q = aki.answer(msg.content.lower())
+                    except ak.InvalidAnswerError as e:
+                        await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
+                        continue
+            aki.win()
+            await ctx.send(
+                embed=discord.Embed(description=f"**Is it {aki.first_guess['name']}\n({aki.first_guess['description']})!\nWas I correct?(y/n)\n\t**", color=discord.Color.orange()).set_image(url=aki.first_guess['absolute_picture_path'])
+            )
+            correct = await self.bot.wait_for("message", check=check)
+            if correct.content.lower() == "y":
+                await ctx.send(embed=discord.Embed(description="**Yay!**", color=discord.Color.green()))
+            else:
+                await ctx.send(embed=discord.Embed(description="**Oof!**", color=discord.Color.red()))
+        except Exception as e:
+            await ctx.send(e)
 
 
 def setup(bot):

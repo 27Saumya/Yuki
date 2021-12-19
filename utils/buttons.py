@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from typing import List
 from urllib.parse import quote_plus
-import aiosqlite
 import asyncio
 
 def joins(list: list):
@@ -289,84 +288,74 @@ class TicketPanelView(discord.ui.View):
         embed = discord.Embed(description="**<a:loading:911568431315292211> Creating ticket**", color=0x2F3136)
         await interaction.response.send_message(embed=embed, ephemeral=True)
         message = await interaction.original_message()
-        async with aiosqlite.connect("utils/databases/main.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT count FROM ticket WHERE guild_id=?', (interaction.guild_id,))
-                data = await cursor.fetchone()
-                if not data:
-                    await cursor.execute(f'INSERT INTO ticket(guild_id, count) VALUES(?,?)', (interaction.guild_id, 1))
-                if data:
-                    await cursor.execute(f'UPDATE ticket SET count = count + 1 WHERE guild_id=?', (interaction.guild_id,))
-            await db.commit()
-            await cursor.close()
-        async with aiosqlite.connect("utils/databases/main.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (interaction.guild_id,))
-                categoryCheck = await cursor.fetchone()
-                if not categoryCheck:
-                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
-                    ticket_num = await cursor.fetchone()
-                    ticket_channel = await interaction.guild.create_text_channel(name=f"ticket-{ticket_num[1]}")
-                    await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
-                    embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticket_channel.mention}**", color=discord.Color.green())
-                    await message.edit(embed=embed)
-                    embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
-                    await ticket_channel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user))
-                    await set_perms(ticket_channel)
-                    async with aiosqlite.connect("utils/databases/tickets.db") as db:
-                        async with db.cursor() as cursor:
-                            await cursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticket_channel.id, interaction.user.id, "open"))
-                            await db.commit()
+        self.bot.dbcursor.execute(f'SELECT count FROM ticket WHERE guild_id=?', (interaction.guild_id,))
+        data = self.bot.dbcursor.fetchone()
+        if not data:
+            self.bot.dbcursor.execute(f'INSERT INTO ticket(guild_id, count) VALUES(?,?)', (interaction.guild_id, 1))
+        if data:
+            self.bot.dbcursor.execute(f'UPDATE ticket SET count = count + 1 WHERE guild_id=?', (interaction.guild_id,))
+           
+        self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (interaction.guild_id,))
+        categoryCheck = self.bot.dbcursor.fetchone()
 
-                if categoryCheck:
-                    await cursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
-                    data = await cursor.fetchone()
-                    category = discord.utils.get(interaction.guild.categories, id=data[2])
-                    ticketChannel = await interaction.guild.create_text_channel(name=f"ticket-{data[1]}", category=category)
-                    await ticketChannel.edit(sync_permissions=True)
-                    embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticketChannel.mention}**", color=discord.Color.green())
-                    await message.edit(embed=embed)
-                    await ticketChannel.set_permissions(interaction.user, view_channel=True)
-                    await ticketChannel.set_permissions(interaction.user, send_messages=True)
-                    await ticketChannel.set_permissions(interaction.user, read_message_history=True)
-                    embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
-                    await ticketChannel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user))
-                    async with aiosqlite.connect("utils/databases/tickets.db") as db:
-                        async with db.cursor() as cursor:
-                            await cursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticketChannel.id, interaction.user.id, "open"))
-                            await db.commit()
-            
+        if not categoryCheck:
+            self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
+            ticket_num = self.bot.dbcursor.fetchone()
+            ticket_channel = await interaction.guild.create_text_channel(name=f"ticket-{ticket_num[1]}")
+            await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticket_channel.mention}**", color=discord.Color.green())
+            await message.edit(embed=embed)
+            embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
+            await ticket_channel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user, self.bot))
+            await set_perms(ticket_channel)
+            self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticket_channel.id, interaction.user.id, "open"))
+            self.bot.db.commit()
+
+        if categoryCheck:
+            self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
+            data = self.bot.dbcursor.fetchone()
+            category = discord.utils.get(interaction.guild.categories, id=data[2])
+            ticketChannel = await interaction.guild.create_text_channel(name=f"ticket-{data[1]}", category=category)
+            await ticketChannel.edit(sync_permissions=True)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticketChannel.mention}**", color=discord.Color.green())
+            await message.edit(embed=embed)
+            await ticketChannel.set_permissions(interaction.user, view_channel=True)
+            await ticketChannel.set_permissions(interaction.user, send_messages=True)
+            await ticketChannel.set_permissions(interaction.user, read_message_history=True)
+            embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
+            await ticketChannel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(interaction.user, self.bot))
+            self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticketChannel.id, interaction.user.id, "open"))
+            self.bot.db.commit()
 
 
 class TicketCloseTop(discord.ui.View):
-    def __init__(self, ticketOpener: discord.Member):
+    def __init__(self, ticketOpener: discord.Member, bot: commands.Bot):
         super().__init__(timeout=None)
         self.member = ticketOpener
+        self.bot = bot
 
     @discord.ui.button(label="Close", style=discord.ButtonStyle.gray, emoji="🔒", custom_id="Close")
     async def close_callback(self, button: discord.Button, interaction: discord.Interaction):
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
-                data = await cursor.fetchone()
-            if data[3] == "closed":
-                return await interaction.response.send_message(embed=discord.Embed(description=f"**<:error:897382665781669908> The ticket is already closed!**", color=discord.Color.red()), ephemeral=True)
+        self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+        data = self.bot.dbcursor.fetchone()
+        if data[3] == "closed":
+            return await interaction.response.send_message(embed=discord.Embed(description=f"**<:error:897382665781669908> The ticket is already closed!**", color=discord.Color.red()), ephemeral=True)
         await interaction.response.send_message(embed=discord.Embed(description="**Are you sure you want to close the ticket?**", color=discord.Color.orange()))
         message = await interaction.original_message()
-        await message.edit(view=TicketCloseTop2(interaction.user, self.member, message))
+        await message.edit(view=TicketCloseTop2(interaction.user, self.member, message, self.bot))
 
 class TicketCloseTop2(discord.ui.View):
-    def __init__(self, buttonUser: discord.Member, ticketOpener: discord.Member, msg: discord.Message):
+    def __init__(self, buttonUser: discord.Member, ticketOpener: discord.Member, msg: discord.Message, bot: commands.Bot):
         super().__init__(timeout=15)
         self.user = buttonUser
         self.member = ticketOpener
         self.msg = msg
+        self.bot = bot
 
     @discord.ui.button(label="Yes", style=discord.ButtonStyle.danger, custom_id="close_confirm")
     async def yes_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user != self.user:
             return await interaction.channel.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You can't do that {interaction.user.mention}**", color=discord.Color.red()))
-        beforeName = interaction.channel.name
         for child in self.children:
             child.disabled = True
         if self.member.guild_permissions.administrator or self.member.guild_permissions.manage_channels:
@@ -377,12 +366,8 @@ class TicketCloseTop2(discord.ui.View):
             perms.send_messages = False
             perms.read_message_history = False
             await interaction.channel.set_permissions(self.member, overwrite=perms)
-        await interaction.channel.edit(name=f"closed-{beforeName[6:]}")
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'UPDATE tickets SET switch = "closed" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
-            await db.commit()
-            await cursor.close()
+        self.bot.dbcursor.execute(f'UPDATE tickets SET switch = "closed" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+        self.bot.db.commit()
         await self.msg.delete()
         await interaction.channel.send(embed=discord.Embed(description=f"**Ticket closed by {interaction.user.mention}**", color=discord.Color.orange()))
 
@@ -407,25 +392,23 @@ class TicketCloseTop2(discord.ui.View):
             pass
     
 class TicketControlsView(discord.ui.View):
-    def __init__(self, ticketOpener: discord.Member, message: discord.Message, channelName: discord.TextChannel):
+    def __init__(self, ticketOpener: discord.Member, message: discord.Message, bot: commands.Bot):
         super().__init__(timeout=None)
         self.member = ticketOpener
         self.msg = message
-        self.channelName = channelName
+        self.bot = bot
 
     @discord.ui.button(label="Open", style=discord.ButtonStyle.gray, emoji="🔓", custom_id="open_ticket")
     async def open_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that {interaction.user.mention}!", color=discord.Color.red()))
-        await interaction.channel.set_permissions(self.member, view_channel=True)
-        await interaction.channel.set_permissions(self.member, send_messages=True)
-        await interaction.channel.set_permissions(self.member, read_message_history=True)
-        await interaction.channel.edit(name=f"ticket-{self.channelName[6:]}")
-        async with aiosqlite.connect("utils/databases/tickets.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'UPDATE tickets SET switch = "open" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
-            await db.commit()
-            await cursor.close()
+        perms = interaction.channel.overwrites_for(self.member)
+        perms.view_channel = True
+        perms.send_messages = True
+        perms.read_message_history = True
+        await interaction.channel.set_permissions(self.member, overwrite=perms)
+        self.bot.dbcursor.execute(f'UPDATE tickets SET switch = "open" WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+        self.bot.db.commit()
         await self.msg.delete()
         await interaction.channel.send(embed=discord.Embed(description=f"**Ticket opened by {interaction.user.mention}**", color=discord.Color.green()))
 
@@ -433,17 +416,23 @@ class TicketControlsView(discord.ui.View):
     async def delete_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
         if not interaction.user.guild_permissions.manage_channels:
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that!", color=discord.Color.red()), ephemeral=True)
-        await self.msg.delete()
-        await interaction.channel.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> The ticket will be deleted soon**", color=discord.Color.orange()))
-        await asyncio.sleep(3)
-        await interaction.channel.delete()
+        try:
+            await self.msg.delete()
+            await interaction.channel.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> The ticket will be deleted soon**", color=discord.Color.orange()))
+            await asyncio.sleep(3)
+            await interaction.channel.delete()
+            self.bot.dbcursor.execute('DELETE FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
+            self.bot.db.commit()
+        except discord.NotFound:
+            print("The ticket was deleted")
 
 
 class TicketResetView(discord.ui.View):
-    def __init__(self, ctx: commands.Context, message: discord.Message):
+    def __init__(self, ctx: commands.Context, message: discord.Message, bot: commands.Bot):
         super().__init__(timeout=15)
         self.ctx = ctx
         self.msg = message
+        self.bot = bot
 
     @discord.ui.button(label="Yes", style=discord.ButtonStyle.green, emoji="<:tick:897382645321850920>")
     async def confirm_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -452,11 +441,8 @@ class TicketResetView(discord.ui.View):
             return await self.ctx.send(embed=embed, delete_after=5)
         for child in self.children:
             child.disabled = True
-        async with aiosqlite.connect("utils/databases/main.db") as db:
-            async with db.cursor() as cursor:
-                await cursor.execute(f'UPDATE ticket SET count = 0 WHERE guild_id=?', (interaction.guild_id,))
-            await db.commit()
-            await cursor.close()
+        self.bot.dbcursor.execute(f'UPDATE ticket SET count = 0 WHERE guild_id=?', (interaction.guild_id,))
+        self.bot.db.commit()
         embed = discord.Embed(description="**<:tick:897382645321850920> Succesfully resetted the ticket count!**", color=discord.Color.green())
         await interaction.response.edit_message(embed=embed, view=self)
     
@@ -480,4 +466,4 @@ class TicketResetView(discord.ui.View):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled resetting ticket count!**", color=discord.Color.red())
             await self.msg.edit(embed=embed, view=self)
         except discord.NotFound:
-            pass
+            print("Ticket count reset complete")

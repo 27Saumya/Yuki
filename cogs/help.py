@@ -31,7 +31,7 @@ class HelpCog(commands.Cog):
             embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
             embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
             embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
-            embed.add_field(name="__Utility__", value="`settings`", inline=False)
+            embed.add_field(name="__Utility__", value="`settings` `ticket`", inline=False)
             embed.set_footer(text=f"To view detailed information use | +help <command>")
             await ctx.respond(embed=embed, view=InviteView())
         if command.lower().startswith('cov'):
@@ -63,7 +63,13 @@ class HelpCog(commands.Cog):
             await ctx.respond(embed=embed)
         if command.lower().startswith('wiki'):
             embed = discord.Embed(title="Wikipedia", description="Search Wikipedia!\n\n**--> Usage:\n\n `=nuke <query>`\n--> Example: `+wikipedia The Slash Bot`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)    
+            await ctx.respond(embed=embed)
+        if command.lower().startswith('ticket'):
+            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`\n\n--> Use `+=help panel` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
+            await ctx.respond(embed=embed)
+        if command.lower().startswith('panel'):
+            embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`\n\n--> Use `help ticket` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
+            await ctx.respond(embed=embed)
 
 
     @commands.group(name="help")
@@ -127,7 +133,16 @@ class HelpCog(commands.Cog):
     async def wikipedia(self, ctx: commands.Context):
         embed = discord.Embed(title="Wikipedia", description="Search Wikipedia!\n\n**--> Usage:\n\n `=nuke <query>`\n--> Example: `+wikipedia The Slash Bot`**", color=discord.Color.green())
         await ctx.send(embed=embed)
+    
+    @help_.command()
+    async def ticket(self, ctx: commands.Context):
+        embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`\n\n--> Use `+=help panel` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
+        await ctx.send(embed=embed)
 
+    @help_.command()
+    async def panel(self, ctx: commands.Context):
+        embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`\n\n--> Use `help ticket` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
+        await ctx.send(embed=embed)
 
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="Invite me to your server")
