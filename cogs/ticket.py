@@ -1,5 +1,4 @@
 import discord
-from discord.commands.permissions import permission
 from discord.ext import commands
 from utils.buttons import TicketPanelView, TicketResetView, TicketCloseTop2
 
@@ -205,6 +204,46 @@ class TicketCog(commands.Cog):
         embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully removed {user.mention} from the ticket!**", color=discord.Color.green())
         await ctx.send(embed=embed)
 
+    @ticket_.command()
+    @commands.is_owner()
+    async def set(self, ctx: commands.Context, *, num: int):
+        self.bot.dbcursor.execute('UPDATE ticket SET count=? WHERE guild_id=?', (num, ctx.guild.id))
+        self.bot.db.commit()
+        await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Set the Ticket Count to -> `{num}`**", color=discord.Color.green()))
+
+    @ticket_.command(aliases=['how'])
+    @commands.has_permissions(manage_channels=True)
+    async def setup(self, ctx: commands.Context):
+        embed = discord.Embed(title="__Ticket Setup__", description="**How to setup a ticket system :-**\n\n--> Create a panel buy using `+panel create <channel> [name]`\n--> Create a timepass ticket and close it\n--> Use command `+ticket category <category_id>` to setup a category (I highly reccomend using ticket categories. They are way better and you can personalize their permissions and stuff\n--> You are good to go. Use `+ticket` or `+panel` for more info!)", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
+        await ctx.send(embed=embed)
+
+    @ticket_.command()
+    async def role(self, ctx: commands.Context, switch: str, role: discord.Role):
+        self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
+        data = self.bot.dbcursor.fetchone()
+            
+        if ctx.channel.id != data[1]:
+            await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Looks like either this channel is not a ticket channel or you aren't in the same channel**", color=discord.Color.red()))
+
+        if switch.lower() == "add":
+            channel: discord.Channel = ctx.channel
+            perms = channel.overwrites_for(role)
+            perms.view_channel = True
+            perms.send_messages = True
+            perms.read_message_history = True
+            await channel.set_permissions(role, overwrite=perms)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added {role.mention} in the ticket!**", color=discord.Color.green())
+            await ctx.send(embed=embed)
+        
+        if switch.lower() == "remove":
+            channel: discord.Channel = ctx.channel
+            perms = channel.overwrites_for(role)
+            perms.view_channel = False
+            perms.send_messages = False
+            perms.read_message_history = False
+            await channel.set_permissions(role, overwrite=perms)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully added {role.mention} in the ticket!**", color=discord.Color.green())
+            await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(TicketCog(bot))

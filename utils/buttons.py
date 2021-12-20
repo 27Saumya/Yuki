@@ -305,12 +305,15 @@ class TicketPanelView(discord.ui.View):
             self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (interaction.guild_id,))
             ticket_num = self.bot.dbcursor.fetchone()
             ticket_channel = await interaction.guild.create_text_channel(name=f"ticket-{ticket_num[1]}")
-            await ticket_channel.set_permissions(interaction.guild.default_role, view_channel=False)
+            perms1 = ticket_channel.overwrites_for(interaction.user)
+            perms1.view_channel = True
+            perms1.send_messages = True
+            perms1.read_message_history = True
+            await ticket_channel.set_permissions(interaction.user, overwrite=perms1)
             embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticket_channel.mention}**", color=discord.Color.green())
             await message.edit(embed=embed)
             embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
             await ticket_channel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(self.bot))
-            await set_perms(ticket_channel)
             self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticket_channel.id, interaction.user.id, "open"))
             self.bot.db.commit()
 
@@ -319,12 +322,13 @@ class TicketPanelView(discord.ui.View):
             data = self.bot.dbcursor.fetchone()
             category = discord.utils.get(interaction.guild.categories, id=data[2])
             ticketChannel = await interaction.guild.create_text_channel(name=f"ticket-{data[1]}", category=category)
-            await ticketChannel.edit(sync_permissions=True)
+            perms = ticketChannel.overwrites_for(interaction.user)
+            perms.view_channel = True
+            perms.send_messages = True
+            perms.read_message_history = True
+            await ticketChannel.set_permissions(interaction.user, overwrite=perms)
             embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully created a ticket at {ticketChannel.mention}**", color=discord.Color.green())
             await message.edit(embed=embed)
-            await ticketChannel.set_permissions(interaction.user, view_channel=True)
-            await ticketChannel.set_permissions(interaction.user, send_messages=True)
-            await ticketChannel.set_permissions(interaction.user, read_message_history=True)
             embed1 = discord.Embed(description=f"**Support will be with you shortly.\nTo close this ticket react with 🔒**", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
             await ticketChannel.send(content=interaction.user.mention, embed=embed1, view=TicketCloseTop(self.bot))
             self.bot.dbcursor.execute(f'INSERT INTO tickets (guild_id, channel_id, opener, switch) VALUES(?,?,?,?)', (interaction.guild_id, ticketChannel.id, interaction.user.id, "open"))
@@ -392,8 +396,8 @@ class TicketCloseTop2(discord.ui.View):
                 child.disabled = True
             embed = discord.Embed(description=f"**<:error:897382665781669908> Oops you didn't respond within time! So, Canceled closing the ticket!**", color=discord.Color.red())
             await self.msg.edit(embed=embed, view=self)
-        except discord.NotFound:
-            pass
+        except discord.errors.NotFound:
+            print("The ticket was deleted")
     
 class TicketControlsView(discord.ui.View):
     def __init__(self, bot: commands.Bot=None):

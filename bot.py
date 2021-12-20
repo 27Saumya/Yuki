@@ -8,6 +8,7 @@ import requests
 import asyncio
 import config
 from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
+from cogs.help import members
 import sqlite3
 
 
@@ -35,7 +36,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{self.user.name} is online!")
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="+help | Slash Commands (selected guild only :())"))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
         if not self.persistent_views_added:
             self.add_view(TicketPanelView(self))
             self.add_view(TicketControlsView(self))
@@ -77,7 +78,7 @@ class Bot(commands.Bot):
                 if not data:
                     return
                 if data:
-                    await bot.dbcursor.execute(f'SELECT * FROM settings WHERE guild_id = {message.guild.id}')
+                    bot.dbcursor.execute(f'SELECT * FROM settings WHERE guild_id=?', (message.guild.id,))
                     switch = bot.dbcursor.fetchone()
                 if switch[1] == "off":
                     return
