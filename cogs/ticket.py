@@ -14,6 +14,7 @@ class TicketCog(commands.Cog):
 
     @commands.group(name="panel")
     async def panel_(self, ctx: commands.Context):
+        """Ticket Panel related commands"""
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed)
@@ -21,11 +22,13 @@ class TicketCog(commands.Cog):
     @commands.group(name="ticket")
     async def ticket_(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
+            """Ticket related commands"""
             embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed)
 
     @panel_.command(name="create", aliases=['c', 'make', 'add'])
-    async def create_(self, ctx: commands.Context, channel: discord.TextChannel = None, *, name = None):
+    async def create_(self, ctx: commands.Context, channel: discord.TextChannel, *, name = None):
+        """Creates a panel in a channel through which users can interact and open tickets"""
         if not channel:
             embed = discord.Embed(
                 description="**<:error:897382665781669908> Please enter a channel to make the panel in!**",
@@ -76,6 +79,7 @@ class TicketCog(commands.Cog):
     @panel_.command(name="delete", aliases=['del'])
     @commands.has_permissions(manage_channels=True)
     async def delete_(self, ctx: commands.Context, channel: discord.TextChannel, panel_id: int):
+        """Deletes a previously built panel in the server. Requires the `panel_id` which is provided at the time of the creation of the panel"""
         message = await channel.fetch_message(panel_id)
         try:
             await message.delete()
@@ -90,6 +94,7 @@ class TicketCog(commands.Cog):
 
     @panel_.command(name="edit", aliases=['e'])
     async def edit_(self, ctx: commands.Context, channel: discord.TextChannel, panel_id: int, *, name: str):
+        """Edits a previously built panel in the server. Requires the `panel_id` which is provided at the time of the creation of the panel"""
         message = await channel.fetch_message(panel_id)
         try:
             embed1 = discord.Embed(title=name, description="To create a ticket react with 📩", color=discord.Color.green())
@@ -107,11 +112,12 @@ class TicketCog(commands.Cog):
     @ticket_.command(name="reset")
     @commands.has_permissions(manage_channels=True)
     async def reset_(self, ctx: commands.Context):
+        """Resets the ticket count set of the server"""
         embed = discord.Embed(description=f"Are you sure you want to reset the **Ticket Count**?\n------------------------------------------------\nRespond Within **15** seconds!", color=discord.Color.orange())
         message = await ctx.send(embed=embed)
         await message.edit(embed=embed, view=TicketResetView(ctx, message, self.bot))
 
-    @ticket_.command(name="clean")
+    @ticket_.command(name="clean", hidden=True)
     @commands.is_owner()
     async def clean_(self, ctx: commands.Context):
         await cleanup(ctx.guild)
@@ -120,6 +126,7 @@ class TicketCog(commands.Cog):
     @ticket_.command(name="category")
     @commands.has_permissions(manage_channels=True)
     async def category_(self, ctx: commands.Context, categoryID: int=None):
+        """Sets the category for tickets. Highly reccomended."""
         try:
             if categoryID is None:
                 self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
@@ -147,6 +154,7 @@ class TicketCog(commands.Cog):
     @ticket_.command()
     @commands.has_permissions(manage_channels=True)
     async def close(self, ctx: commands.Context):
+        """Closes the ticket"""
         self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
         data = self.bot.dbcursor.fetchone()
         if data[3] == "close":
@@ -159,6 +167,7 @@ class TicketCog(commands.Cog):
 
     @ticket_.command()
     async def add(self, ctx: commands.Context, user: discord.Member):
+        """Adds a user in the ticket"""
         self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
         data = self.bot.dbcursor.fetchone()
             
@@ -179,6 +188,7 @@ class TicketCog(commands.Cog):
 
     @ticket_.command(aliases=['rm'])
     async def remove(self, ctx: commands.Context, user: discord.Member):
+        """Removes a user from a ticket. Note: It can't be the user who created the ticket or a person with admin"""
         self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
         data = self.bot.dbcursor.fetchone()
             
@@ -204,21 +214,23 @@ class TicketCog(commands.Cog):
         embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully removed {user.mention} from the ticket!**", color=discord.Color.green())
         await ctx.send(embed=embed)
 
-    @ticket_.command()
+    @ticket_.command(hidden=True)
     @commands.is_owner()
     async def set(self, ctx: commands.Context, *, num: int):
         self.bot.dbcursor.execute('UPDATE ticket SET count=? WHERE guild_id=?', (num, ctx.guild.id))
         self.bot.db.commit()
         await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Set the Ticket Count to -> `{num}`**", color=discord.Color.green()))
 
-    @ticket_.command(aliases=['how'])
+    @ticket_.command(aliases=['how', 'guide'])
     @commands.has_permissions(manage_channels=True)
     async def setup(self, ctx: commands.Context):
+        """Complete guide that shows us how to setup the perfect ticket system in the server"""
         embed = discord.Embed(title="__Ticket Setup__", description="**How to setup a ticket system :-**\n\n--> Create a panel buy using `+panel create <channel> [name]`\n--> Create a timepass ticket and close it\n--> Use command `+ticket category <category_id>` to setup a category (I highly reccomend using ticket categories. They are way better and you can personalize their permissions and stuff\n--> You are good to go. Use `+ticket` or `+panel` for more info!)", color=discord.Color.green()).set_footer(text=f"{self.bot.user.name} - Ticket System", icon_url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
 
     @ticket_.command()
-    async def role(self, ctx: commands.Context, switch: str, role: discord.Role):
+    async def role(self, ctx: commands.Context, switch: str, *, role: discord.Role):
+        """Adds a role or removes the role from a server.\nExample: `ticket role add @SOMEROLE` `ticket role remove remove @SOMEROLE`"""
         self.bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (ctx.guild.id, ctx.channel.id))
         data = self.bot.dbcursor.fetchone()
             

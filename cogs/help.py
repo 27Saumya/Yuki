@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord.commands import slash_command, Option
 from utils.buttons import InviteView
+from utils.helpers.help import Help_Embed, cog_help
+import asyncio
 import time
 import datetime
 import os
@@ -14,135 +16,131 @@ def members(bot: commands.Bot):
     return memc
 
 
+class HelpEmbed(discord.Embed):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.timestamp = datetime.datetime.utcnow()
+        text = "Use help [command] or help [category] for more information | <>: required | []: optional"
+        self.set_footer(text=text)
+        self.color = discord.Color.embed_background(theme="dark")
+
+
+class HelpOptions(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(discord.ui.Button(label="Invite Me!", url="https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands", row=1))
+
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.red, emoji="⛔", row=2)
+    async def delete_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.message.delete()
+
+    @discord.ui.select(
+        placeholder="Select a Category!",
+        min_values=1,
+        max_values=1,
+        options=[
+            discord.SelectOption(
+                label="Config", 
+                description="Configure the bot", 
+                emoji="🔧"
+            ),
+            discord.SelectOption(
+                label="Fun",
+                description="View all Fun commands!",
+                emoji="🪄"
+            ),
+            discord.SelectOption(
+                label="Misc",
+                description="View all normal and mod commands!",
+                emoji="🤖"
+            ),
+            discord.SelectOption(
+                label="Utility",
+                description="View all Utility commands!",
+                emoji=":gear:"
+            ),
+            discord.SelectOption(
+                label="Info",
+                description="View all Info commands!",
+                emoji=":information_source:"
+            ),
+            discord.SelectOption(
+                label="Moderation",
+                description="View all MOD commands",
+                emoji="<:mod:923117346984435722>"
+            ),
+            discord.SelectOption(
+                label="Tickets",
+                description="View all ticket system commands!",
+                emoji="📩"
+            )
+        ])
+    async def select_callback(self, select, interaction: discord.Interaction):
+        if select.values[0]:
+            await interaction.response.edit_message(
+                embed=discord.Embed(
+                    title=f"{select.values[0]} Help!",
+                    description=cog_help[select.values[0]],
+                    colour=discord.Color.random(),
+                ).set_footer(
+                    text="Use `help <command>` to get additional help on a specific command."
+                )
+            )
+
+
+class MyHelpCommand(commands.MinimalHelpCommand):
+    def __init__(self):
+        super().__init__()
+
+    async def send_pages(self):
+        ctx = self.context
+
+        try:
+
+            m = await ctx.send(embed=Help_Embed(), view=HelpOptions())
+            await asyncio.sleep(120)
+            try:
+                await m.edit("This help session expired!", embed=Help_Embed(), view=None)
+            except:
+                pass
+        except discord.Forbidden:
+            await ctx.send(
+                """Hey! it looks like i am missing some permissions. Please give me the following permissions:\n
+                            - Send messages and embeds\n-Join and speak in voice channels\n-Ban, Kick and Delete messages\n thats it for the normal stuff... but remember... if i dont respond, its probably because i dont have the perms to do so."""
+            )
+
+    async def send_command_help(self, command):
+        """triggers when a `<prefix>help <command>` is called"""
+        ctx = self.context
+        signature = self.get_command_signature(
+            command
+        )  # get_command_signature gets the signature of a command in <required> [optional]
+        embed = HelpEmbed(
+            title=signature, description=command.help or "No help found..."
+        )
+
+        if cog := command.cog:
+            embed.add_field(name="Category", value=cog.qualified_name)
+
+        # use of internals to get the cooldown of the command
+        if command._buckets and (cooldown := command._buckets._cooldown):
+            embed.add_field(
+                name="Cooldown",
+                value=f"{cooldown.rate} per {cooldown.per:.0f} seconds",
+            )
+
+        await ctx.send(embed=embed)
+
+
 class HelpCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.bot.help_command = MyHelpCommand()
 
     @commands.Cog.listener()
     async def on_ready(self):
         global startTime
         startTime = time.time()
-
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View all of my commands")
-    async def help(self, ctx: commands.Context, command: Option(str, "The command you want the help with", required=False, default="default")):
-        if command == "default":
-            embed = discord.Embed(title="Help", color=discord.Color.green())
-            embed.add_field(name="__Moderation__", value="`nuke` `changeprefix` `invite`", inline=False)
-            embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
-            embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
-            embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
-            embed.add_field(name="__Utility__", value="`settings` `ticket`", inline=False)
-            embed.set_footer(text=f"To view detailed information use | +help <command>")
-            await ctx.respond(embed=embed, view=InviteView())
-        if command.lower().startswith('cov'):
-            embed = discord.Embed(title="Covid Info", description="**__Commands__:** \n-->`global`:\nGets Global covid info\naliases: `world` `all`\n\n-->`country` \nDirectly type the country you want.\nExample: \n`+covid country India`\n`+covid country USA`", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower() == "nitro":
-            embed = discord.Embed(title="Nitro", description="Generates a nitro link for you!", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower() == "beer":
-            embed = discord.Embed(title="Beer", description="Have a beer with yourself or a friend\n------------------------------\n**--> Usage:\n\n `+beer` -> To have a drink with yourself!\n`+beer <user>` -> Have a beer with a friend!**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('tic') or command.lower() == "ttt":
-            embed = discord.Embed(title="TicTacToe", description="Play a tictactoe with yourself\n\nMultiplayer will be added soon!", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('8') or command.lower().startswith('eight'):
-            embed = discord.Embed(title="8ball", description="Ask the bot something. It returns a random answer\n----------------------------\n**--> Usage:\n\n `+8ball <question>`**\n----------------------------\n**--> Example: `+8ball Am I cool?`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower() == "google":
-            embed = discord.Embed(title="Google", description="Search <:google:917143687870414878>!\n\n**--> Usage:\n\n `+google <query>`\nExample: `+google The Slash Bot`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('av'):
-            embed = discord.Embed(title="Avatar", description="View someone's or your's avatar!\n\n**--> Usage:\n\n `+avatar <member>`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('qr'):
-            embed = discord.Embed(title="Qrocde", description="Generate a qrcode!\n\n**--> Usage:\n\n `+qrcode <url>`\n--> Example: `+qrcode https://www.youtube.com/watch?v=dQw4w9WgXcQ`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower() == "nuke":
-            embed = discord.Embed(title="Nuke", description="Nuke a channel!\n\n**--> Usage:\n\n `+nuke <channel>` -> for some other channel\n`+nuke` -> for the current channel**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('wiki'):
-            embed = discord.Embed(title="Wikipedia", description="Search Wikipedia!\n\n**--> Usage:\n\n `=nuke <query>`\n--> Example: `+wikipedia The Slash Bot`**", color=discord.Color.green())
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('ticket'):
-            embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`\n\n--> Use `+=help panel` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
-            await ctx.respond(embed=embed)
-        if command.lower().startswith('panel'):
-            embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`\n\n--> Use `help ticket` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
-            await ctx.respond(embed=embed)
-
-
-    @commands.group(name="help")
-    async def help_(self, ctx: commands.Context):
-        if ctx.invoked_subcommand is None:
-            embed = discord.Embed(title="Help", color=discord.Color.green())
-            embed.add_field(name="__Moderation__", value="`nuke` `changeprefix` `invite`", inline=False)
-            embed.add_field(name="__Misc__", value="`avatar` `qrcode` `invite` `youtube download`", inline=True)
-            embed.add_field(name="__Info__", value="`covid country` `covid global` `google` `wikipedia` `botinfo`", inline=False)
-            embed.add_field(name="__Fun__", value="`8ball`, `nitro`, `tictactoe` `beer`", inline=True)
-            embed.add_field(name="__Utility__", value="`settings` `ticket`", inline=False)
-            embed.set_footer(text=f"To view detailed information use | +help <command>")
-            await ctx.send(embed=embed, view=InviteView())
-        
-    @help_.command(aliases=['cov', 'covidinfo'])
-    async def covid(self, ctx: commands.Context):
-        embed = discord.Embed(title="Covid Info", description="**__Commands__:** \n-->`global`:\nGets Global covid info\naliases: `world` `all`\n\n-->`country` \nDirectly type the country you want.\nExample: \n`+covid country India`\n`+covid country USA`", color=discord.Color.green())
-        await ctx.send(embed=embed)
-    
-    @help_.command()
-    async def nitro(self, ctx: commands.Context):
-        embed = discord.Embed(title="Nitro", description="Generates a nitro link for you!", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command(aliases=['ttt', 'tic', 'tictac'])
-    async def tictactoe(self, ctx: commands.Context):
-        embed = discord.Embed(title="TicTacToe", description="Play a tictactoe with yourself\n\nMultiplayer will be added soon!", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command(aliases=['8ball', '8b'])
-    async def eightball(self, ctx: commands.Context):
-        embed = discord.Embed(title="8ball", description="Ask the bot something. It returns a random answer\n----------------------------\n**--> Usage:\n\n `+8ball <question>`**\n----------------------------\n**--> Example: `+8ball Am I cool?`**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command()
-    async def beer(self, ctx: commands.Context):
-        embed = discord.Embed(title="Beer", description="Have a beer with yourself or a friend\n------------------------------\n**--> Usage:\n\n `+beer` -> To have a drink with yourself!\n`+beer <user>` -> Have a beer with a friend!**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command()
-    async def google(self, ctx: commands.Context):
-        embed = discord.Embed(title="Google", description="Search <:google:917143687870414878>!\n\n**--> Usage:\n\n `+google <query>`\nExample: `+google The Slash Bot`**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command(aliases=['av', 'pfp'])
-    async def avatar(self, ctx: commands.Context):
-        embed = discord.Embed(title="Avatar", description="View someone's or your's avatar!\n\n**--> Usage:\n\n `+avatar <member>`**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command(aliases=['qr'])
-    async def qrcode(self, ctx: commands.Context):
-        embed = discord.Embed(title="Qrocde", description="Generate a qrcode!\n\n**--> Usage:\n\n `+qrcode <url>`\n--> Example: `+qrcode https://www.youtube.com/watch?v=dQw4w9WgXcQ`**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command()
-    async def nuke(self, ctx: commands.Context):
-        embed = discord.Embed(title="Nuke", description="Nuke a channel!\n\n**--> Usage:\n\n `+nuke <channel>` -> for some other channel\n`+nuke` -> for the current channel**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-
-    @help_.command(aliases=['wiki'])
-    async def wikipedia(self, ctx: commands.Context):
-        embed = discord.Embed(title="Wikipedia", description="Search Wikipedia!\n\n**--> Usage:\n\n `=nuke <query>`\n--> Example: `+wikipedia The Slash Bot`**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-    
-    @help_.command()
-    async def ticket(self, ctx: commands.Context):
-        embed = discord.Embed(title="Ticket", description="**--> `ticket role add` Adds a role to ticket channel. By doing this the role you add can view tickets! By default it is available for only admins\nUsage: `ticket role add <role>`\nExample: `ticket role add @MODS`\n\n--> `ticket role remove` Just the vice versa of the one stated above. Removes a role from viewing ticket\nUsage: `ticket role remove <role>`\nExample: `ticket role remove @MODS`\n\n--> `ticket reset` Resets the ticket count!\nUsage: `ticket reset`\n\n--> `ticket clean` Delete all tickets in the server\nUsage: `ticket clean`\n\n--> `ticket category` Get tickets inside a category. If you want to keep ticket view permissions, make sure to change the category permissions.\nUsage: `ticket category <category_id>`\nExample: `ticket category 98765432123456789`\n\n--> `ticket close` Closes the ticket. Use the command inside a ticket only\nUsage: `ticket close`\n\n--> `ticket add` Adds a user in the ticket. Use the command inside a ticket only\nUsage: `ticket add <user>`\nExample: `ticket add @27Saumya#0007`\n\n--> `ticket remove` Removes a user from the ticket. Use the command inside a ticket only\nUsage: `ticket remove <user>`\nExample: `ticket remove @27Saumya#0007`\n\n--> Use `+=help panel` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
-        await ctx.send(embed=embed)
-
-    @help_.command()
-    async def panel(self, ctx: commands.Context):
-        embed = discord.Embed(title="Panel", description="**--> `panel create`: Creates a panel\nUsage: `panel create <channel> [name]`\nExample: `panel create #ticket Get a ticket`\n\n--> `panel delete`: Deletes a panel\nUsage: `panel delete <channel> [panel_id]`\nExample: `panel delete #ticket 987654321123456789`\n\n--> `panel edit`: Edits the name of a panel\nUsage: `panel edit <channel> [panel_id] (name)`\nExample: `panel edit #ticket 987654321123456789 I just changed the name of the panel!`\n\n--> Use `help ticket` for panel related help**", color=discord.Color.green()).set_footer(text="Note: All Ticket Realted Commands aren't avaliable in slash commands", icon_url=self.bot.user.avatar.url)
-        await ctx.send(embed=embed)
 
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="Invite me to your server")
@@ -151,20 +149,22 @@ class HelpCog(commands.Cog):
         
     @commands.command(name="invite")
     async def invite_(self, ctx):
+        """Invite the bot to your server!"""
         await ctx.send("Invite Here!", view=InviteView())
 
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View the bot's info")
     async def botinfo(self, ctx: commands.Context):
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n59.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n67.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.respond(embed=embed)
 
     @commands.command(name="botinfo", aliases=['bot', 'stats', 'info'])
     async def botinfo_(self, ctx: commands.Context):
+        """View the bot's info"""
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n59.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n67.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
         
@@ -181,6 +181,7 @@ class HelpCog(commands.Cog):
 
     @commands.command(name="ping")
     async def ping_(self, ctx: commands.Context):
+        """View the bot's latency (Edit Latency)"""
         before = time.monotonic()
         embed = discord.Embed(description="**:ping_pong: Bot Latency: **", color=discord.Color.green())
         message = await ctx.send(embed=embed)

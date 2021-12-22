@@ -7,9 +7,10 @@ import qrcode
 import os
 from pytube import YouTube
 from speedtest import Speedtest
+from utils.buttons import NukeView
 
 
-class Misc(commands.Cog):
+class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -27,6 +28,7 @@ class Misc(commands.Cog):
 
     @commands.command(name="avatar", aliases=['av', 'pfp'])
     async def avatar_(self, ctx: commands.context, member: discord.Member=None):
+        """View your's or someone's avatar"""
         member = member if member else ctx.author
         em = discord.Embed(color=member.color)
         em.set_image(url=member.avatar.url)
@@ -47,6 +49,7 @@ class Misc(commands.Cog):
 
     @commands.command(name="qrcode", aliases=['qr'])
     async def qrcode_(self, ctx, *, url: str):
+        """Create a qrcode.\nExample: `qrcode youtube.com`"""
         img = qrcode.make(url)
         img.save("qrcode.png")
         await ctx.send(content="**Here is your QRCode**", file=discord.File("qrcode.png"))
@@ -55,6 +58,7 @@ class Misc(commands.Cog):
     #Youtube
     @commands.group(name="youtube")
     async def youtube_(self, ctx: commands.Context):
+        """Youtube related commnands"""
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Youtube", description="**Youtube Commands:**\n    -->**download**\n**Usage** --> `youtube download <url>`", color=discord.Color.green())
             embed.set_footer(text="More Commands Coming Soon!")
@@ -62,6 +66,7 @@ class Misc(commands.Cog):
 
     @youtube_.command(name="download")
     async def download_(self, ctx: commands.Context, *, link: str):
+        """Download a youtube video (currently closed)\nExample: `youtube download youtube.com/watch?v=dQw4w9WgXcQ`"""
         embed = discord.Embed(description="**Downloading the video <a:loading:911568431315292211>\n-------------------------\nThis may take some time.**", color=discord.Color.green())
         message = await ctx.send("Sorry this command is currently disabled :(")
         url = YouTube(link)
@@ -80,6 +85,7 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['st', 'speed'])
     async def speedtest(self, ctx: commands.Context):
+        """Test the bot's speed"""
         message = await ctx.send(
             embed=discord.Embed(description="**<a:loading:911568431315292211> Starting Speed Test!**", color=discord.Color.embed_background(theme="dark"))
         )

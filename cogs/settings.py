@@ -8,6 +8,7 @@ class SettingsCog(commands.Cog):
 
     @commands.group(name="settings", aliases=['setting'])
     async def settings_(self, ctx: commands.Context):
+        """View the bot's setting for this server"""
         if ctx.invoked_subcommand is None:
             self.bot.dbcursor.execute(f'SELECT bump FROM settings WHERE guild_id=?', (ctx.guild.id,))
             data = self.bot.dbcursor.fetchone()
@@ -22,11 +23,13 @@ class SettingsCog(commands.Cog):
 
     @settings_.command(name="id")
     async def id_(self, ctx: commands.Context):
+        """View the settings IDs"""
         embed = discord.Embed(title="Setting IDs", description="**Bump Reminder**: `bump`", color=discord.Color.green())
         await ctx.send(embed=embed)
 
     @settings_.command(name="bump")
     async def bump_(self, ctx: commands.Context, switch: str):
+        """Turns Bump reminder on in the server"""
         self.bot.dbcursor.execute(f'SELECT bump FROM settings WHERE guild_id=?', (ctx.guild.id,))
         data = self.bot.dbcursor.fetchone()
         if not data:

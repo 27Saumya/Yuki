@@ -3,13 +3,17 @@ from discord.ext import commands
 import os
 from discord.commands import Option, SlashCommandGroup
 import json
+from discord.ext.commands.help import MinimalHelpCommand
+from discord.interactions import Interaction
 from pytube import YouTube
 import requests
 import asyncio
 import config
 from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
-from cogs.help import members
+from cogs.help import HelpOptions, members
 import sqlite3
+
+from utils.helpers.help import Help_Embed
 
 
 def get_prefix(bot, message):
@@ -26,7 +30,7 @@ class Bot(commands.Bot):
         self.dbcursor = self.db.cursor()
         self.persistent_views_added = False
 
-        super().__init__(command_prefix=get_prefix, help_command=None, intents=discord.Intents().all(), case_insensitiv1e=True)
+        super().__init__(command_prefix=get_prefix, intents=discord.Intents().all(), case_insensitiv1e=True)
 
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
@@ -100,34 +104,18 @@ class Bot(commands.Bot):
         await bot.process_commands(message)
             
 
-bot = Bot()            
+bot = Bot()
 
-@bot.slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Change the prefix")
-async def changeprefix(ctx, *, new_prefix: Option(str, "The prefix to set | Keep empty to reset the prefix", required=False, default='+')):
-    if not ctx.author.guild_permissions.manage_messages:
-        embed = discord.Embed(description="**<:error:897382665781669908> You can't do that**", color=discord.Color.red())
-        return await ctx.respond(embed=embed, ephemeral=True)
-    with open("utils/json/prefixes.json", "r") as f:
-        prefixes = json.load(f)
-    prefixes[str(ctx.guild.id)] = new_prefix
-    with open("utils/json/prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=4)
-    embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to:  `{new_prefix}`**", color=discord.Color.green())
-    await ctx.respond(embed=embed)
-
-
-@bot.command(name="changeprefix", aliases=['setprefix', 'chpre', 'setpre', 'changepre', 'prefix', 'pre'])
-async def changeprefix_(ctx, *, new_prefix='+'):
-    if not ctx.author.guild_permissions.manage_messages:
-        embed = discord.Embed(description="**<:error:897382665781669908> You can't do that**", color=discord.Color.red())
-        return await ctx.reply(embed=embed)
-    with open("utils/json/prefixes.json", "r") as f:
-        prefixes = json.load(f)
-    prefixes[str(ctx.guild.id)] = new_prefix
-    with open("utils/json/prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=4)
-    embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to:  `{new_prefix}`**", color=discord.Color.green())
-    await ctx.send(embed=embed)
+@bot.slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Stuck? View me!")
+async def help(ctx: discord.ApplicationContext):
+    interaction: discord.Interaction = ctx.interaction
+    await interaction.response.send_message(embed=Help_Embed(), view=HelpOptions())
+    m = await interaction.original_message()
+    await asyncio.sleep(120)
+    try:
+        await m.edit("The help session expired", embed=None, view=None)
+    except:
+        pass
 
 youtube = SlashCommandGroup("youtube", "Commands realted to youtube")
 
@@ -234,20 +222,20 @@ async def global_(ctx):
     await message.edit(embed=embed)
 
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def load(ctx: commands.Context, ext: str):
     bot.load_extension(f"cogs.{ext}")
     await ctx.send(f"Loaded extension `{ext}`", delete_after=7)
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def unload(ctx: commands.Context, ext: str):
     bot.unload_extension(f"cogs.{ext}")
     await ctx.send(f"Unloaded extension `{ext}`", delete_after=7)
 
 
-@bot.command(aliases=['al','reload'])
+@bot.command(aliases=['al','reload'], hidden=True)
 @commands.is_owner()
 async def autoload(ctx: commands.Context, ext: str):
     if ext == "all":
