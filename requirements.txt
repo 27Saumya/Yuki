@@ -5,7 +5,7 @@ cffi==1.14.6
 chardet==3.0.4
 idna==2.10
 multidict==5.1.0
-py-cord @ git+https://github.com/Pycord-Development/pycord@125db3ab98eecc4985970f5082cca427c79278a0
+py-cord @ git+https://github.com/Pycord-Development/pycord@c8c2b1e23cb610b4c5f84c48fb23f279f2f0d53f
 py-cord==1.7.3 #if you don't want to use slash commands and buttons(view) else ignore and remove
 pycparser==2.20
 six==1.15.0

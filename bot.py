@@ -3,8 +3,6 @@ from discord.ext import commands
 import os
 from discord.commands import Option, SlashCommandGroup
 import json
-from discord.ext.commands.help import MinimalHelpCommand
-from discord.interactions import Interaction
 from pytube import YouTube
 import requests
 import asyncio
@@ -12,8 +10,8 @@ import config
 from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
 from cogs.help import HelpOptions, members
 import sqlite3
-
 from utils.helpers.help import Help_Embed
+from cogs.help import MyHelpCommand
 
 
 def get_prefix(bot, message):
@@ -30,7 +28,12 @@ class Bot(commands.Bot):
         self.dbcursor = self.db.cursor()
         self.persistent_views_added = False
 
-        super().__init__(command_prefix=get_prefix, intents=discord.Intents().all(), case_insensitiv1e=True)
+        super().__init__(
+            command_prefix=get_prefix,
+            description="Yuki ✨ has many features! Try it Out INVITE ME now!",
+            intents=discord.Intents().all(), 
+            case_insensitiv1e=True,
+            strip_after_prefix=True)
 
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
@@ -106,18 +109,20 @@ class Bot(commands.Bot):
 
 bot = Bot()
 
-@bot.slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Stuck? View me!")
+@bot.slash_command(description="Stuck? Use ME!")
 async def help(ctx: discord.ApplicationContext):
-    interaction: discord.Interaction = ctx.interaction
-    await interaction.response.send_message(embed=Help_Embed(), view=HelpOptions())
-    m = await interaction.original_message()
+    """Get help about the most feature packed bot!!"""
+
+    await ctx.respond(embed=Help_Embed(), view=HelpOptions())
+    message = await ctx.interaction.original_message()
     await asyncio.sleep(120)
     try:
-        await m.edit("The help session expired", embed=None, view=None)
+        await message.edit("This help session expired", embed=None, view=None)
     except:
         pass
 
-youtube = SlashCommandGroup("youtube", "Commands realted to youtube")
+
+youtube = SlashCommandGroup("youtube", "Commands related to youtube")
 
 @youtube.command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Download a youtube video!")
 async def download(ctx: commands.Context, link: Option(str, "The video you want to download!", required=True, defaul=None)):
@@ -235,9 +240,9 @@ async def unload(ctx: commands.Context, ext: str):
     await ctx.send(f"Unloaded extension `{ext}`", delete_after=7)
 
 
-@bot.command(aliases=['al','reload'], hidden=True)
+@bot.command(aliases=['al','autoload'], hidden=True)
 @commands.is_owner()
-async def autoload(ctx: commands.Context, ext: str):
+async def reload(ctx: commands.Context, ext: str):
     if ext == "all":
         for filename in os.listdir('./cogs'):
             bot.unload_extension(f"cogs.{filename[:-3]}")
@@ -252,6 +257,7 @@ async def autoload(ctx: commands.Context, ext: str):
         await asyncio.sleep(0.5)
         bot.load_extension(f"cogs.{ext}")
         await ctx.send(f"Succesfully reloaded `{ext}`")
+
 
 bot.add_application_command(youtube)
 bot.add_application_command(covid)

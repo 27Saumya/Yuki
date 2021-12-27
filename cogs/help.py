@@ -19,8 +19,7 @@ def members(bot: commands.Bot):
 class HelpEmbed(discord.Embed):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.timestamp = datetime.datetime.utcnow()
-        text = "Use help [command] or help [category] for more information | <>: required | []: optional"
+        text = "Use help [command] | <>: required | []: optional"
         self.set_footer(text=text)
         self.color = discord.Color.embed_background(theme="dark")
 
@@ -57,17 +56,17 @@ class HelpOptions(discord.ui.View):
             discord.SelectOption(
                 label="Utility",
                 description="View all Utility commands!",
-                emoji=":gear:"
+                emoji="⚙️"
             ),
             discord.SelectOption(
                 label="Info",
                 description="View all Info commands!",
-                emoji=":information_source:"
+                emoji="ℹ️"
             ),
             discord.SelectOption(
                 label="Moderation",
                 description="View all MOD commands",
-                emoji="<:mod:923117346984435722>"
+                emoji="<:modlogo:923117346984435722>"
             ),
             discord.SelectOption(
                 label="Tickets",
@@ -81,7 +80,7 @@ class HelpOptions(discord.ui.View):
                 embed=discord.Embed(
                     title=f"{select.values[0]} Help!",
                     description=cog_help[select.values[0]],
-                    colour=discord.Color.random(),
+                    color=discord.Color.embed_background(theme="dark"),
                 ).set_footer(
                     text="Use `help <command>` to get additional help on a specific command."
                 )
@@ -108,28 +107,33 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 """Hey! it looks like i am missing some permissions. Please give me the following permissions:\n
                             - Send messages and embeds\n-Join and speak in voice channels\n-Ban, Kick and Delete messages\n thats it for the normal stuff... but remember... if i dont respond, its probably because i dont have the perms to do so."""
             )
+        except Exception as e:
+            print(e)
 
     async def send_command_help(self, command):
         """triggers when a `<prefix>help <command>` is called"""
-        ctx = self.context
-        signature = self.get_command_signature(
-            command
-        )  # get_command_signature gets the signature of a command in <required> [optional]
-        embed = HelpEmbed(
-            title=signature, description=command.help or "No help found..."
-        )
-
-        if cog := command.cog:
-            embed.add_field(name="Category", value=cog.qualified_name)
-
-        # use of internals to get the cooldown of the command
-        if command._buckets and (cooldown := command._buckets._cooldown):
-            embed.add_field(
-                name="Cooldown",
-                value=f"{cooldown.rate} per {cooldown.per:.0f} seconds",
+        try:
+            ctx = self.context
+            signature = self.get_command_signature(
+                command
+            )  # get_command_signature gets the signature of a command in <required> [optional]
+            embed = HelpEmbed(
+                title=signature, description=command.help or "No help found..."
             )
 
-        await ctx.send(embed=embed)
+            if cog := command.cog:
+                embed.add_field(name="Category", value=cog.qualified_name)
+
+            # use of internals to get the cooldown of the command
+            if command._buckets and (cooldown := command._buckets._cooldown):
+                embed.add_field(
+                    name="Cooldown",
+                    value=f"{cooldown.rate} per {cooldown.per:.0f} seconds",
+                )
+
+            await ctx.send(embed=embed)
+        except Exception as e:
+            print(e)
 
 
 class HelpCog(commands.Cog):

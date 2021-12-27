@@ -277,6 +277,25 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         
         await ctx.send(embed=discord.Embed(description=f"**Random result for {query}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url))
 
+    @commands.command(name="slap")
+    @commands.cooldown(1, 10, BucketType.user)
+    async def slap_(self, ctx: commands.Context, user: discord.Member):
+        """Slap someone!"""
+        query = "anime slap"
+        lmt = 50
+        r = requests.get(
+            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
+        )
+    
+        if r.status_code == 200:
+            top_gifs = json.loads(r.content)
+            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
+        else:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
+        
+        embed = discord.Embed(description=f"**{ctx.author.mention} slapped {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

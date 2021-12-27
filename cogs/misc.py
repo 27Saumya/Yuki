@@ -8,6 +8,8 @@ import os
 from pytube import YouTube
 from speedtest import Speedtest
 from utils.buttons import NukeView
+import aiohttp
+from io import BytesIO
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -101,6 +103,26 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         await message.edit(
             embed=discord.Embed(title="Speed Test Results", description=f"Ping: `{s['ping']}` ms\nDownload: `{round(s['download']/10**6, 3)}` Mbit/s\nUpload: `{round(s['upload']/10**6, 3)}` Mbit/s\nServer: `{s['server']['sponsor']}`", color=discord.Color.embed_background(theme="dark"))
         )
+
+    
+    @commands.command(aliases=['eadd', 'ea', 'steal', 'emojisteal', 'stealemoji'])
+    async def emojiadd(self, ctx: commands.Context, emoji: str, name: str):
+        """Creates an emoji in the server"""
+        guild: discord.Guild = ctx.guild
+        async with aiohttp.ClientSession() as session:
+            async with session.get(emoji) as r:
+                try:
+                    imgOrGIF = BytesIO(await r.read())
+                    bValue = imgOrGIF.getvalue()
+                    if r.status in range(200, 299):
+                        emojiCreate = await guild.create_custom_emoji(image=bValue, name=name)
+                        await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emojiCreate} with name: `{name}`**", color=discord.Color.red()))
+                    else:
+                        await ctx.send(embed=discord.Embed(description=f"<:error:897382665781669908> An error occured while creating the emoji | {r.status}", color=discord.Color.red()))
+                except discord.HTTPException:
+                    await ctx.send(embed=discord.Embed(description=f"<:error:897382665781669908> The file size is too big!", color=discord.Color.red()))
+                except Exception as e:
+                    print(e)
 
 
 def setup(bot):

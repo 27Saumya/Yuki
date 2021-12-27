@@ -63,8 +63,8 @@ def Help_Embed():
         The bot includes many features in various topics such as:
         **Fun, Misc, Utility and *MUCH MORE IN PROGRESS!***
         
-        Now I am open source on (github)[https://github.com/27Saumya/Yuki], you may contribute in making me 
-        and submitting a pull request. If you don't know how to code please give a star to the (repository)[https://github.com/27Saumya/Yuki]!
+        Now I am open source on [github](https://github.com/27Saumya/Yuki), you may contribute in making me 
+        and submitting a pull request. If you don't know how to code please give a star to the [repository](https://github.com/27Saumya/Yuki)!
         
         > To view more about me use `+botinfo`
         > Invite me using the `invite` command or clicking on the button below!

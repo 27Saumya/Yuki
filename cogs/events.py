@@ -34,6 +34,9 @@ class EventsCog(commands.Cog):
         elif isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe `{ctx.command.name}` command is on a cooldown. Wait for `{int(error.retry_after)}`s**", color=discord.Color.red())
             await ctx.send(embed=embed)
+        elif isinstance(error, commands.DisabledCommand):
+            embed = discord.Embed(description="<:error:897382665781669908> This command is disabled :(", color=discord.Color.red())
+            await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: commands.Context, error):
