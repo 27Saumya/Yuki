@@ -214,6 +214,8 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     @commands.cooldown(1, 10, BucketType.user)
     async def hug_(self, ctx: commands.Context, user: discord.Member):
         """Hug someone"""
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't hug a bot.**", color=discord.Color.red()))
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't hug yourself!\n--------------------------\nTry hugging someone else.**", color=discord.Color.red()))
 
@@ -239,6 +241,8 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     @commands.cooldown(1, 10, BucketType.user)
     async def pat_(self, ctx: commands.Context, user: discord.Member):
         """Pat someone"""
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat a bot.**"))
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry hugging someone else.**", color=discord.Color.red()))
 
@@ -281,6 +285,8 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     @commands.cooldown(1, 10, BucketType.user)
     async def slap_(self, ctx: commands.Context, user: discord.Member):
         """Slap someone!"""
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't slap a bot.**", color=discord.Color.red()))
         query = "anime slap"
         lmt = 50
         r = requests.get(
@@ -294,6 +300,85 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
         embed = discord.Embed(description=f"**{ctx.author.mention} slapped {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="kiss")
+    @commands.cooldown(1, 10, BucketType.user)
+    async def kiss(self, ctx: commands.Context, user: discord.Member):
+        """Kiss someone!"""
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't kiss a bot.**", color=discord.Color.red()))
+        query = "anime kiss"
+        lmt = 50
+        r = requests.get(
+            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
+        )
+
+        if r.status_code == 200:
+            top_gifs = json.loads(r.content)
+            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
+        else:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
+        
+        embed = discord.Embed(description=f"**{ctx.author.mention} kissed {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="marry")
+    @commands.cooldown(1, 10, BucketType.user)
+    async def marry(self, ctx: commands.Context, user: discord.Member):
+        """Marry someone!"""
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't marry a bot.**", color=discord.Color.red()))
+        query = "anime marry"
+        lmt = 50
+        r = requests.get(
+            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
+        )
+
+        if r.status_code == 200:
+            top_gifs = json.loads(r.content)
+            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
+        else:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
+        
+        embed = discord.Embed(description=f"**{ctx.author.mention} married {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['gayr8'])
+    async def gayrate(self, ctx, user: discord.Member=None):
+        """View your's or someone's gayrate"""
+        user = user if user else ctx.author
+        if user.bot:
+            embed = discord.Embed(description="**<:error:897382665781669908> How lame of you! | This machine is for humans!\nNot for bots, You fool.**", color=discord.Color.red())
+            return await ctx.send(embed=embed)
+        gayrate = random.randint(1, 100)
+        
+        if gayrate >= 90:
+            embed = discord.Embed(title="Yuki's Gayr8 Machine!", description=f"**The MACHINE Broke :slot_machine:!\n\n{user.mention}**'s gayr8: **{gayrate}**%", color=discord.Color.dark_purple())
+            embed.set_image(url="https://media.giphy.com/media/j2es27Xohj5EMK6G8c/giphy.gif")
+            return await ctx.send(embed=embed)
+
+        else:
+            embed = discord.Embed(title="Yuki's Gayr8 Machine!", description=f"**{user.mention}**'s gayr8: **{gayrate}**%", color=discord.Color.dark_purple())
+            return await ctx.send(embed=embed)
+
+    @commands.command(aliases=['02'])
+    async def zerotwo(self, ctx: commands.Context):
+        """Gives a random zerotwo gif <:zerolove:920425612613660753>!"""
+        query = "zerotwo"
+        lmt = 50
+        r = requests.get(
+            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
+        )
+
+        if r.status_code == 200:
+            top_gifs = json.loads(r.content)
+            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
+        
+        else:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**"))
+
+        embed = discord.Embed(description="**<:zerolove:920425612613660753> Zerotwo is just so cute!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         await ctx.send(embed=embed)
 
 

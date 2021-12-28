@@ -11,7 +11,6 @@ from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
 from cogs.help import HelpOptions, members
 import sqlite3
 from utils.helpers.help import Help_Embed
-from cogs.help import MyHelpCommand
 
 
 def get_prefix(bot, message):
@@ -43,7 +42,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{self.user.name} is online!")
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
         if not self.persistent_views_added:
             self.add_view(TicketPanelView(self))
             self.add_view(TicketControlsView(self))

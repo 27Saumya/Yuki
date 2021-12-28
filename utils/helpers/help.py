@@ -12,6 +12,9 @@ cog_help = {
         `gif` - Search some GIFs
         `gayrate` - Check yours or someone's gayrate
         `hug` - Hug someone
+        `kiss` - Kiss someone
+        `marry` - Marry someone
+        `slap` - Slap someone
         `pat` - Pat someone
         `tictactoe` - Play a game of tic-tac-toe with yourself, Multiplayer soon!""",
     "Config": """

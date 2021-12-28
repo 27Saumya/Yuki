@@ -58,8 +58,25 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
 
         embed1 = discord.Embed(description=f"Are you sure you want to **NUKE** {channel.mention}?\n------------------------------------------------\nRespond Within **15** seconds!", color=discord.Color.orange())
         message = await ctx.send(embed=embed1)
-        await message.edit(embed=embed1, view=NukeView(ctx, channel, message))        
+        await message.edit(embed=embed1, view=NukeView(ctx, channel, message))
 
+    @commands.group(name="purge")
+    async def purge_(self, ctx: commands.Context):
+        """Sub commands for purge"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send(embed=discord.Embed(title="Invalid Usage", description="**Usage: `{0}purge user <member> <amount>`**", color=discord.Color.red()))
+
+    @purge_.command(aliases=['member', 'mem'])
+    async def user(self, ctx: commands.Context, user: discord.Member, amount):
+        """Delete message of a user in the channel"""
+        def is_user(m):
+            """Checks the user's messages in the channel"""
+            return m.author == user
+
+        channel: discord.TextChannel = ctx.channel
+        deleted = await channel.purge(limit=amount, check=is_user)
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Deleted {len(deleted)} messages of {user.mention}**", color=discord.Color.green())
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

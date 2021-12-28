@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands
+from discord.ext import tasks, commands
+from .help import members
 
 
 class EventsCog(commands.Cog):
@@ -32,11 +33,13 @@ class EventsCog(commands.Cog):
         elif isinstance(error, commands.errors.MissingPermissions):
             embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permissions!**", color=discord.Color.red())
         elif isinstance(error, commands.CommandOnCooldown):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe `{ctx.command.name}` command is on a cooldown. Wait for `{int(error.retry_after)}`s**", color=discord.Color.red())
+            embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe **{ctx.command.name}** command is on a cooldown. Wait for `{error.retry_after:.1f}`s**", color=discord.Color.red())
             await ctx.send(embed=embed)
         elif isinstance(error, commands.DisabledCommand):
             embed = discord.Embed(description="<:error:897382665781669908> This command is disabled :(", color=discord.Color.red())
             await ctx.send(embed=embed)
+        else:
+            raise error
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: commands.Context, error):
@@ -61,6 +64,13 @@ class EventsCog(commands.Cog):
         elif isinstance(error, commands.errors.TooManyArguments):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Too many arguments {ctx.author.mention}!**", color=discord.Color.red())
             await ctx.respond(embed=embed)
+        else:
+            raise error
+
+    @tasks.loop(seconds=10)
+    async def updatestats(self):
+        """Updates the bot activity"""
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
 
 
 def setup(bot):
