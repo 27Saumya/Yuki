@@ -16,7 +16,8 @@ cog_help = {
         `marry` - Marry someone
         `slap` - Slap someone
         `pat` - Pat someone
-        `tictactoe` - Play a game of tic-tac-toe with yourself, Multiplayer soon!""",
+        `tictactoe` - Play a game of tic-tac-toe with yourself, Multiplayer soon!
+        `zerotwo` - Get a random zerotwo gif! <:zerolove:920425612613660753>""",
     "Config": """
         Configure the Bot for the server!
 
@@ -26,7 +27,7 @@ cog_help = {
     "Misc": """
         Miscellaneous bot commands!
         
-        `botinfo` - Bot Stats
+        `botinfo` - Check the bot stats
         `help` - Stuck? Check it out
         `invite` - Invite the bot to your server!""",
     "Info": """
@@ -38,7 +39,10 @@ cog_help = {
         `wikipedia` - Search Wikipedia""",
     "Moderation": """
         Mod related commands
-        `nuke` - Deletes all messages of a channel""",
+        `nuke` - Deletes all messages of a channel
+        `purge user` - Purges messages of a user from the channel
+        `mute` - Timeout/Mute a user in the server
+        `unmute` - Unmute a user in the server""",
     "Utility": """
         Basic Miscellaneous and Utility commands!
         
@@ -55,7 +59,24 @@ cog_help = {
         `ticket add` - Adds a user to the ticket
         `ticket remove` - Removes a user from the ticket
         `ticket role add` - Adds a role to the ticket
-        `ticket role remove` - Removes a role from the ticket"""
+        `ticket role remove` - Removes a role from the ticket""",
+    "Music": """
+        Music related commands!
+        
+        `play` - Play a song
+        `disconnect` - Disconnects the bot from the voice chat and delete the current queue
+        `pause` - Pause the current song
+        `resume` - Resume the current song
+        `seek` Go to a specific number of seconds in the song
+        `skip` Skip the current song and play the next song
+        `now` - Shows the currently playing song
+        `save` - DMs you the currently playing song
+        `queue` - View the queue of songs in the current session
+        `volume` - Adjust the volume
+        `shuffle` - Shuffle the queue
+        `repeat` - Repeat the current song
+        `remove` - Remove a song from the queue
+        `equalizer` - Equalize the player: bass and much more"""
 }
 
 def Help_Embed():
@@ -77,5 +98,5 @@ def Help_Embed():
 
         **HOPE YOU HAVE GREAT TIME USING ME!**""",
         color=discord.Color.embed_background(theme="dark")
-    ).set_footer(text="Use help [command] or help [category] for more information | <>: required | []: optional")
+    ).set_footer(text="Use help [command] for more info | <>: required | []: optional")
     return em

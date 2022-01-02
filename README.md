@@ -7,8 +7,10 @@
 
 ## Prerequisites
 
-Python 3+
-Check out. the `requirements.txt` and install all the pakages.
+Python 3.8+
+Java LTS 11+
+Check out. the `requirements.txt` and install all the pakages. Use `pip install -r requirements.txt`
+Make sure you have the [Lavalink.jar](https://github.com/freyacodes/Lavalink/releases) file and the [application.yml](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/application.yml.example) file too
 
 ## Installing
 
@@ -20,7 +22,13 @@ You will need Python 3.
 Change the following:
 `guild_ids`: I have added ... instead of the `guild_ids`. Why guild_ids and not global? Many people might have raised this question. Slash Commands may take an hour to register whereas adding selected guilds, it registers in an instant⚡.
 
+Make sure you have the `main.db` file in the `utils/databases` directory and a `config.py` in the main directory with your [TENOR](https://tenor.com/developer/keyregistration) api key
+
 > guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]
+
+First use `java -jar Lavalink.jar` to run the Lavalink Node!
+Then use `python bot.py`
+and you are good to go!
 
 ## Built With
 

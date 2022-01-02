@@ -3,6 +3,8 @@ from discord.ext import commands
 from discord.commands import slash_command, Option
 import json
 from utils.buttons import NukeView
+import datetime
+import humanfriendly
 
 
 class ModCog(commands.Cog, name="Moderation", description="Moderation commands"):
@@ -76,6 +78,36 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
         channel: discord.TextChannel = ctx.channel
         deleted = await channel.purge(limit=amount, check=is_user)
         embed = discord.Embed(description=f"**<:tick:897382645321850920> Deleted {len(deleted)} messages of {user.mention}**", color=discord.Color.green())
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['mute'])
+    @commands.has_permissions(manage_channels=True)
+    async def timeout(self, ctx: commands.Context, user: discord.Member, time, *, reason: str = "No reason provided"):
+        """Timeout/Mute a user in the server"""
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't timeout yourself!**", color=discord.Color.red()))
+
+        if user.guild_permissions.administrator or user.guild_permissions.manage_channels:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The user is a MOD/ADMIN!**", color=discord.Color.red()))
+        
+        timeConvert = humanfriendly.parse_timespan(time)
+        await user.timeout(discord.utils.utcnow()+datetime.timedelta(seconds=timeConvert), reason=reason)
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully muted {user.mention} for {time} | Reason: {reason}**", color=discord.Color.green())
+        await ctx.send(embed=embed)
+        await user.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You were muted in {ctx.guild.name} | Reason: {reason}**", color=discord.Color.red()))
+
+    @commands.command(aliases=['um'])
+    @commands.has_permissions(manage_channels=True)
+    async def unmute(self, ctx: commands.Context, user: discord.Member, *, reason: str = "No reason provided"):
+        """Unmutes a user from the server"""
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't unmute yourself!**", color=discord.Color.red()))
+        
+        if not user.timed_out:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> That user isn't muted!**", color=discord.Color.red()))
+        
+        await user.timeout(None, reason=reason)
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully unmuted {user.mention} | Reason: {reason}**", color=discord.Color.green())
         await ctx.send(embed=embed)
 
 

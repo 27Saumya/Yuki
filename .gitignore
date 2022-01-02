@@ -3,3 +3,5 @@ config.py
 *.pyc
 *json/
 *__pycache__/
+Lavalink.jar
+application.yml
