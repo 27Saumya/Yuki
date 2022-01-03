@@ -83,18 +83,21 @@ def Help_Embed():
     em = discord.Embed(
         title="**__Yuki ✨ Help!__**",
         description=f"""
-        > Hey, I am Yuki ✨ a multipurpose discord bot.
+        **Hey, I am Yuki ✨ a multipurpose discord bot.**
         The bot includes many features in various topics such as:
         **Fun, Misc, Utility and *MUCH MORE IN PROGRESS!***
         
         Now I am open source on [github](https://github.com/27Saumya/Yuki), you may contribute in making me 
         and submitting a pull request. If you don't know how to code please give a star to the [repository](https://github.com/27Saumya/Yuki)!
         
-        > To view more about me use `+botinfo`
-        > Invite me using the `invite` command or clicking on the button below!
+        To view more about me use `+botinfo`
+        Invite me using the `invite` command or clicking on the button below!
         
-        > What's New:
-        - Added `_` option in `changeprefix`. You can use `_` that means the `_` will be considered as a space.\nSo that means now your prefix can have spaces too!
+        **What's New:**
+        - Added `_` option in `changeprefix`. You can use `_` that means the `_` will be considered as a space.
+        So that means now your prefix can have spaces too!
+
+        - Music commands are now available! Use the `play` command to play a song more command details are avaialble by either doing `help [command] or by clicking in the **Music** option from the seclect menu given below!
 
         **HOPE YOU HAVE GREAT TIME USING ME!**""",
         color=discord.Color.embed_background(theme="dark")

@@ -232,7 +232,7 @@ class Music(commands.Cog):
                 f"[{player.current.title}]({player.current.uri})\n`{pos} {bar} {dur}`"
             )
 
-            em = discord.Embed(color=discord.Color.og_blurple(), description=song)
+            em = discord.Embed(color=discord.Color.green(), description=song)
             em.set_author(
                 name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif"
             )
@@ -258,7 +258,7 @@ class Music(commands.Cog):
             else:
                 dur = lavalink.format_time(player.current.duration).lstrip("00:")
             song = f"[{player.current.title}]({player.current.uri})"
-            em = discord.Embed(color=discord.Color.og_blurple(), description=song)
+            em = discord.Embed(color=discord.Color.green(), description=song)
             em.set_author(
                 name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif"
             )
@@ -368,7 +368,8 @@ class Music(commands.Cog):
 
     @commands.command(name="remove", aliases=["dequeue", "pop"])
     async def remove(self, ctx, index: int):
-        """Remove a song from the queue | Use the index of the song\nEg: `{0}remove 1` - This removes the 1st song of the queue | Use `{0}queue` to view the queue for the server""".format(ctx.clean_prefix)
+        """Remove a song from the queue | Use the index of the song
+        Eg: `{0}remove 1` - This removes the 1st song of the queue | Use `{0}queue` to view the queue for the server""".format(ctx.clean_prefix)
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.queue:
@@ -384,7 +385,8 @@ class Music(commands.Cog):
 
     @commands.command(name="equalizer", aliases=["eq"])
     async def equalizer(self, ctx, *args):
-        """Equalizer!\nUse `{0}equalizer list` for all equalizer options.""".format(ctx.clean_prefix)
+        """Equalizer!
+        Use `{0}equalizer list` for all equalizer options.""".format(ctx.clean_prefix)
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if len(args) == 0:
