@@ -38,6 +38,7 @@ class Bot(commands.Bot):
             if filename.endswith('.py'):
                 self.load_extension(f"cogs.{filename[:-3]}")
         self.load_extension("utils.buttons")
+        self.load_extension("jishaku")
 
 
     async def on_ready(self):
