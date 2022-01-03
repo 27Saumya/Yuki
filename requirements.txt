@@ -9,6 +9,7 @@ chardet==3.0.4
 charset-normalizer==2.0.9
 humanfriendly==10.0
 idna==2.10
+jishaku==2.3.2
 lavalink==3.1.4
 multidict==4.7.6
 py-cord==2.0.0a4671+g51dd856e

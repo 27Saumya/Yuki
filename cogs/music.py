@@ -4,8 +4,11 @@ import discord
 import lavalink
 from discord.ext import commands
 import asyncio
+from typing import Optional
+import aiohttp
 
 url_rx = re.compile(r"https?://(?:www\.)?.+")
+LYRICS_URL = "https://some-random-api.ml/lyrics?title="
 
 
 class LavalinkVoiceClient(discord.VoiceClient):
@@ -369,7 +372,7 @@ class Music(commands.Cog):
     @commands.command(name="remove", aliases=["dequeue", "pop"])
     async def remove(self, ctx, index: int):
         """Remove a song from the queue | Use the index of the song
-        Eg: `{0}remove 1` - This removes the 1st song of the queue | Use `{0}queue` to view the queue for the server""".format(ctx.clean_prefix)
+        Eg: `remove 1` - This removes the 1st song of the queue | Use `queue` to view the queue for the server"""
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.queue:
@@ -386,7 +389,7 @@ class Music(commands.Cog):
     @commands.command(name="equalizer", aliases=["eq"])
     async def equalizer(self, ctx, *args):
         """Equalizer!
-        Use `{0}equalizer list` for all equalizer options.""".format(ctx.clean_prefix)
+        Use `equalizer list` for all equalizer options."""
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if len(args) == 0:
@@ -440,6 +443,29 @@ class Music(commands.Cog):
         eq_frequencies = [f"`{gain}`" for gain in player.equalizer]
         await ctx.send(embed=discord.Embed(description=":level_slider: Current Values:\n" + " ".join(eq_frequencies), color=discord.Color.random()))
 
+    @commands.command(name="lyrics", aliases=['lyr', 'lyric', 'lys'])
+    async def lyrics(self, ctx: commands.Context, song: Optional[str]):
+        """Get a lyrics of the currently playing song. You can even use it even if u aren't playing a song, you just need to provide the name of the song after the commad: `lyrics <song>`"""
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        name = song or player.queue.current_track.title
+        async with ctx.typing():
+            async with aiohttp.request("GET", LYRICS_URL + name, headers={}) as r:
+                if not 200 <= r.status <= 299:
+                    await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
+                data = r.json
+                link = data["links"]["genius"]
+                if len(data["lyrics"]) > 2000:
+                    await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> The lyrics of the song is too long. You may check the lyrics [here]({link})**"))
+
+                embed = discord.Embed(
+                    title=data["title"],
+                    description=data["lyrics"],
+                    color=discord.Color.green()
+                    )
+                embed.set_thumbnail(url=data["thumbnail"]["genius"])
+                embed.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
+
+                await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Music(bot))
