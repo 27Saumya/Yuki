@@ -76,7 +76,7 @@ cog_help = {
         `shuffle` - Shuffle the queue
         `repeat` - Repeat the current song
         `remove` - Remove a song from the queue
-        `equalizer` - Equalize the player: bass and much more"""
+        `lyrics` - Get the lyrics for the current song"""
 }
 
 def Help_Embed():
@@ -97,7 +97,7 @@ def Help_Embed():
         - Added `_` option in `changeprefix`. You can use `_` that means the `_` will be considered as a space.
         So that means now your prefix can have spaces too!
 
-        - Music commands are now available! Use the `play` command to play a song more command details are avaialble by either doing `help [command] or by clicking in the **Music** option from the seclect menu given below!
+        - Music commands are now available! Use the `play` command to play a song more command details are avaialble by either doing `help [command]` or by clicking in the **Music** option from the seclect menu given below!
 
         **HOPE YOU HAVE GREAT TIME USING ME!**""",
         color=discord.Color.embed_background(theme="dark")

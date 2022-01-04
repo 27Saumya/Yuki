@@ -237,14 +237,14 @@ class Music(commands.Cog):
 
             em = discord.Embed(color=discord.Color.green(), description=song)
             em.set_author(
-                name="Now Playing 🎵", icon_url="https://i.ibb.co/DGsmTvh/star.gif"
+                name="Now Playing 🎵", icon_url=self.bot.user.avatar.url
             )
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg"
             )
             requester = ctx.guild.get_member(player.current.requester)
             em.set_footer(
-                text=f"Requested by: {requester}", icon_url=requester.avatar.url
+                text=f"Requested by: {requester.name}", icon_url=requester.avatar.url
             )
 
             await ctx.send(embed=em)
@@ -386,75 +386,37 @@ class Music(commands.Cog):
 
         await ctx.send(embed=discord.Embed(description="<:tick:897382645321850920> Removed **" + removed.title + "** from the queue.", color=discord.Color.green()))
 
-    @commands.command(name="equalizer", aliases=["eq"])
-    async def equalizer(self, ctx, *args):
-        """Equalizer!
-        Use `equalizer list` for all equalizer options."""
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if len(args) == 0:
-            await ctx.send(
-                embed=discord.Embed(description="Please specify something to set in the equalizer. | Use `{0}equalizer list` for all equalizer options".format(ctx.clean_prefix), color=discord.Color.red())
-            )
-        elif len(args) == 1:
-
-            presets ={
-                        'reset': 'Default',
-                        'bassboost': [0.08, 0.12, 0.2, 0.18, 0.15, 0.1, 0.05, 0.0, 0.02, -0.04, -0.06, -0.08, -0.10, -0.12, -0.14], 
-                        'jazz': [-0.13, -0.11, -0.1, -0.1, 0.14, 0.2, -0.18, 0.0, 0.24, 0.22, 0.2, 0.0, 0.0, 0.0, 0.0], 
-                        'pop': [-0.02, -0.01, 0.08, 0.1, 0.15, 0.1, 0.03, -0.02, -0.035, -0.05, -0.05, -0.05, -0.05, -0.05, -0.05], 
-                        'treble': [-0.1, -0.12, -0.12, -0.12, -0.08, -0.04, 0.0, 0.3, 0.34, 0.4, 0.35, 0.3, 0.3, 0.3, 0.3],
-                        "superbass":[0.2,0.3,0,0.8,0,0.5,0,0,0,0,0,0]
-                        
-            }
-
-
-
-            preset = args[0].lower()
-            if preset in ["reset", "default"]:
-                await player.reset_equalizer()
-            elif preset in presets:
-                gain_list = enumerate(presets[preset])
-                await player.set_gains(*gain_list)
-
-            elif preset == "list":
-                em = discord.Embed(
-                    title=":control_knobs: EQ presets:",
-                    color=discord.Color(0xFF6EFF),
-                    description="\n".join(presets.keys()),
-                )
-                return await ctx.send(embed=em)
-
-            else:
-                return await ctx.send(
-                    embed=discord.Embed(description="**<:error:897382665781669908> Invalid preset specified :control_knobs:\nUse `{0}equalizer list` for all presets**".format(ctx.clean_prefix), color=discord.Color.red()
-                ))
-        elif len(args) == 2:
-            try:
-                band = int(args[0])
-                gain = float(args[1])
-                await player.set_gain(band, gain)
-            except ValueError:
-                return await ctx.send(
-                    "Specify valid `band gain` values :control_knobs:"
-                )
-        else:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> PLease specify what to do with the equalizer :control_knobs: | Use `{0}equalizer list` for more info**".format(ctx.clean_prefix), color=discord.Color.red()))
-        eq_frequencies = [f"`{gain}`" for gain in player.equalizer]
-        await ctx.send(embed=discord.Embed(description=":level_slider: Current Values:\n" + " ".join(eq_frequencies), color=discord.Color.random()))
-
     @commands.command(name="lyrics", aliases=['lyr', 'lyric', 'lys'])
-    async def lyrics(self, ctx: commands.Context, song: Optional[str]):
+    async def lyrics(self, ctx: commands.Context, *, song: str):
         """Get a lyrics of the currently playing song. You can even use it even if u aren't playing a song, you just need to provide the name of the song after the commad: `lyrics <song>`"""
+        if song is not None:
+            async with ctx.typing():
+                async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
+                    if not r.status in range(200, 299):
+                        return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
+                    data = r.json()
+                    if len(data["lyrics"]) > 2000:
+                        link = data["links"]["genius"]
+                        await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> The lyrics of the song is too long. You may check the lyrics [here]({link})**"))
+
+                    embed = discord.Embed(
+                        title=data["title"],
+                        description=data["lyrics"],
+                        color=discord.Color.green()
+                        )
+                    embed.set_thumbnail(url=data["thumbnail"]["genius"])
+                    embed.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
+                    return await ctx.send(embed=embed)
+
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        name = song or player.queue.current_track.title
+        song = player.current.title
         async with ctx.typing():
-            async with aiohttp.request("GET", LYRICS_URL + name, headers={}) as r:
-                if not 200 <= r.status <= 299:
-                    await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
-                data = r.json
-                link = data["links"]["genius"]
+            async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
+                if not r.status in range(200, 299):
+                    return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
+                data = r.json()
                 if len(data["lyrics"]) > 2000:
+                    link = data["links"]["genius"]
                     await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> The lyrics of the song is too long. You may check the lyrics [here]({link})**"))
 
                 embed = discord.Embed(
