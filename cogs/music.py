@@ -184,7 +184,7 @@ class Music(commands.Cog):
 
         if not seconds:
             return await ctx.send(
-                embed=discord.Embed(description="**<:error:897382665781669908> You need to specify the amount of seconds to seek :fast_forward:", color=discord.Color.red())
+                embed=discord.Embed(description="**<:error:897382665781669908> You need to specify the amount of seconds to seek :fast_forward:**", color=discord.Color.red())
             )
         try:
             track_time = player.position + int(seconds) * 1000
@@ -395,8 +395,8 @@ class Music(commands.Cog):
             async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
                 if not r.status in range(200, 299):
                     return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
-                data = r.json()
-                if len(data["lyrics"]) > 2000:
+                data = await r.json()
+                if len(data["lyrics"]) > 4000:
                     link = data["links"]["genius"]
                     await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> The lyrics of the song is too long. You may check the lyrics [here]({link})**"))
 
