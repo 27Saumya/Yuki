@@ -7,6 +7,9 @@ import asyncio
 import time
 import datetime
 import os
+import psutil
+import platform
+import sys
 
 
 def members(bot: commands.Bot):
@@ -164,16 +167,20 @@ class HelpCog(commands.Cog):
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View the bot's info")
     async def botinfo(self, ctx: commands.Context):
+        memory = "{:.4} MB".format(psutil.Process().memory_info().rss / 1024 ** 2)
+        py_ver = ".".join([str(v) for v in sys.version_info[:3]])
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n67.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.respond(embed=embed)
 
     @commands.command(name="botinfo", aliases=['bot', 'stats', 'info'])
     async def botinfo_(self, ctx: commands.Context):
         """View the bot's info"""
+        memory = "{:.4} MB".format(psutil.Process().memory_info().rss / 1024 ** 2)
+        py_ver = ".".join([str(v) for v in sys.version_info[:3]])
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{os.name}\n\n**Memory**\n67.97\n\n**Python Version**\n3.9.9\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
         
