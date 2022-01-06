@@ -1,13 +1,12 @@
 import discord
-from discord.ext import tasks, commands
+from discord.ext import commands
 from discord.commands import slash_command, user_command
 from discord.commands import Option
-from discord.commands import permissions
 import qrcode
 import os
 from pytube import YouTube
 from speedtest import Speedtest
-from utils.buttons import NukeView
+from typing import Union
 import aiohttp
 from io import BytesIO
 
@@ -123,6 +122,85 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
                     await ctx.send(embed=discord.Embed(description=f"<:error:897382665781669908> The file size is too big!", color=discord.Color.red()))
                 except Exception as e:
                     print(e)
+
+    
+    @commands.command(aliases=['userinfo'])
+    async def whois(self, ctx: commands.Context, user: Union[discord.Member, discord.User]=None):
+        """Get information about a user or yourself"""
+        user = user or ctx.author
+
+        accType = "Bot" if user.bot else "Human"
+
+        badge_emojis = {
+            "bug_hunter": str(self.bot.get_emoji(928298721916112916)),
+            "bug_hunter_level_2": str(self.bot.get_emoji(928298721303736361)),
+            "discord_certified_moderator": str(self.bot.get_emoji(928298721475698708)),
+            "early_supporter": str(self.bot.get_emoji(928298721496686692)),
+            "verified_bot_developer": str(self.bot.get_emoji(928299192428953660)),
+            "hypesquad_balance": str(self.bot.get_emoji(928299452446412821)),
+            "hypesquad_bravery": str(self.bot.get_emoji(928299808974843984)),
+            "hypesquad_brilliance": str(self.bot.get_emoji(928299672840327208)),
+            "partner": str(self.bot.get_emoji(928502472891330622)),
+            "staff": str(self.bot.get_emoji(928502668224262195))
+        }
+
+        def get_badges(user: Union[discord.User, discord.Member]):
+            badges = []
+            for badge, value in iter(user.public_flags):
+                if value and badge in badge_emojis.keys():
+                    badges.append(badge_emojis[badge])
+            return badges
+
+        if not user in ctx.guild.members:
+            em = discord.Embed(
+                description=f"""**Username: `{user}`
+UserID: `{user.id}`
+Account Type: `{accType}`
+Created at: {discord.utils.format_dt(user.created_at)}
+Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
+                color=discord.Color.green()
+            ).set_author(name=user.name, icon_url=user.avatar.url).set_thumbnail(url=user.avatar.url).set_footer(text="Note: This user is not from this server", icon_url=user.avatar.url)
+            user_for_banner = await self.bot.fetch_user(user.id)
+            if user_for_banner.banner:
+                em.set_image(url=user_for_banner.banner.url)
+            
+            return await ctx.send(embed=em)
+
+        member: discord.Member = ctx.guild.get_member(user.id)
+        
+        def timedOut(member: discord.Member):
+            """Gets a string type of `member.timed_out` rather than a boolean type"""
+            if member.timed_out:
+                return "Yes"
+            else:
+                return "No"
+
+        def getRoles(member: discord.Member):
+            """Gets the user roles"""
+            if len(list(member.roles)) == 0:
+                return "-"
+            else:
+                rolelist = [role.mention for role in member.roles]
+                rolelist.pop(0)
+                roles = " ".join(rolelist)
+                return roles
+
+        embed = discord.Embed(
+            description=f"""**Username: `{user}`
+UserID: `{user.id}`
+Account Type: `{accType}`
+Created at: {discord.utils.format_dt(user.created_at)}
+Joined at: {discord.utils.format_dt(member.joined_at)}
+Timed Out: `{timedOut(member)}`
+Roles: {getRoles(member)}
+Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
+            color=user.color
+        ).set_author(name=user.name, icon_url=user.avatar.url).set_thumbnail(url=user.avatar.url)
+        userForBanner = await self.bot.fetch_user(user.id)
+        if userForBanner.banner:
+            embed.set_image(url=userForBanner.banner.url)
+
+        return await ctx.send(embed=embed)
 
 
 def setup(bot):
