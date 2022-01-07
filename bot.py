@@ -263,4 +263,4 @@ bot.add_application_command(youtube)
 bot.add_application_command(covid)
 
 
-bot.run(config.TOKEN)
+bot.run('OTI1NjM4OTEyMDcwNzg3MTAy.YcwCag.jVAytWFc_9u1wqVSKYtgb8wgTes')
