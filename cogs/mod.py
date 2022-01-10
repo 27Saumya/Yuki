@@ -23,7 +23,7 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
             return await ctx.reply(embed=embed)
         if "_" in prefix:
             np = prefix.replace("_", " ")
-            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?' (ctx.guild.id,))
+            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (ctx.guild.id,))
             data = self.bot.dbcursor.fetchone()
             if not data or data == None:
                 self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, np))
@@ -54,7 +54,7 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
             return await ctx.reply(embed=embed)
         if "_" in prefix:
             np = prefix.replace("_", " ")
-            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?' (ctx.guild.id,))
+            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (ctx.guild.id,))
             data = self.bot.dbcursor.fetchone()
             if not data or data == None:
                 self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, np))
