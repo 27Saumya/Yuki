@@ -15,7 +15,9 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
     async def changeprefix_(self, ctx: commands.Context, *, prefix: str=None):
         """Changes Prefix for this server"""
         if prefix == None:
-            return await ctx.send(embed=discord.Embed(description=f"My prefix for this server is `{ctx.clean_prefix}`", color=discord.Color.embed_background(theme="dark")))
+            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (ctx.guild.id,))
+            data1 = self.bot.dbcursor.fetchone()
+            return await ctx.send(embed=discord.Embed(description=f"My prefix for this server is `{ctx.clean_prefix}` and `{data1[1]}`", color=discord.Color.embed_background(theme="dark")))
         if not ctx.author.guild_permissions.manage_messages or ctx.author.id != self.bot.owner_id:
             embed = discord.Embed(description="**<:error:897382665781669908> You can't do that**", color=discord.Color.red())
             return await ctx.reply(embed=embed)
