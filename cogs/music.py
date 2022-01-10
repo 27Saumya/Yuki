@@ -395,7 +395,7 @@ class Music(commands.Cog):
         await ctx.send(embed=discord.Embed(description="<:tick:897382645321850920> Removed **" + removed.title + "** from the queue.", color=discord.Color.green()))
 
     @commands.command(name="lyrics", aliases=['lyr', 'lyric', 'lys'])
-    async def lyrics(self, ctx: commands.Context, title: str):
+    async def lyrics(self, ctx: commands.Context, title: str=None):
         """Get a lyrics of the currently playing song. You can even use it even if u aren't playing a song, you just need to provide the name of the song after the commad: `lyrics [song]`"""
         if title is not None:
             song = title
