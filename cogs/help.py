@@ -150,7 +150,7 @@ class HelpCog(commands.Cog):
         startTime = time.time()
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="Invite me to your server")
+    @slash_command(description="Invite me to your server")
     async def invite(self, ctx):
         await ctx.respond("Invite Here!", view=InviteView2())
         
@@ -160,7 +160,7 @@ class HelpCog(commands.Cog):
         await ctx.send("Invite Here!", view=InviteView2())
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View the bot's info")
+    @slash_command(description="View the bot's info")
     async def botinfo(self, ctx: commands.Context):
         memory = "{:.4} MB".format(psutil.Process().memory_info().rss / 1024 ** 2)
         py_ver = ".".join([str(v) for v in sys.version_info[:3]])
@@ -179,7 +179,7 @@ class HelpCog(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
         
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="🏓 Check the bot's latency")
+    @slash_command(description="🏓 Check the bot's latency")
     async def ping(self, ctx: commands.Context):
         interaction: discord.Interaction = ctx.interaction
         before = time.monotonic()
