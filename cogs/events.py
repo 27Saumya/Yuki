@@ -82,6 +82,7 @@ class EventsCog(commands.Cog):
     @updatestats.before_loop
     async def set_activity(self):
         """Sets the bot activity"""
+        await self.bot.wait_until_ready()
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
 
 
