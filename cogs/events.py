@@ -1,6 +1,5 @@
 import discord
-from discord.ext import tasks, commands
-from .help import members
+from discord.ext import commands
 
 
 class EventsCog(commands.Cog):
@@ -72,18 +71,6 @@ class EventsCog(commands.Cog):
             await ctx.respond(embed=embed)
         else:
             raise error
-
-    @tasks.loop(seconds=10)
-    async def updatestats(self):
-        """Updates the bot activity"""
-        await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
-
-    @updatestats.before_loop
-    async def set_activity(self):
-        """Sets the bot activity"""
-        await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
 
 
 def setup(bot):

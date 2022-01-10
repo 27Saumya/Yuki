@@ -24,7 +24,7 @@ SOFTWARE.
 
 
 import discord
-from discord.ext import commands
+from discord.ext import tasks, commands
 import os
 from discord.commands import Option, SlashCommandGroup
 from pytube import YouTube
@@ -32,7 +32,7 @@ import requests
 import asyncio
 import config
 from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
-from cogs.help import HelpOptions
+from cogs.help import HelpOptions, members
 import sqlite3
 from utils.helpers.help import Help_Embed
 from utils.helpers.configuration import get_prefix
@@ -127,6 +127,18 @@ class Bot(commands.Bot):
             self.db.commit()
         
         await bot.process_commands(message)
+
+    @tasks.loop(seconds=10)
+    async def updatestats(self):
+        """Updates the bot activity"""
+        await self.bot.wait_until_ready()
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
+
+    @updatestats.before_loop
+    async def set_activity(self):
+        """Sets the bot activity"""
+        await self.bot.wait_until_ready()
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
             
 
 bot = Bot()
