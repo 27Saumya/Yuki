@@ -418,26 +418,27 @@ class Music(commands.Cog):
 
             return await ctx.send(embed=embed)
 
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        song = str(player.current.title)
-        async with ctx.typing():
-            async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
-                if not r.status in range(200, 299):
-                    return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
-                data = await r.json()
-                if len(data["lyrics"]) > 4000:
-                    link = data["links"]["genius"]
-                    await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
+        else:
+            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+            song = str(player.current.title)
+            async with ctx.typing():
+                async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
+                    if not r.status in range(200, 299):
+                        return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
+                    data = await r.json()
+                    if len(data["lyrics"]) > 4000:
+                        link = data["links"]["genius"]
+                        await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
 
-                em = discord.Embed(
-                    title=data["title"],
-                    description=data["lyrics"],
-                    color=discord.Color.green()
-                    )
-                em.set_thumbnail(url=data["thumbnail"]["genius"])
-                em.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
+                    em = discord.Embed(
+                        title=data["title"],
+                        description=data["lyrics"],
+                        color=discord.Color.green()
+                        )
+                    em.set_thumbnail(url=data["thumbnail"]["genius"])
+                    em.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
 
-                await ctx.send(embed=em)
+                    await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Music(bot))
