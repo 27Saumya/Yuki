@@ -57,7 +57,7 @@ class Bot(commands.Bot):
         self.load_extension("utils.buttons")
         self.load_extension("jishaku")
 
-        self.wait_for_ready.start()
+        self.updateactivity.start()
 
 
     async def on_ready(self):
@@ -131,13 +131,13 @@ class Bot(commands.Bot):
         await bot.process_commands(message)
 
     @tasks.loop(seconds=10)
-    async def updatestats(self):
-        """Updates the bot activity"""
+    async def updateactivity(self):
+        """Updates the bot's activity"""
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
 
-    @updatestats.before_loop
+    @updateactivity.before_loop
     async def wait_for_ready(self):
-        """Waits until the bot's ready"""
+        """Waits until the bot is ready"""
         await self.wait_until_ready()
             
 
