@@ -133,6 +133,7 @@ class TicketCog(commands.Cog):
                 dataCheck = self.bot.dbcursor.fetchone()
                 if not dataCheck:
                     return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You have not assigned a category to tickets yet**", color=discord.Color.red()))
+        
                 self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
                 categoryFind = self.bot.dbcursor.fetchone()
                 cat = categoryFind[2]
@@ -141,7 +142,12 @@ class TicketCog(commands.Cog):
             self.bot.dbcursor.execute(f'SELECT category FROM ticket WHERE guild_id=?', (ctx.guild.id,))
             data = self.bot.dbcursor.fetchone()
             if not data:
-                self.bot.dbcursor.execute(f'INSERT INTO ticket (category) VALUES(?)', (categoryID,))
+                self.bot.dbcursor.execute(f'SELECT * FROM ticket WHERE guild_id=?', (ctx.guild.id,))
+                dataCheck2 = self.bot.dbcursor.fetchone()
+                if not dataCheck2[0]:
+                    self.bot.dbcursor.execute(f'INSERT INTO ticket (guild_id, category) VALUES(?,?)', (ctx.guild.id, categoryID))
+                else:
+                    self.bot.dbcursor.execute(f'INSERT INTO ticket (category) VALUES(?) WHERE guild_id=?', (categoryID, ctx.guild.id))
             if data:
                 self.bot.dbcursor.execute(f'UPDATE ticket SET category = ? WHERE guild_id=?', (categoryID, ctx.guild.id))
             self.bot.db.commit()

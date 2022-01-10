@@ -37,7 +37,7 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
         await ctx.send(embed=embed)
     
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Nuke a channel")
+    @slash_command(description="Nuke a channel")
     async def nuke(self, ctx, channel: Option(discord.TextChannel, "The channel you want to nuke", required=False, default=None)):
         channel = channel if channel else ctx.channel
         interaction: discord.Interaction = ctx.interaction
@@ -109,7 +109,6 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
         await user.timeout(None, reason=reason)
         embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully unmuted {user.mention} | Reason: {reason}**", color=discord.Color.green())
         await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(ModCog(bot))

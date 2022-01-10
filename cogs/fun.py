@@ -18,7 +18,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Generates a nitro link!")
+    @slash_command(description="Generates a nitro link!")
     async def nitro(self, ctx):
         interaction: discord.Inteaction = ctx.interaction
         embed = discord.Embed(description=f"**{ctx.author.mention} generated a nitro link!**", color=discord.Color.nitro_pink())
@@ -37,7 +37,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         await message.edit(embed=embed, view=NitroView(message, ctx))
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Play a TicTacToe Game with Yourself!")
+    @slash_command(description="Play a TicTacToe Game with Yourself!")
     async def tictactoe(self, ctx: commands.Context):
         await ctx.respond("**TicTacToe**\n`X` goes first!", view=TicTacToe())
 
@@ -47,7 +47,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         await ctx.send("**TicTacToe**\n`X` goes first!", view=TicTacToe())
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Ask Me Something!", name="8ball")
+    @slash_command(description="Ask Me Something!", name="8ball")
     async def eightball(self, ctx, *, question: Option(str, "The question you want to ask!", required=True, default=None)):
         responses = {"It is certain.":0x2ecc71,
                 "It is decidedly so.":0x2ecc71,
@@ -111,7 +111,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         await ctx.send(embed=embed)
 
     
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Have a drink with yourself or someone")
+    @slash_command(description="Have a drink with yourself or someone")
     async def beer(self, ctx: commands.Context, user: Option(discord.Member, "The user you want to drink with")):
         user = user if user else ctx.author
         interaction: discord.Interaction = ctx.interaction
@@ -145,7 +145,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             await message.edit(embed=embed, view=BeerView(user, ctx, message))
 
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Have a beer party with some friends 🍻!")
+    @slash_command(description="Have a beer party with some friends 🍻!")
     async def beerparty(self, ctx: commands.Context):
         interaction: discord.Interaction = ctx.interaction
         embed = discord.Embed(title="Beer Party 🍻", description=f"{ctx.author.mention} had invited everyone to join up this beer party :beers:!", color=discord.Color.green())

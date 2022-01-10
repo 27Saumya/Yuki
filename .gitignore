@@ -1,4 +1,4 @@
-config.py
+./config.py
 *.db
 *.pyc
 *json/

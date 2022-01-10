@@ -32,6 +32,7 @@ Miscellaneous bot commands!
 `invite` - Invite the bot to your server!
 `avatar` - View someone's avatar
 `speedtest` - Check the bot's connection speed
+`source` - View the bot's source code
 `whois` - Get information about a user of yourself
 `youtube download`- Download a youtube video (Currently Closed)""",
     "Info": """
@@ -86,7 +87,7 @@ def Help_Embed():
 The bot includes many features in various topics such as:
 **Fun, Misc, Utility and *MUCH MORE IN PROGRESS!***
 
-Now I am open source on [github](https://github.com/27Saumya/Yuki), you may contribute in making me 
+I am open source on [github](https://github.com/27Saumya/Yuki), you may contribute in making me 
 and submitting a pull request. If you don't know how to code please give a star to the [repository](https://github.com/27Saumya/Yuki)!
 
 To view more about me use `+botinfo`
@@ -98,7 +99,9 @@ So that means now your prefix can have spaces too!
 
 - Music commands are now available! Use the `play` command to play a song more command details are avaialble by either doing `help [command]` or by clicking in the **Music** option from the seclect menu given below!
 
-**HOPE YOU HAVE GREAT TIME USING ME!**""",
+**HOPE YOU HAVE GREAT TIME USING ME!
+
+More Commads Comming Soon!**""",
         color=discord.Color.embed_background(theme="dark")
     ).set_footer(text="Use help [command] for more info | <>: required | []: optional")
     return em

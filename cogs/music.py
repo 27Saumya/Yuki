@@ -342,6 +342,15 @@ class Music(commands.Cog):
         if not volume:
             return await ctx.send(f"🔈 | {player.volume}%")
 
+        if volume > 200:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't keep the volume above `200%`!**", color=discord.Color.red()))
+
+        volumeStr = str(volume)
+        if volumeStr.endswith('%'):
+            volumeStr.replace('%', " ")
+            await player.set_volume(int(volumeStr))
+            return await ctx.send(embed=discord.Embed(description=f"🔈 | Set to {player.volume}%", color=discord.Color.green()))
+
         await player.set_volume(volume)
         await ctx.send(embed=discord.Embed(description=f"🔈 | Set to {player.volume}%", color=discord.Color.green()))
 
@@ -387,8 +396,29 @@ class Music(commands.Cog):
         await ctx.send(embed=discord.Embed(description="<:tick:897382645321850920> Removed **" + removed.title + "** from the queue.", color=discord.Color.green()))
 
     @commands.command(name="lyrics", aliases=['lyr', 'lyric', 'lys'])
-    async def lyrics(self, ctx: commands.Context):
-        """Get a lyrics of the currently playing song. You can even use it even if u aren't playing a song, you just need to provide the name of the song after the commad: `lyrics [song]` (The `lyrics [song]` is currently closed)"""
+    async def lyrics(self, ctx: commands.Context, title: str):
+        """Get a lyrics of the currently playing song. You can even use it even if u aren't playing a song, you just need to provide the name of the song after the commad: `lyrics [song]`"""
+        if title is not None:
+            song = title
+            async with ctx.typing():
+                async with aiohttp.request("GET", LYRICS_URL + song, headers={}) as r:
+                    if not r.status in range(200, 299):
+                        return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured, please try again later.**", color=discord.Color.red()))
+                    data = await r.json()
+                    if len(data["lyrics"]) > 4000:
+                        link = data["links"]["genius"]
+                        await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
+
+                    embed = discord.Embed(
+                        title=data["title"],
+                        description=data["lyrics"],
+                        color=discord.Color.green()
+                        )
+                    embed.set_thumbnail(url=data["thumbnail"]["genius"])
+                    embed.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
+
+                    return await ctx.send(embed=embed)
+
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song = str(player.current.title)
         async with ctx.typing():

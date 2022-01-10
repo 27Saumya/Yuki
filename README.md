@@ -24,7 +24,7 @@ Change the following:
 
 Make sure you have the `main.db` file in the `utils/databases` directory and a `config.py` in the main directory with your [TENOR](https://tenor.com/developer/keyregistration) api key
 
-> guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951]
+> 
 
 First use `java -jar Lavalink.jar` to run the Lavalink Node!
 Then use `python bot.py`

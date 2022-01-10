@@ -1,8 +1,32 @@
+"""
+MIT License
+
+Copyright (c) 2022-Present 27Saumya
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+
 import discord
 from discord.ext import commands
 import os
 from discord.commands import Option, SlashCommandGroup
-import json
 from pytube import YouTube
 import requests
 import asyncio
@@ -11,14 +35,7 @@ from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
 from cogs.help import HelpOptions, members
 import sqlite3
 from utils.helpers.help import Help_Embed
-
-
-def get_prefix(bot, message):
-    with open("utils/json/prefixes.json", "r") as f:
-        prefixes = json.load(f)
-
-    return prefixes[str(message.guild.id)]
-
+from utils.helpers.config import get_prefix
 
 
 class Bot(commands.Bot):
@@ -28,7 +45,7 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
 
         super().__init__(
-            command_prefix=get_prefix,
+            command_prefix=(get_prefix),
             description="Yuki ✨ has many features! Try it Out INVITE ME now!",
             intents=discord.Intents().all(), 
             case_insensitiv1e=True,
@@ -53,16 +70,22 @@ class Bot(commands.Bot):
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS ticket (guild_id INTEGER , count INTEGER, category INTEGER)')
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS settings (guild_id INTEGER, "bump")')
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS tickets (guild_id INTEGER, channel_id INTEGER, opener INTEGER, switch TEXT)')
+        self.dbcursor.execute('CREATE TABLE IF NOT EXISTS guilds (guild_id INTEGER, prefix TEXT)')
         self.db.commit()
     
     async def on_guild_join(self, guild):
-        with open("utils/json/prefixes.json", "r") as f:
-            prefixes = json.load(f)
+        await self.wait_until_ready()
+        self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (guild.id, "+"))
 
-        prefixes[str(guild.id)] = "+"
-
-        with open("utils/json/prefixes.json", "w") as f:
-            json.dump(prefixes, f, indent=4)
+    async def on_guild_remove(self, guild: discord.Guild):
+        await self.wait_until_ready()
+        try:
+            self.dbcursor.execute(f"INSERT INTO Servers(guild_id, prefix) VALUES (?,?)", (guild.id, "+"))
+            self.db.commit()
+            print(f"Joined guild- {guild.name}\nAdded the server to database!")
+        except Exception as e:
+            botOwner = await self.fetch_user(self.owner_id)
+            await botOwner.send(str(e).capitalize())
 
     async def on_message(self, message: discord.Message):
         try:
@@ -97,12 +120,12 @@ class Bot(commands.Bot):
                 await message.channel.send(embed=embed)
         except AttributeError:
             print("Not a bump message.")
-        with open("utils/json/prefixes.json", "r") as f:
-            prefixes = json.load(f)
-        if str(message.guild.id) not in prefixes:
-            with open("utils/json/prefixes.json", "w") as f:
-                prefixes[str(message.guild.id)] = "+"
-                json.dump(prefixes, f, indent=4)
+        
+        self.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
+        prefixes = self.dbcursor.fetchone()
+        if not prefixes:
+            self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (message.guild.id,))
+            self.db.commit()
         
         await bot.process_commands(message)
             
@@ -124,8 +147,8 @@ async def help(ctx: discord.ApplicationContext):
 
 youtube = SlashCommandGroup("youtube", "Commands related to youtube")
 
-@youtube.command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Download a youtube video!")
-async def download(ctx: commands.Context, link: Option(str, "The video you want to download!", required=True, defaul=None)):
+@youtube.command(description="Download a youtube video!")
+async def download(ctx: commands.Context, link: Option(str, "The video you want to download!", required=True, default=None)):
     interaction: discord.Interaction = ctx.interaction
     return await interaction.response.send_message("This command is currently closed ):")
     embed = discord.Embed(description="**Downloading the video <a:loading:911568431315292211>\n-------------------------\nThis may take some time.**", color=discord.Color.green())
@@ -147,7 +170,7 @@ async def download(ctx: commands.Context, link: Option(str, "The video you want 
 covid = SlashCommandGroup("covid", "commands related to covid info")
 
 
-@covid.command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Covid Information!")
+@covid.command(description="Covid Information!")
 async def country(ctx, *, country: Option(str, "Name of the Country you want the Covid info of!", required=True, default=None)):
     interaction: discord.Interaction = ctx.interaction
     em = discord.Embed(description="**Fetching information <a:loading:911568431315292211>**", color=discord.Color.green())
@@ -187,7 +210,7 @@ async def country(ctx, *, country: Option(str, "Name of the Country you want the
     await message.edit(embed=embed)
 
 
-@covid.command(name="global", guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="View Global Covid Info!")
+@covid.command(name="global", description="View Global Covid Info!")
 async def global_(ctx):
     interaction: discord.Interaction = ctx.interaction
     em = discord.Embed(description="**Fetching information <a:loading:911568431315292211>**", color=discord.Color.green())
@@ -226,7 +249,6 @@ async def global_(ctx):
     embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url)
     await message.edit(embed=embed)
 
-
 @bot.command(hidden=True)
 @commands.is_owner()
 async def load(ctx: commands.Context, ext: str):
@@ -257,6 +279,7 @@ async def reload(ctx: commands.Context, ext: str):
         await asyncio.sleep(0.5)
         bot.load_extension(f"cogs.{ext}")
         await ctx.send(f"Succesfully reloaded `{ext}`")
+
 
 
 bot.add_application_command(youtube)

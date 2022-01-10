@@ -475,5 +475,15 @@ class TicketResetView(discord.ui.View):
         except discord.NotFound:
             print("Ticket count reset complete")
 
+class SupportView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(discord.ui.Button(label="Support Server", url="https://discord.gg/RqKvY5MQgb"))
+
+class SourceView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(discord.ui.Button(label="Source Code", url="https://github.com/27Saumya/Yuki"))
+
 def setup(bot):
     bot.add_cog(ButtonsCog(bot))

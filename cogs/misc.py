@@ -9,6 +9,7 @@ from speedtest import Speedtest
 from typing import Union
 import aiohttp
 from io import BytesIO
+from utils.buttons import SourceView
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -17,7 +18,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 
 
     #Avatar
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Check your or someone else's PFP!")
+    @slash_command(description="Check your or someone else's PFP!")
     async def avatar(self, ctx, 
         member: Option(discord.Member, "Check someone else's PFP!", required=False, default=None)):
         member = member if member else ctx.author
@@ -38,7 +39,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         await ctx.send(embed=em)
 
     #Qrcode
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Generate a Qrcode!")
+    @slash_command(description="Generate a Qrcode!")
     async def qrcode(self, ctx, url: Option(str, "The link you want the qrcode of", required=True, default=None), hidden: Option(str, "Do you want the qrcode to be visible only to you?", choices=["Yes", "No"], required=False, default=None)):
         img = qrcode.make(url)
         img.save("qrcode.png")
@@ -104,18 +105,28 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         )
 
     
-    @commands.command(aliases=['eadd', 'ea', 'steal', 'emojisteal', 'stealemoji'])
-    async def emojiadd(self, ctx: commands.Context, emoji: str, name: str):
+    @commands.command(aliases=['eadd', 'ea', 'steal', 'emojisteal', 'stealemoji', 'copyemoji'])
+    async def emojiadd(self, ctx: commands.Context, emoji, name: str):
         """Creates an emoji in the server"""
-        guild: discord.Guild = ctx.guild
+        if isinstance(emoji, discord.Emoji) or isinstance(emoji, discord.PartialEmoji):
+            """This checks if an emoji is provided instead of a link"""
+            try:
+                emoji_bytes = await emoji.read()
+                emoji_create = await ctx.guild.create_custom_emoji(image=emoji_bytes)
+                await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emoji_create} with name: `{name}`**", color=discord.Color.green()))
+            
+            except Exception as e:
+                error = str(e).capitalize()
+                return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occurred while creating the emoji\n`{error}`**", color=discord.Color.red()))
+
         async with aiohttp.ClientSession() as session:
             async with session.get(emoji) as r:
                 try:
                     imgOrGIF = BytesIO(await r.read())
                     bValue = imgOrGIF.getvalue()
                     if r.status in range(200, 299):
-                        emojiCreate = await guild.create_custom_emoji(image=bValue, name=name)
-                        await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emojiCreate} with name: `{name}`**", color=discord.Color.red()))
+                        emojiCreate = await ctx.guild.create_custom_emoji(image=bValue, name=name)
+                        await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emojiCreate} with name: `{name}`**", color=discord.Color.green()))
                     else:
                         await ctx.send(embed=discord.Embed(description=f"<:error:897382665781669908> An error occured while creating the emoji | {r.status}", color=discord.Color.red()))
                 except discord.HTTPException:
@@ -201,6 +212,10 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
             embed.set_image(url=userForBanner.banner.url)
 
         return await ctx.send(embed=embed)
+
+    @commands.command()
+    async def source(self, ctx: commands.Context):
+        await ctx.send("Here is my source code", view=SourceView())
 
 
 def setup(bot):

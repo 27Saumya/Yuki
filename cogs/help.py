@@ -31,6 +31,7 @@ class HelpOptions(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.add_item(discord.ui.Button(label="Invite Me!", url="https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands", row=1))
+        self.add_item(discord.ui.Button(label="Support Server", url="https://discord.gg/RqKvY5MQgb", row=1))
 
     @discord.ui.button(label="Delete", style=discord.ButtonStyle.red, emoji="⛔", row=2)
     async def delete_button(self, button: discord.ui.Button, interaction: discord.Interaction):

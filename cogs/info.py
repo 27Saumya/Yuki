@@ -11,7 +11,7 @@ class Info(commands.Cog, name="Info", description="Information related commands"
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Google Search")
+    @slash_command(description="Google Search")
     async def google(self, ctx: commands.Context, *, 
         query: Option(str, "Type what you want to search!", required=True, default=None)):
         await ctx.respond(f"Google Result for `{query}`", view=Google(query))
@@ -103,7 +103,7 @@ class Info(commands.Cog, name="Info", description="Information related commands"
         embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url)
         await message.edit(embed=embed)
 
-    @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312, 918802666790993951], description="Search Wikipedia!")
+    @slash_command(description="Search Wikipedia!")
     async def wikipedia(self, ctx: commands.Context, *, query: Option(str, "Type what you want to search!", required=True, default=None), 
         lines:Option(int, "The number of lines you want the result in. By default it is 5", required=False, default=5)):
         result = wikipedia.summary(query, sentences=lines)
