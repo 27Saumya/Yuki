@@ -12,30 +12,66 @@ class ModCog(commands.Cog, name="Moderation", description="Moderation commands")
         self.bot = bot
 
     @commands.command(name="changeprefix", aliases=['setprefix', 'chpre', 'setpre', 'changepre', 'prefix', 'pre'])
-    async def changeprefix_(self, ctx, *, new_prefix: str=None):
+    async def changeprefix_(self, ctx: commands.Context, *, prefix: str=None):
         """Changes Prefix for this server"""
-        if new_prefix == None:
+        if prefix == None:
             return await ctx.send(embed=discord.Embed(description=f"My prefix for this server is `{ctx.clean_prefix}`", color=discord.Color.embed_background(theme="dark")))
-        if not ctx.author.guild_permissions.manage_messages:
+        if not ctx.author.guild_permissions.manage_messages or ctx.author.id != self.bot.owner_id:
             embed = discord.Embed(description="**<:error:897382665781669908> You can't do that**", color=discord.Color.red())
             return await ctx.reply(embed=embed)
-        if "_" in new_prefix:
-            np = new_prefix.replace("_", " ")
-            with open("utils/json/prefixes.json", "r") as f:
-                prefixes = json.load(f)
-            prefixes[str(ctx.guild.id)] = np
-            with open("utils/json/prefixes.json", "w") as f:
-                json.dump(prefixes, f, indent=4)
-            embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to:  `{np}`**", color=discord.Color.green())
+        if "_" in prefix:
+            np = prefix.replace("_", " ")
+            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?' (ctx.guild.id,))
+            data = self.bot.dbcursor.fetchone()
+            if not data or data == None:
+                self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, np))
+                self.bot.db.commit()
+            else:
+                self.bot.dbcursor.execute('UPDATE guilds SET prefix=? WHERE guild_id=?', (np, ctx.guild.id))
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to: `{np}`**", color=discord.Color.green())
             return await ctx.send(embed=embed)
-        with open("utils/json/prefixes.json", "r") as f:
-            prefixes = json.load(f)
-        prefixes[str(ctx.guild.id)] = new_prefix
-        with open("utils/json/prefixes.json", "w") as f:
-            json.dump(prefixes, f, indent=4)
-        embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to:  `{new_prefix}`**", color=discord.Color.green())
+        
+        self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (ctx.guild.id,))
+        dataCheck = self.bot.dbcursor.fetchone()
+        if not dataCheck or dataCheck == None:
+            self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, prefix))
+            self.bot.db.commit()
+        else:
+            self.bot.dbcursor.execute('UPDATE guilds SET prefix=? WHERE guild_id=?', (prefix, ctx.guild.id))
+            self.bot.db.commit()
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to: `{prefix}`**", color=discord.Color.green())
         await ctx.send(embed=embed)
     
+    @slash_command(description="Change prefix for the server")
+    async def changeprefix(self, ctx: discord.ApplicationContext, *, prefix: str=None):
+        """Changes Prefix for this server"""
+        if prefix == None:
+            return await ctx.send(embed=discord.Embed(description=f"My prefix for this server is `{ctx.clean_prefix}`", color=discord.Color.embed_background(theme="dark")))
+        if not ctx.author.guild_permissions.manage_messages or ctx.author.id != self.bot.owner_id:
+            embed = discord.Embed(description="**<:error:897382665781669908> You can't do that**", color=discord.Color.red())
+            return await ctx.reply(embed=embed)
+        if "_" in prefix:
+            np = prefix.replace("_", " ")
+            self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?' (ctx.guild.id,))
+            data = self.bot.dbcursor.fetchone()
+            if not data or data == None:
+                self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, np))
+                self.bot.db.commit()
+            else:
+                self.bot.dbcursor.execute('UPDATE guilds SET prefix=? WHERE guild_id=?', (np, ctx.guild.id))
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to: `{np}`**", color=discord.Color.green())
+            return await ctx.respond(embed=embed)
+        
+        self.bot.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (ctx.guild.id,))
+        dataCheck = self.bot.dbcursor.fetchone()
+        if not dataCheck or dataCheck == None:
+            self.bot.dbcursor.execute('INSERT INTO guilds (guild_id, prefix)', (ctx.guild.id, prefix))
+            self.bot.db.commit()
+        else:
+            self.bot.dbcursor.execute('UPDATE guilds SET prefix=? WHERE guild_id=?', (prefix, ctx.guild.id))
+            self.bot.db.commit()
+        embed = discord.Embed(description=f"**<:tick:897382645321850920> Prefix Updated to: `{prefix}`**", color=discord.Color.green())
+        await ctx.respond(embed=embed)
 
     @slash_command(description="Nuke a channel")
     async def nuke(self, ctx, channel: Option(discord.TextChannel, "The channel you want to nuke", required=False, default=None)):
