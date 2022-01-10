@@ -484,6 +484,12 @@ class SourceView(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.add_item(discord.ui.Button(label="Source Code", url="https://github.com/27Saumya/Yuki"))
+        
+class InviteView2(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(discord.ui.Button(label="Invite Me!", url="https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands"))
+        self.add_item(discord.ui.Button(label="Support Server", url="https://discord.gg/RqKvY5MQgb"))
 
 def setup(bot):
     bot.add_cog(ButtonsCog(bot))

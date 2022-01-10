@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.commands import slash_command, Option
-from utils.buttons import InviteView
+from utils.buttons import InviteView2
 from utils.helpers.help import Help_Embed, cog_help
 import asyncio
 import time
@@ -58,11 +58,6 @@ class HelpOptions(discord.ui.View):
                 emoji="🤖"
             ),
             discord.SelectOption(
-                label="Utility",
-                description="View all Utility commands!",
-                emoji="⚙️"
-            ),
-            discord.SelectOption(
                 label="Info",
                 description="View all Info commands!",
                 emoji="ℹ️"
@@ -113,8 +108,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 pass
         except discord.Forbidden:
             await ctx.send(
-                """Hey! it looks like i am missing some permissions. Please give me the following permissions:\n
-                            - Send messages and embeds\n-Join and speak in voice channels\n-Ban, Kick and Delete messages\n thats it for the normal stuff... but remember... if i dont respond, its probably because i dont have the perms to do so."""
+                """Hey! it looks like i am missing some permissions."""
             )
         except Exception as e:
             print(e)
@@ -158,12 +152,12 @@ class HelpCog(commands.Cog):
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="Invite me to your server")
     async def invite(self, ctx):
-        await ctx.respond("Invite Here!", view=InviteView())
+        await ctx.respond("Invite Here!", view=InviteView2())
         
     @commands.command(name="invite")
     async def invite_(self, ctx):
         """Invite the bot to your server!"""
-        await ctx.send("Invite Here!", view=InviteView())
+        await ctx.send("Invite Here!", view=InviteView2())
 
 
     @slash_command(guild_ids=[824969244860088332, 847740349853073418, 865962392093851658, 896457384552202312], description="View the bot's info")

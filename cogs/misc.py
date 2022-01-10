@@ -9,7 +9,7 @@ from speedtest import Speedtest
 from typing import Union
 import aiohttp
 from io import BytesIO
-from utils.buttons import SourceView
+from utils.buttons import SourceView, SupportView
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -213,9 +213,13 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
 
         return await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=['sourcecode'])
     async def source(self, ctx: commands.Context):
         await ctx.send("Here is my source code", view=SourceView())
+
+    @commands.command(aliases=['support', 'botserver', 'supportguild', 'supportserverinvite'])
+    async def supportserver(self, ctx: commands.Context):
+        await ctx.send("Here is my support server invite", view=SupportView())
 
 
 def setup(bot):
