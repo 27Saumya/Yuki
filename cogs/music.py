@@ -174,8 +174,8 @@ class Music(commands.Cog):
         await ctx.voice_client.disconnect(force=True)
         await ctx.send(embed=discord.Embed(description="**<:tick:897382645321850920> Disconnected.**", color=discord.Color.green()))
 
-    @commands.command(name="seek")
-    async def seek(self, ctx, seconds=None):
+    @commands.command(name="seek", aliases=['goto'])
+    async def seek(self, ctx, seconds: int=None):
         """Seek the song to a specific number of seconds"""
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -187,12 +187,11 @@ class Music(commands.Cog):
                 embed=discord.Embed(description="**<:error:897382665781669908> You need to specify the amount of seconds to seek :fast_forward:**", color=discord.Color.red())
             )
         try:
-            track_time = player.position + int(seconds) * 1000
-            await player.seek(track_time)
+            await player.seek(seconds)
         except ValueError:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Please Specify a valid amount of seconds :clock3:**", color=discord.Color.red()))
 
-        await ctx.send(embed=discord.Embed(description=f"Moved track to **{lavalink.format_time(track_time)}**", color=discord.Color.green()))
+        await ctx.send(embed=discord.Embed(description=f"Moved track to **{lavalink.format_time(seconds)}**", color=discord.Color.green()))
 
     @commands.command(name="skip", aliases=["next"])
     async def skip(self, ctx):
