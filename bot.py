@@ -84,7 +84,7 @@ class Bot(commands.Bot):
         await self.wait_until_ready()
         try:
             self.dbcursor.execute('DELETE FROM guilds WHERE guild_id=?', (guild.id))
-            print(f"Removed from guild- {guild.name}")
+            print(f"Removed from guild- {guild.name}\nRemoved the server from the database")
         except Exception as e:
             botOwner = await self.fetch_user(self.owner_id)
             await botOwner.send(str(e).capitalize())
