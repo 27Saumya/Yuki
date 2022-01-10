@@ -14,6 +14,7 @@ class SettingsCog(commands.Cog):
             data = self.bot.dbcursor.fetchone()
             if not data:
                 self.bot.dbcursor.execute('INSERT INTO settings(guild_id, bump) VALUES(?,?)', (ctx.guild.id, "off"))
+                self.bot.db.commit()
 
             self.bot.dbcursor.execute(f'SELECT * FROM settings WHERE guild_id=?', (ctx.guild.id,))
             setting = self.bot.dbcursor.fetchone()
