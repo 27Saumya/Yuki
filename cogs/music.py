@@ -416,7 +416,7 @@ class Music(commands.Cog):
                     embed.set_thumbnail(url=data["thumbnail"]["genius"])
                     embed.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
 
-                    return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed)
 
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song = str(player.current.title)
@@ -429,15 +429,15 @@ class Music(commands.Cog):
                     link = data["links"]["genius"]
                     await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
 
-                embed = discord.Embed(
+                em = discord.Embed(
                     title=data["title"],
                     description=data["lyrics"],
                     color=discord.Color.green()
                     )
-                embed.set_thumbnail(url=data["thumbnail"]["genius"])
-                embed.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
+                em.set_thumbnail(url=data["thumbnail"]["genius"])
+                em.set_author(name=data["author"], icon_url=data["thumbnail"]["genius"])
 
-                await ctx.send(embed=embed)
+                await ctx.send(embed=em)
 
 def setup(bot):
     bot.add_cog(Music(bot))
