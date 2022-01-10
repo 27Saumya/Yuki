@@ -1,9 +1,8 @@
 import discord
 from discord.ext import commands
-from bot import Bot
 
 
-def get_prefix(bot: Bot, message):
+def get_prefix(bot: commands.Bot, message):
     """Gets the prefix for the server"""
     try:
         bot.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
