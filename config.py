@@ -1,3 +1,0 @@
-TOKEN = "OTE5MzE0MTUxNTM1NDE5NDYz.YbUABQ.PC_24fhg-h0a7n_N-I6cpP0NPoI"
-pastebin_api_key = "nK9wiS0_7-MJTJKDN6DIm4yQpOQIDMRB"
-tenor_api_key = "1LLU9M2Y61ZP"

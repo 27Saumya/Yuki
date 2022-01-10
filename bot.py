@@ -35,7 +35,7 @@ from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
 from cogs.help import HelpOptions, members
 import sqlite3
 from utils.helpers.help import Help_Embed
-from utils.helpers.config import get_prefix
+from utils.helpers.configuration import get_prefix
 
 
 class Bot(commands.Bot):
