@@ -134,10 +134,9 @@ class Bot(commands.Bot):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
 
     @updatestats.before_loop
-    async def set_activity(self):
-        """Sets the bot activity"""
+    async def wait_until_ready(self):
+        """Waits until the bot's ready"""
         await self.wait_until_ready()
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
             
 
 bot = Bot()
