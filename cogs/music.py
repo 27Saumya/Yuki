@@ -406,7 +406,7 @@ class Music(commands.Cog):
                     data = await r.json()
                     if len(data["lyrics"]) > 4000:
                         link = data["links"]["genius"]
-                        await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
+                        return await ctx.send(embed=discord.Embed(description=f"**The lyrics of the song is too long. You may check the lyrics [here]({link})**", color=discord.Color.embed_background(theme="dark")))
 
                     embed = discord.Embed(
                         title=data["title"],
