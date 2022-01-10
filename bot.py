@@ -77,13 +77,14 @@ class Bot(commands.Bot):
     async def on_guild_join(self, guild):
         await self.wait_until_ready()
         self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (guild.id, "+"))
+        self.db.commit()
+        print(f"Joined guild- {guild.name}\nAdded the server to database!")
 
     async def on_guild_remove(self, guild: discord.Guild):
         await self.wait_until_ready()
         try:
-            self.dbcursor.execute(f"INSERT INTO Servers(guild_id, prefix) VALUES (?,?)", (guild.id, "+"))
-            self.db.commit()
-            print(f"Joined guild- {guild.name}\nAdded the server to database!")
+            self.dbcursor.execute('DELETE FROM guilds WHERE guild_id=?', (guild.id))
+            print(f"Removed from guild- {guild.name}")
         except Exception as e:
             botOwner = await self.fetch_user(self.owner_id)
             await botOwner.send(str(e).capitalize())
