@@ -131,14 +131,13 @@ class Bot(commands.Bot):
     @tasks.loop(seconds=10)
     async def updatestats(self):
         """Updates the bot activity"""
-        await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
 
     @updatestats.before_loop
     async def set_activity(self):
         """Sets the bot activity"""
-        await self.bot.wait_until_ready()
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
+        await self.wait_until_ready()
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(list(self.guilds))} servers for {members(self)} members"))
             
 
 bot = Bot()
