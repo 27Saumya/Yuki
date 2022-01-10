@@ -57,6 +57,8 @@ class Bot(commands.Bot):
         self.load_extension("utils.buttons")
         self.load_extension("jishaku")
 
+        self.wait_for_ready.start()
+
 
     async def on_ready(self):
         print(f"{self.user.name} is online!")
@@ -134,7 +136,7 @@ class Bot(commands.Bot):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
 
     @updatestats.before_loop
-    async def wait_until_ready(self):
+    async def wait_for_ready(self):
         """Waits until the bot's ready"""
         await self.wait_until_ready()
             
