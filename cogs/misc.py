@@ -201,9 +201,12 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
                 roles = " ".join(rolelist)
                 return roles
 
+        nick = user.nick if user.nick else "-"
+
         embed = discord.Embed(
             description=f"""**Username: `{user}`
 UserID: `{user.id}`
+Nick Name: `{nick}`
 Account Type: `{accType}`
 Created at: {discord.utils.format_dt(user.created_at)}
 Joined at: {discord.utils.format_dt(member.joined_at)}
