@@ -169,11 +169,11 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 
         if not user in ctx.guild.members:
             em = discord.Embed(
-                description=f"""**Username: `{user}`
-UserID: `{user.id}`
-Account Type: `{accType}`
-Created at: {discord.utils.format_dt(user.created_at)}
-Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
+                description=f"""**• Username: `{user}`
+• UserID: `{user.id}`
+• Account Type: `{accType}`
+• Created at: {discord.utils.format_dt(user.created_at)}
+• Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
                 color=discord.Color.green()
             ).set_author(name=user.name, icon_url=user.avatar.url).set_thumbnail(url=user.avatar.url).set_footer(text="Note: This user is not from this server", icon_url=user.avatar.url)
             user_for_banner = await self.bot.fetch_user(user.id)
@@ -205,15 +205,15 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
         nick = user.nick if user.nick else "-"
 
         embed = discord.Embed(
-            description=f"""**Username: `{user}`
-UserID: `{user.id}`
-Nickname: `{nick}`
-Account Type: `{accType}`
-Created at: {discord.utils.format_dt(user.created_at)}
-Joined at: {discord.utils.format_dt(member.joined_at)}
-Timed Out: `{timedOut(member)}`
-Roles: {getRoles(member)}
-Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
+            description=f"""**• Username: `{user}`
+• UserID: `{user.id}`
+• Nickname: `{nick}`
+• Account Type: `{accType}`
+• Created at: {discord.utils.format_dt(user.created_at)}
+• Joined at: {discord.utils.format_dt(member.joined_at)}
+• Timed Out: `{timedOut(member)}`
+• Roles: {getRoles(member)}
+• Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**""",
             color=user.color
         ).set_author(name=user.name, icon_url=user.avatar.url).set_thumbnail(url=user.avatar.url)
         userForBanner = await self.bot.fetch_user(user.id)
