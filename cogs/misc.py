@@ -106,6 +106,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 
     
     @commands.command(aliases=['eadd', 'ea'])
+    @commands.has_permissions(manage_emojis_and_stickers=True)
     async def emojiadd(self, ctx: commands.Context, emoji: str, *, name: str):
         """Creates an emoji in the server using a url"""
 
@@ -125,6 +126,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
                     print(e)
 
     @commands.command(aliases=['emojisteal', 'copyemoji', 'steal'])
+    @commands.has_permissions(manage_emojis_and_stickers=True)
     async def stealemoji(self, ctx: commands.Context, emoji: Union[discord.Emoji, discord.PartialEmoji], *, name: str):
         """Steal an emoji for another server.... The bot adds the emoji to this server"""
         try:
@@ -150,6 +152,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
             "discord_certified_moderator": str(self.bot.get_emoji(928298721475698708)),
             "early_supporter": str(self.bot.get_emoji(928298721496686692)),
             "verified_bot_developer": str(self.bot.get_emoji(928299192428953660)),
+            "hypesquad": str(self.bot.get_emoji(930418236678340668)),
             "hypesquad_balance": str(self.bot.get_emoji(928299452446412821)),
             "hypesquad_bravery": str(self.bot.get_emoji(928299808974843984)),
             "hypesquad_brilliance": str(self.bot.get_emoji(928299672840327208)),
