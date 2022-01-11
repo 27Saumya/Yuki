@@ -105,9 +105,22 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         )
 
     
-    @commands.command(aliases=['eadd', 'ea'])
-    async def emojiadd(self, ctx: commands.Context, emoji: str, *, name: str):
-        """Creates an emoji in the server using a url"""
+    @commands.command(aliases=['eadd', 'ea', 'emojisteal', 'copyemoji', 'steal'])
+    async def emojiadd(self, ctx: commands.Context, emoji, *, name: str):
+        """Creates an emoji in the server using a url.....
+If the emoji is a discord emoji:
+Steals the that is: The bot adds the emoji to this server"""
+
+        if isinstance(emoji, Union[discord.Emoji, discord.PartialEmoji]):
+            """Checks if the emoji is a discord emoji"""
+            try:
+                emoji_bytes = await emoji.read()
+                emoji_create = await ctx.guild.create_custom_emoji(image=emoji_bytes, name=name)
+                await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emoji_create} with name: `{name}`**", color=discord.Color.green()))
+            
+            except Exception as e:
+                error = str(e).capitalize()
+                return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occurred while creating the emoji\n`{error}`**", color=discord.Color.red()))
 
         async with aiohttp.ClientSession() as session:
             async with session.get(emoji) as r:
@@ -123,18 +136,6 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
                     await ctx.send(embed=discord.Embed(description=f"<:error:897382665781669908> The file size is too big!", color=discord.Color.red()))
                 except Exception as e:
                     print(e)
-
-    @commands.command(aliases=['emojisteal', 'copyemoji', 'steal'])
-    async def stealemoji(self, ctx: commands.Context, emoji: Union[discord.Emoji, discord.PartialEmoji], *, name: str):
-        """Steal an emoji for another server.... The bot adds the emoji to this server"""
-        try:
-            emoji_bytes = await emoji.read()
-            emoji_create = await ctx.guild.create_custom_emoji(image=emoji_bytes)
-            await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emoji_create} with name: `{name}`**", color=discord.Color.green()))
-            
-        except Exception as e:
-            error = str(e).capitalize()
-            return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occurred while creating the emoji\n`{error}`**", color=discord.Color.red()))
 
     
     @commands.command(aliases=['userinfo'])
