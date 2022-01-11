@@ -183,21 +183,21 @@ class HelpCog(commands.Cog):
     async def ping(self, ctx: commands.Context):
         interaction: discord.Interaction = ctx.interaction
         before = time.monotonic()
-        embed = discord.Embed(description="**:ping_pong: Bot Latency: **", color=discord.Color.green())
+        embed = discord.Embed(title=":ping_pong:", color=discord.Color.green())
         await interaction.response.send_message(embed=embed)
         message = await interaction.original_message()
         ping = (time.monotonic() - before) * 1000
-        embed2 = discord.Embed(description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------\n:ping_pong: Discord Latency: `{int(ping)}` ms**", color=discord.Color.green())
+        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
         await message.edit(embed=embed2)
 
     @commands.command(name="ping")
     async def ping_(self, ctx: commands.Context):
         """View the bot's latency (Edit Latency)"""
         before = time.monotonic()
-        embed = discord.Embed(description="**:ping_pong: Bot Latency: **", color=discord.Color.green())
+        embed = discord.Embed(title=":ping_pong:", color=discord.Color.green())
         message = await ctx.send(embed=embed)
         ping = (time.monotonic() - before) * 1000
-        embed2 = discord.Embed(description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------\n:ping_pong: Discord Latency: `{int(ping)}` ms**", color=discord.Color.green())
+        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
         await message.edit(embed=embed2)
 
 
