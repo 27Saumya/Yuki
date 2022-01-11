@@ -197,9 +197,9 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
                 return "-"
             else:
                 sorted_roles = sorted(
-                    [role.mention for role in member.roles[1:]], key=lambda x: x.position, reverse=True
+                    [role for role in member.roles[1:]], key=lambda x: x.position, reverse=True
                 )
-                roles = " ".join(sorted_roles)
+                roles = " ".join(role.mention for role in sorted_roles)
                 return roles
 
         nick = user.nick if user.nick else "-"
