@@ -16,7 +16,7 @@ Fun Commands!
 `marry` - Marry someone
 `slap` - Slap someone
 `pat` - Pat someone
-`tictactoe` - Play a game of tic-tac-toe with yourself, Multiplayer soon!
+`tictactoe` - Play a game of tic-tac-toe with someone online
 `zerotwo` - Get a random zerotwo gif! <:zerolove:920425612613660753>""",
     "Config": """
 Configure the Bot for the server!

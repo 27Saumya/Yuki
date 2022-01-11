@@ -37,14 +37,37 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         await message.edit(embed=embed, view=NitroView(message, ctx))
 
 
-    @slash_command(description="Play a TicTacToe Game with Yourself!")
-    async def tictactoe(self, ctx: commands.Context):
-        await ctx.respond("**TicTacToe**\n`X` goes first!", view=TicTacToe())
+    @slash_command(description="Play a TicTacToe Game with Someone Online!")
+    async def tictactoe(self, ctx: discord.ApplicationContext, user: Option(discord.Member, "The user you want to play tic-tac-toe with", default=None, required=True)):
+        if user is None:
+            return await ctx.respond(embed=discord.Embed(description="**<:error:897382665781669908? You can't play tic-tac-toe alone!**", color=discord.Color.red()), ephemeral=True)
+
+        if user.bot:
+            return await ctx.respond(embed=discord.Embed(description="**<:error:897382665781669908> You can't play with a bot!**", color=discord.Color.red()), ephemeral=True)
+
+        players = {
+            str(ctx.author.id): str(user.id),
+            str(user.id): str(ctx.author.id)
+        }
+
+        player1 = random.choice(list(players.keys()))
+        player2 = players[player1]
+
+        await ctx.interaction.response.send_message(f"{ctx.guild.get_member(int(player1)).mention}\'s turn (X)")
+        
+        msg = await ctx.interaction.original_message()
+
+        await msg.edit(view=TicTacToe(
+            player1=ctx.guild.get_member(int(player1)),
+            player2=ctx.guild.get_member(int(player2)),
+            message=msg
+        ))
 
     @commands.command(name="tictactoe", aliases=['ttt'])
-    async def tictactoe_(self, ctx: commands.Context, user: discord.Member=None):
-        """Play a tic-tac-toe Game with someone online, yourself or a local friend"""
-        user = user or ctx.author
+    async def tictactoe_(self, ctx: commands.Context, user: discord.Member):
+        """Play a tic-tac-toe Game with someone online"""
+        if user is None:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908? You can't play tic-tac-toe alone!**", color=discord.Color.red()))
 
         if user.bot:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't play with a bot!**", color=discord.Color.red()))
@@ -58,6 +81,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         player2 = players[player1]
 
         msg = await ctx.send(f"{ctx.guild.get_member(int(player1)).mention}\'s turn (X)")
+        
         await msg.edit(view=TicTacToe(
             player1=ctx.guild.get_member(int(player1)),
             player2=ctx.guild.get_member(int(player2)),
