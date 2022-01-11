@@ -196,9 +196,10 @@ Badges: {"  ".join(get_badges(user)) if len(get_badges(user)) > 0 else "`-`"}**"
             if len(list(member.roles)) == 0:
                 return "-"
             else:
-                rolelist = [role.mention for role in member.roles]
-                rolelist.pop(0)
-                roles = " ".join(rolelist)
+                sorted_roles = sorted(
+                    [role.mention for role in member.roles[1:]], key=lambda x: x.position, reverse=True
+                )
+                roles = " ".join(sorted_roles)
                 return roles
 
         nick = user.nick if user.nick else "-"
