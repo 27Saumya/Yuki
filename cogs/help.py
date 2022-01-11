@@ -187,7 +187,7 @@ class HelpCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
         message = await interaction.original_message()
         ping = (time.monotonic() - before) * 1000
-        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
+        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)}` ms\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
         await message.edit(embed=embed2)
 
     @commands.command(name="ping")
@@ -197,7 +197,7 @@ class HelpCog(commands.Cog):
         embed = discord.Embed(title=":ping_pong:", color=discord.Color.green())
         message = await ctx.send(embed=embed)
         ping = (time.monotonic() - before) * 1000
-        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)} ms`\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
+        embed2 = discord.Embed(title=":ping_pong: Pong!", description=f"**Bot latency: `{round(self.bot.latency * 1000)}` ms\n------------------------------\nDiscord Latency: `{int(ping)}` ms**", color=discord.Color.green())
         await message.edit(embed=embed2)
 
 
