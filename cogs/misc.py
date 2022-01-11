@@ -111,7 +111,18 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 If the emoji is a discord emoji:
 Steals the that is: The bot adds the emoji to this server"""
 
-        if isinstance(emoji, Union[discord.Emoji, discord.PartialEmoji]):
+        if isinstance(emoji, discord.Emoji):
+            """Checks if the emoji is a discord emoji"""
+            try:
+                emoji_bytes = await emoji.read()
+                emoji_create = await ctx.guild.create_custom_emoji(image=emoji_bytes, name=name)
+                await ctx.send(embed=discord.Embed(description=f"**<:tick:897382645321850920> Successfully created emoji - {emoji_create} with name: `{name}`**", color=discord.Color.green()))
+            
+            except Exception as e:
+                error = str(e).capitalize()
+                return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occurred while creating the emoji\n`{error}`**", color=discord.Color.red()))
+
+        elif isinstance(emoji, discord.PartialEmoji):
             """Checks if the emoji is a discord emoji"""
             try:
                 emoji_bytes = await emoji.read()
