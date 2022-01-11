@@ -48,7 +48,8 @@ Mod related commands
 `purge user` - Purges messages of a user from the channel
 `mute` - Timeout/Mute a user in the server
 `unmute` - Unmute a user in the server
-`emojiadd` - Add an emoji to the server using an url""",
+`emojiadd` - Add an emoji to the server using an url
+`stealemoji` - Add an emoji to the server using a discord emoji""",
     "Tickets": """
 Ticket related commands!
         
