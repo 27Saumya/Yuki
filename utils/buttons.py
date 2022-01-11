@@ -64,27 +64,34 @@ class TicTacToeButton(discord.ui.Button["TicTacToe"]):
         if state in (view.X, view.O):
             return
 
+        if interaction.user != view.player1 and interaction.user != view.player2:
+            return await interaction.response.send_message(embed=discord.Embed(description="**<:error:897382665781669908> This isn't your game!**", color=discord.Color.red()), ephemeral=True)
+
+        elif interaction.user == view.player1 and view.current_player == view.O:
+            return await interaction.response.send_message(embed=discord.Embed(description="**<:error:897382665781669908> It isn't your turn!**", color=discord.Color.red()), ephemeral=True)
+
+        elif interaction.user == view.player2 and view.current_player == view.X:
+            return await interaction.response.send_message(embed=discord.Embed(description="**<:error:897382665781669908> It isn't your turn!**", color=discord.Color.red()), ephemeral=True)
+
         if view.current_player == view.X:
-            self.style = discord.ButtonStyle.danger
-            self.label = "X"
+            self.emoji = "<:ttt_x:930542490862379130>"
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
-            content = "It is now O's turn"
+            content = f"It is now {view.player2.mention}'s turn (O)"
         else:
-            self.style = discord.ButtonStyle.success
-            self.label = "O"
+            self.emoji = "<:ttt_o:930542761638244483>"
             self.disabled = True
             view.board[self.y][self.x] = view.O
             view.current_player = view.X
-            content = "It is now X's turn"
+            content = f"It is now {view.player1.mention}'s turn (X)"
 
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = "X won!"
+                content = f"{view.player1.mention} won!"
             elif winner == view.O:
-                content = "O won!"
+                content = f"{view.player2.mention} won!"
             else:
                 content = "It's a tie!"
 
@@ -101,11 +108,15 @@ class TicTacToe(discord.ui.View):
     children: List[TicTacToeButton]
     X = -1
     O = 1
-    Tie = 2
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, player1: discord.Member, player2: discord.Member, message: discord.Message):
+        super().__init__(timeout=80)
+        self.Tie = -2
         self.current_player = self.X
+        self.player1 =  player1
+        self.player2 = player2
+        self.ended = False
+        self.message = message
         self.board = [
             [0, 0, 0],
             [0, 0, 0],
@@ -148,7 +159,15 @@ class TicTacToe(discord.ui.View):
 
         return None
 
-    
+    async def on_timeout(self):
+        if self.is_finished:
+            return
+        for child in self.children:
+            child.disabled = True
+        
+        return await self.message.edit(content=None, embed=discord.Embed(description="**<:error:897382665781669908> The game ended | Player(s) didn't respond within time!**", color=discord.Color.red()), view=self)
+
+   
 class Google(discord.ui.View):
     def __init__(self, query: str):
         super().__init__()

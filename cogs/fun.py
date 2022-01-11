@@ -42,9 +42,27 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         await ctx.respond("**TicTacToe**\n`X` goes first!", view=TicTacToe())
 
     @commands.command(name="tictactoe", aliases=['ttt'])
-    async def tictactoe_(self, ctx):
-        """Play a tic-tac-toe Game with yourself"""
-        await ctx.send("**TicTacToe**\n`X` goes first!", view=TicTacToe())
+    async def tictactoe_(self, ctx: commands.Context, user: discord.Member=None):
+        """Play a tic-tac-toe Game with someone online, yourself or a local friend"""
+        user = user or ctx.author
+
+        if user.bot:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't play with a bot!**", color=discord.Color.red()))
+
+        players = {
+            str(ctx.author.id): str(user.id),
+            str(user.id): str(ctx.author.id)
+        }
+
+        player1 = random.choice(list(players.keys()))
+        player2 = players[player1]
+
+        msg = await ctx.send(f"{ctx.guild.get_member(int(player1)).mention}\'s turn (X)")
+        await msg.edit(view=TicTacToe(
+            player1=ctx.guild.get_member(int(player1)),
+            player2=ctx.guild.get_member(int(player2)),
+            message=msg
+        ))
 
 
     @slash_command(description="Ask Me Something!", name="8ball")
