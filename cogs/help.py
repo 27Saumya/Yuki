@@ -86,7 +86,7 @@ class HelpOptions(discord.ui.View):
                     description=cog_help[select.values[0]],
                     color=discord.Color.embed_background(theme="dark"),
                 ).set_footer(
-                    text="Use `help <command>` to get additional help on a specific command."
+                    text="Use help <command> to get additional help on a specific command."
                 )
             )
 

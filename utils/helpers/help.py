@@ -21,6 +21,7 @@ Fun Commands!
     "Config": """
 Configure the Bot for the server!
 
+`help` - Stuck? Check it out
 `changeprefix` - Change the bot's prefix for the server
 `ticket setup` - Setup ticket system for the server
 `settings` - View the bot's setting for the server""",
@@ -28,7 +29,7 @@ Configure the Bot for the server!
 Miscellaneous bot commands!
         
 `botinfo` - Check the bot stats
-`help` - Stuck? Check it out
+`coinflip`
 `invite` - Invite the bot to your server!
 `avatar` - View someone's avatar
 `speedtest` - Check the bot's connection speed

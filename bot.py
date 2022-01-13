@@ -74,14 +74,12 @@ class Bot(commands.Bot):
         self.dbcursor.execute('CREATE TABLE IF NOT EXISTS guilds (guild_id INTEGER, prefix TEXT)')
         self.db.commit()
     
-    async def on_guild_join(self, guild):
-        await self.wait_until_ready()
-        self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (guild.id, "+"))
+    async def on_guild_join(self, guild: discord.Guild):
+        self.dbcursor.execute('INSERT INTO guilds (guild_id, prefix) VALUES (?,?)', (guild.id, "+"))
         self.db.commit()
         print(f"Joined guild- {guild.name}\nAdded the server to database!")
 
     async def on_guild_remove(self, guild: discord.Guild):
-        await self.wait_until_ready()
         try:
             self.dbcursor.execute('DELETE FROM guilds WHERE guild_id=?', (guild.id))
             print(f"Removed from guild- {guild.name}\nRemoved the server from the database")
@@ -121,7 +119,9 @@ class Bot(commands.Bot):
                 embed = discord.Embed(title="It's time to bump!", description="Use `!d bump` to bump the server!", color=discord.Color.green())
                 await message.channel.send(embed=embed)
         except AttributeError:
-            print("Not a bump message.")
+            pass
+        except Exception as e:
+            print(e)
         
         self.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
         prefixes = self.dbcursor.fetchone()
