@@ -244,7 +244,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
             description=f"""**• Owner: {guild.owner.mention}
 • ServerID: `{guild.id}`**
 • Members: `{guild.members}`
-• Created at: {discord.utils.format_time(guild.created_at)}
+• Created at: {discord.utils.format_dt(guild.created_at)}
 • Roles: `{len(guild.roles)}`
 • Channels: `{len(guild.channels)}`
 • Voice Channels: `{len(guild.voice_channels)}`""",
