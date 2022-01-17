@@ -160,8 +160,9 @@ class TicTacToe(discord.ui.View):
         return None
 
     async def on_timeout(self):
-        if self.is_finished:
-            return
+        for child in self.children:
+            if child.disabled:  
+                return
         for child in self.children:
             child.disabled = True
         
