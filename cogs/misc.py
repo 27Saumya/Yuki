@@ -10,6 +10,7 @@ from typing import Union
 import aiohttp
 from io import BytesIO
 from utils.buttons import *
+from discord.ext.commands import BucketType
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -86,6 +87,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 
 
     @commands.command(aliases=['st', 'speed'])
+    @commands.cooldown(1, 60, BucketType.user)
     async def speedtest(self, ctx: commands.Context):
         """Test the bot's speed"""
         message = await ctx.send(
