@@ -9,7 +9,7 @@ from speedtest import Speedtest
 from typing import Union
 import aiohttp
 from io import BytesIO
-from utils.buttons import SourceView, SupportView
+from utils.buttons import *
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -230,6 +230,10 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def supportserver(self, ctx: commands.Context):
         await ctx.send("Here is my support server invite", view=SupportView())
 
+    @commands.command()
+    async def vote(self, ctx: commands.Context):
+        """Vote the bot on [top.gg](https://top.gg/bot/919314151535419463/vote)"""
+        await ctx.send("Vote me now!", view=VoteView())
 
 def setup(bot):
     bot.add_cog(Misc(bot))

@@ -81,7 +81,7 @@ class Bot(commands.Bot):
 
     async def on_guild_remove(self, guild: discord.Guild):
         try:
-            self.dbcursor.execute('DELETE FROM guilds WHERE guild_id=?', (guild.id))
+            self.dbcursor.execute('DELETE FROM guilds WHERE guild_id=?', (guild.id,))
             print(f"Removed from guild- {guild.name}\nRemoved the server from the database")
         except Exception as e:
             botOwner = await self.fetch_user(self.owner_id)
