@@ -246,9 +246,9 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
 • ServerID: `{guild.id}`**
 • Members: `{guild.members}`
 • Created at: {discord.utils.format_dt(guild.created_at)}
-• Roles: `{len(guild.roles)}`
-• Channels: `{len(guild.channels)}`
-• Voice Channels: `{len(guild.voice_channels)}`""",
+• Roles: `{len(list(guild.roles))}`
+• Channels: `{len(list(guild.channels))}`
+• Voice Channels: `{len(list(guild.voice_channels))}`""",
             color=discord.Color.green()
         ).set_author(name=guild.name, icon_url=icon).set_thumbnail(url=icon)
         if guild.banner:
