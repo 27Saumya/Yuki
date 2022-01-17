@@ -243,12 +243,12 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         icon = guild.icon.url or "https://discord.com/assets/2d20a45d79110dc5bf947137e9d99b66.svg"
         embed = discord.Embed(
             description=f"""**• Owner: {guild.owner.mention}
-• ServerID: `{guild.id}`**
+• ServerID: `{guild.id}`
 • Members: `{len(guild.members)}`
 • Created at: {discord.utils.format_dt(guild.created_at)}
 • Roles: `{len(guild.roles)}`
 • Text Channels: `{len(guild.text_channels)}`
-• Voice Channels: `{len(guild.voice_channels)}`""",
+• Voice Channels: `{len(guild.voice_channels)}`**""",
             color=discord.Color.green()
         ).set_author(name=guild.name, icon_url=icon).set_thumbnail(url=icon)
         if guild.banner:
