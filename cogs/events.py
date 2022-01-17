@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import datetime
 
 
 class EventsCog(commands.Cog):
@@ -36,8 +35,7 @@ class EventsCog(commands.Cog):
             embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permission(s)!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.CommandOnCooldown):
-            retry_after = discord.utils.format_dt(datetime.datetime(second=error.retry_after), "R")
-            embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe **{ctx.command.name}** command is on a cooldown. Wait for {retry_after}**", color=discord.Color.red())
+            embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe **{ctx.command.name}** command is on a cooldown. Wait for `{error.retry_after:.1f}`s**", color=discord.Color.red())
             await ctx.send(embed=embed)
         elif isinstance(error, commands.DisabledCommand):
             embed = discord.Embed(description="<:error:897382665781669908> This command is disabled :(", color=discord.Color.red())
