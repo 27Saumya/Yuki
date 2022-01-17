@@ -252,7 +252,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
             color=discord.Color.green()
         ).set_author(name=guild.name, icon_url=icon).set_thumbnail(url=icon)
         if guild.banner:
-            embed.set_thumbnail(url=guild.banner.url)
+            embed.set_image(url=guild.banner.url)
 
         return await ctx.send(embed=embed)
 
