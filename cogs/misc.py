@@ -242,7 +242,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def serverinfo(self, ctx: commands.Context):
         """Get information about the server"""
         guild = ctx.guild
-        icon = guild.icon.url if guild.icon else "https://discord.com/assets/2d20a45d79110dc5bf947137e9d99b66.svg"
+        icon = guild.icon.url if guild.icon else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
         embed = discord.Embed(
             description=f"""**• Owner: {guild.owner.mention}
 • ServerID: `{guild.id}`
