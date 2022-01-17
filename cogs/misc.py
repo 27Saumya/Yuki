@@ -13,7 +13,7 @@ from utils.buttons import *
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 
@@ -234,6 +234,26 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def vote(self, ctx: commands.Context):
         """Vote the bot on [top.gg](https://top.gg/bot/919314151535419463/vote)"""
         await ctx.send("Vote me now!", view=VoteView())
+
+    @commands.command(aliases=['guildinfo'])
+    @commands.guild_only()
+    async def serverinfo(self, ctx: commands.Context):
+        """Get information about the server"""
+        guild: discord.Guild = ctx.guild
+        embed = discord.Embed(
+            description=f"""**• Owner: {guild.owner.mention}
+• ServerID: `{guild.id}`**
+• Members: `{guild.members}`
+• Created at: {discord.utils.format_time(guild.created_at)}
+• Roles: `{len(guild.roles)}`
+• Channels: `{len(guild.channels)}`
+• Voice Channels: `{len(guild.voice_channels)}`""",
+            color=discord.Color.green()
+        ).set_author(name=guild.name, icon_url=guild.icon.url).set_thumbnail(guild.icon.url)
+        if guild.banner:
+            embed.set_thumbnail(url=guild.banner.url)
+
+        return await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Misc(bot))

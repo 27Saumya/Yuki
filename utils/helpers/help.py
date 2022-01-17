@@ -35,6 +35,7 @@ Miscellaneous bot commands!
 `speedtest` - Check the bot's connection speed
 `source` - View the bot's source code
 `whois` - Get information about a user of yourself
+`serverinfo` - Show information about the server
 `youtube download`- Download a youtube video (Currently Closed)""",
     "Info": """
 Information related commands!
