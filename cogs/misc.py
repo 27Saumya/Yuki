@@ -89,22 +89,25 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     @commands.command(aliases=['st', 'speed'])
     @commands.cooldown(1, 60, BucketType.user)
     async def speedtest(self, ctx: commands.Context):
-        """Test the bot's speed"""
-        message = await ctx.send(
-            embed=discord.Embed(description="**<a:loading:911568431315292211> Starting Speed Test!**", color=discord.Color.embed_background(theme="dark"))
-        )
-        s = Speedtest()
-        s.get_best_server()
-        await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Found Best Server**", color=discord.Color.embed_background(theme="dark")))
-        s.download()
-        await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Download Complete**", color=discord.Color.embed_background(theme="dark")))
-        s.upload()
-        await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Uploading Complete\n-----------------------------\nSending results**", color=discord.Color.embed_background(theme="dark")))
-        s = s.results.dict()
+        """Test the bot's speed... Currently disabled (fixing some bugs)
+        Return of the command: N/A"""
+        return await ctx.send("Sorry... This command is currently disabled :(")
+        #Archived code for some time
+        # message = await ctx.send(
+        #     embed=discord.Embed(description="**<a:loading:911568431315292211> Starting Speed Test!**", color=discord.Color.embed_background(theme="dark"))
+        # )
+        # s = Speedtest()
+        # s.get_best_server()
+        # await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Found Best Server**", color=discord.Color.embed_background(theme="dark")))
+        # s.download()
+        # await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Download Complete**", color=discord.Color.embed_background(theme="dark")))
+        # s.upload()
+        # await message.edit(embed=discord.Embed(description="**<a:loading:911568431315292211> Uploading Complete\n-----------------------------\nSending results**", color=discord.Color.embed_background(theme="dark")))
+        # s = s.results.dict()
 
-        await message.edit(
-            embed=discord.Embed(title="Speed Test Results", description=f"Ping: `{s['ping']}` ms\nDownload: `{round(s['download']/10**6, 3)}` Mbit/s\nUpload: `{round(s['upload']/10**6, 3)}` Mbit/s\nServer: `{s['server']['sponsor']}`", color=discord.Color.embed_background(theme="dark"))
-        )
+        # await message.edit(
+        #     embed=discord.Embed(title="Speed Test Results", description=f"Ping: `{s['ping']}` ms\nDownload: `{round(s['download']/10**6, 3)}` Mbit/s\nUpload: `{round(s['upload']/10**6, 3)}` Mbit/s\nServer: `{s['server']['sponsor']}`", color=discord.Color.embed_background(theme="dark"))
+        # )
 
     
     @commands.command(aliases=['eadd', 'ea'])
