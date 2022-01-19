@@ -14,7 +14,7 @@ class TestCog(commands.Cog):
         """Just for some tests"""
         giphy = giphy_client.DefaultApi()
         result = giphy.gifs_search_get(config.GIPHY_API_KEY, q, limit=50)
-        await ctx.send(f"```{result}```")
+        await ctx.send(f"```{str(result).strip()}```")
 
 def setup(bot: Bot):
     bot.add_cog(TestCog(bot))
