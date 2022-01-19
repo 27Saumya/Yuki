@@ -14,6 +14,7 @@ from discord.ext.commands import BucketType
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
+    """Miscellaneous commands fall in this category"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

@@ -8,6 +8,11 @@ import wikipedia
 
 
 class Info(commands.Cog, name="Info", description="Information related commands"):
+    """
+Commands related to information come in this category
+
+These include google, covid info and much more
+    """
     def __init__(self, bot):
         self.bot = bot
 

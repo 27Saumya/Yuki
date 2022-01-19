@@ -53,6 +53,7 @@ class LavalinkVoiceClient(discord.VoiceClient):
 
 
 class Music(commands.Cog):
+    """Music commands!"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

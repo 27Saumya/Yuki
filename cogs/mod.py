@@ -8,6 +8,13 @@ import humanfriendly
 
 
 class ModCog(commands.Cog, name="Moderation", description="Moderation commands"):
+    """
+Moderation related commands. Yuki ✨ mainly focuses on fun and multipurpose...
+
+So, it doesn't include basic moderation commands like: `kick` and `ban`.
+
+It instead has unique commands!
+"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

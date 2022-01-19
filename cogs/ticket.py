@@ -8,7 +8,12 @@ async def cleanup(guild: discord.Guild):
             await channel.delete()
 
 
-class TicketCog(commands.Cog):
+class TicketCog(commands.Cog, name="Ticket"):
+    """
+Ticket related commands.
+
+Use `panel` or `ticket` | `ticket setup` for more information!
+    """
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

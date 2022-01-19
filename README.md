@@ -1,5 +1,5 @@
 
-# Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands!
+# Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands! You can invite me from [here](https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands)
 
 <p align="center">
   <img width="460" height="400" src="https://cdn.discordapp.com/attachments/920354515142733825/920517232554024990/VIWztfa.png">

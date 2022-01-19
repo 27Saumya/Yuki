@@ -15,6 +15,7 @@ def w(name, desc, picture):
     return embed_win
 
 class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
+    """Fun commands that you would enjoy to use!"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

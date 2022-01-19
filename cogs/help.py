@@ -139,7 +139,8 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             print(e)
 
 
-class HelpCog(commands.Cog):
+class HelpCog(commands.Cog, name="Help"):
+    """Help command and bot related commands"""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.help_command = MyHelpCommand()
