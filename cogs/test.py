@@ -12,9 +12,11 @@ class TestCog(commands.Cog):
     @commands.command()
     async def test(self, ctx: commands.Context, q: str):
         """Just for some tests"""
-        giphy = giphy_client.DefaultApi()
-        result = giphy.gifs_search_get(config.GIPHY_API_KEY, q, limit=50)
-        await ctx.send(f"```{str(result).strip()}```")
+        await ctx.send(
+            embed=discord.Embed(
+                title="Test Completed UwU"
+            ).set_image(url="https://giphy.com/gifs/uwu-cafeilustrando-May0SdjFNSrckK7LO9")
+        )
 
 def setup(bot: Bot):
     bot.add_cog(TestCog(bot))
