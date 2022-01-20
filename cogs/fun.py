@@ -2,15 +2,11 @@ import discord
 from discord.ext import commands
 from discord.commands import slash_command, Option
 import random
-
-from itsdangerous import exc
 from utils.buttons import NitroView, TicTacToe, BeerView, BeerPartyView
 import asyncio
 import akinator as ak
-import requests
 from discord.ext.commands import BucketType
 from config import GIPHY_API_KEY
-import json
 from bot import Bot
 from giphy_client.rest import ApiException
 from utils.helpers.configuration import *
