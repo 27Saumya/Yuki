@@ -36,6 +36,7 @@ from cogs.help import HelpOptions, members
 import sqlite3
 from utils.helpers.help import Help_Embed
 from utils.helpers.configuration import get_prefix
+import giphy_client
 
 
 class Bot(commands.Bot):
@@ -43,6 +44,7 @@ class Bot(commands.Bot):
         self.db = sqlite3.connect("utils/databases/main.db")
         self.dbcursor = self.db.cursor()
         self.persistent_views_added = False
+        self.giphy = giphy_client.DefaultApi()
 
         super().__init__(
             command_prefix=(get_prefix),

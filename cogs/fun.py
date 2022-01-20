@@ -2,13 +2,18 @@ import discord
 from discord.ext import commands
 from discord.commands import slash_command, Option
 import random
+
+from itsdangerous import exc
 from utils.buttons import NitroView, TicTacToe, BeerView, BeerPartyView
 import asyncio
 import akinator as ak
 import requests
 from discord.ext.commands import BucketType
-from config import tenor_api_key
+from config import GIPHY_API_KEY
 import json
+from bot import Bot
+from giphy_client.rest import ApiException
+from utils.helpers.configuration import *
 
 def w(name, desc, picture):
     embed_win = discord.Embed(description=f"**Is it {name}\n{desc}**", color=discord.Color.orange()).set_image(url=picture)
@@ -16,7 +21,7 @@ def w(name, desc, picture):
 
 class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     """Fun commands that you would enjoy to use!"""
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @slash_command(description="Generates a nitro link!")
@@ -267,14 +272,12 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
 
         query = "anime hug"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
 
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif= random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
         embed = discord.Embed(description=f"**<:hug:922213806027968573> {ctx.author.mention} hugged {user.mention}!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
@@ -287,21 +290,16 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         if user.bot:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat a bot.**"))
         if user == ctx.author:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry hugging someone else.**", color=discord.Color.red()))
-
-        if user.bot:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat a bot!\n--------------------------\nTry patting an human.**", color=discord.Color.red()))
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry patting someone else.**", color=discord.Color.red()))
         
         query = "anime head pat"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
 
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
 
         embed = discord.Embed(description=f"**{ctx.author.mention} patted {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
@@ -312,17 +310,15 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     async def gif_(self, ctx: commands.Context, *, query: str):
         """Search Some GIF!"""
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
         
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
-        await ctx.send(embed=discord.Embed(description=f"**Random result for {query}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url))
+        await ctx.send(embed=discord.Embed(description=f"**Random result for {query}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url).set_thumbnail(url=POWERED_BY_GIPHY))
 
     @commands.command(name="slap")
     @commands.cooldown(1, 10, BucketType.user)
@@ -330,16 +326,17 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         """Slap someone!"""
         if user.bot:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't slap a bot.**", color=discord.Color.red()))
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't slap yourself!\n--------------------------\nTry slapping someone else.**", color=discord.Color.red()))
+
         query = "anime slap"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
     
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
         embed = discord.Embed(description=f"**{ctx.author.mention} slapped {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
@@ -351,16 +348,17 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         """Kiss someone!"""
         if user.bot:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't kiss a bot.**", color=discord.Color.red()))
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't kiss yourself!\n--------------------------\nTry kissing someone else.**", color=discord.Color.red()))
+
         query = "anime kiss"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
 
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
         embed = discord.Embed(description=f"**{ctx.author.mention} kissed {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
@@ -372,16 +370,17 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         """Marry someone!"""
         if user.bot:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't marry a bot.**", color=discord.Color.red()))
+        if user == ctx.author:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't marry yourself!\n--------------------------\nTry marrying someone else.**", color=discord.Color.red()))
+
         query = "anime marry"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
 
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
         
         embed = discord.Embed(description=f"**{ctx.author.mention} married {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
@@ -397,7 +396,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         gayrate = random.randint(1, 100)
         
         if gayrate >= 90:
-            embed = discord.Embed(title="Yuki's Gayr8 Machine!", description=f"**The MACHINE Broke :slot_machine:!\n\n{user.mention}**'s gayr8: **{gayrate}**%", color=discord.Color.dark_purple())
+            embed = discord.Embed(title="Yuki's Gayr8 Machine!", description=f"**The MACHINE Broke :slot_machine:!\n\n{user.mention}**'s gayr8: **{gayrate}**%", color=discord.Color.embed_background(theme="dark"))
             embed.set_image(url="https://media.giphy.com/media/j2es27Xohj5EMK6G8c/giphy.gif")
             return await ctx.send(embed=embed)
 
@@ -410,15 +409,12 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         """Gives a random zerotwo gif <:zerolove:920425612613660753>!"""
         query = "zerotwo"
         lmt = 50
-        r = requests.get(
-            "https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (query, tenor_api_key, lmt)
-        )
 
-        if r.status_code == 200:
-            top_gifs = json.loads(r.content)
-            url = random.choice(random.choice(top_gifs["results"])["media"])["gif"]["url"]
-        
-        else:
+        try:
+            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
+            gif = random.choice(list(r.data))
+            url = giphyUrl(gif.id)        
+        except ApiException:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**"))
 
         embed = discord.Embed(description="**<:zerolove:920425612613660753> Zerotwo is just so cute!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
