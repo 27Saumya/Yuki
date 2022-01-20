@@ -1,4 +1,4 @@
-<p align='center'><a href = "https://discord.gg/RqKvY5MQgb" target = "Support Server"><img src = "https://discord.com/api/guilds/922112505625600020/embed.png"></a></p>
+<p align='center'><a href = "https://discord.gg/RqKvY5MQgb" target = "Support Server"><img src = "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"></a></p>
 
 # Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands! You can invite me from [here](https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands)
 
