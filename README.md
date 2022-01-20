@@ -1,6 +1,6 @@
 <p align='center'><a href = "https://discord.gg/RqKvY5MQgb" target = "_blank"><img src = "https://img.shields.io/discord/922112505625600020?color=blue&label=Support%20Server&style=for-the-badge"></a></p>
 
-# Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands! You can invite me from [here](https://discord.com/api/oauth2/authorize?client_id=919314151535419463&permissions=8&scope=bot%20applications.commands)
+# Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands! [Invite](https://dsc.gg/yukibot) me now
 
 <p align="center">
   <img width="460" height="400" src="https://cdn.discordapp.com/attachments/920354515142733825/920517232554024990/VIWztfa.png">
