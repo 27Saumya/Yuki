@@ -288,7 +288,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry patting someone else.**", color=discord.Color.red()))
         
-        query = "anime head pat"
+        query = "anime pat"
         lmt = 50
 
         try:

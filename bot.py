@@ -45,6 +45,7 @@ class Bot(commands.Bot):
         self.dbcursor = self.db.cursor()
         self.persistent_views_added = False
         self.giphy = giphy_client.DefaultApi()
+        self.DEFAULT_PREFIX = '+'
 
         super().__init__(
             command_prefix=(get_prefix),
