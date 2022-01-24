@@ -1,7 +1,8 @@
 <p align='center'><a href = "https://discord.gg/RqKvY5MQgb" target = "_blank"><img src = "https://img.shields.io/discord/922112505625600020?color=blue&label=Support%20Server&style=for-the-badge">
-<a href="https://top.gg/bot/919314151535419463">
+</a></p>
+
+<p align='center'><a href="https://top.gg/bot/919314151535419463">
   <img src="https://top.gg/api/widget/919314151535419463.svg">
-</a>
 </a></p>
 
 # Hey, I am Yuki. A Bot which works with both Slash and Prefixed Commands! [Invite](https://dsc.gg/yukibot) me now
