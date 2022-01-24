@@ -48,7 +48,7 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
         self.giphy = giphy_client.DefaultApi()
         self.DEFAULT_PREFIX = '+'
-        self.topgg = topgg.DBLClient(self, config.TOPGG_TOKEN)
+        self.topgg = topgg.DBLClient(self, config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
 
         super().__init__(
             command_prefix=get_prefix,
