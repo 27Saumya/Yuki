@@ -134,12 +134,15 @@ It instead has unique commands!
 
         if user.guild_permissions.administrator or user.guild_permissions.manage_channels:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The user is a MOD/ADMIN!**", color=discord.Color.red()))
-        
-        timeConvert = humanfriendly.parse_timespan(time)
-        await user.timeout(discord.utils.utcnow()+datetime.timedelta(seconds=timeConvert), reason=reason)
-        embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully muted {user.mention} for {time} | Reason: {reason}**", color=discord.Color.green())
-        await ctx.send(embed=embed)
-        await user.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You were muted in {ctx.guild.name} | Reason: {reason}**", color=discord.Color.red()))
+
+        try:        
+            timeConvert = humanfriendly.parse_timespan(time)
+            await user.timeout(discord.utils.utcnow()+datetime.timedelta(seconds=timeConvert), reason=reason)
+            embed = discord.Embed(description=f"**<:tick:897382645321850920> Successfully muted {user.mention} for {time} | Reason: {reason}**", color=discord.Color.green())
+            await ctx.send(embed=embed)
+            await user.send(embed=discord.Embed(description=f"**<:error:897382665781669908> You were muted in {ctx.guild.name} | Reason: {reason}**", color=discord.Color.red()))
+        except discord.Forbidden:
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> This user has a higher or equal role to me. **", color=discord.Color.red()))
 
     @commands.command(aliases=['um'])
     @commands.has_permissions(manage_channels=True)

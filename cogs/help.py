@@ -155,7 +155,7 @@ class HelpCog(commands.Cog, name="Help"):
     async def invite(self, ctx):
         await ctx.respond("Invite Here!", view=InviteView2())
         
-    @commands.command(name="invite")
+    @commands.command(name="invite", aliases=['inv', 'botinv', 'botbotinvite'])
     async def invite_(self, ctx):
         """Invite the bot to your server!"""
         await ctx.send("Invite Here!", view=InviteView2())

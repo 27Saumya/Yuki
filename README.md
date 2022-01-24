@@ -28,7 +28,7 @@ Change the following:
 
 • Make sure you have the `main.db` file in the `utils/databases` directory
 
-• A `config.py` file in the main directory with your [GIPHY](https://developers.giphy.com/) api key and your bot [TOKEN](https://discord.com/developers/applications)
+• A `config.py` file in the main directory with your [GIPHY](https://developers.giphy.com/) api key, your bot's [TOKEN](https://discord.com/developers/applications) and your bot's [top.gg](https:/top.gg) TOKEN 
 
 # Running the bot
 

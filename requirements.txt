@@ -14,7 +14,7 @@ jishaku==2.3.2
 lavalink==3.1.4
 multidict==4.7.6
 psutil==5.9.0
-py-cord==2.0.0a4671+g51dd856e
+py-cord @ git+https://github.com/Pycord-Development/pycord@2601fd05ca749c0ec5d568de3eaf6d613eec282a
 pycparser==2.20
 pytube==11.0.2
 qrcode==7.3.1
@@ -22,6 +22,7 @@ requests==2.26.0
 six==1.15.0
 soupsieve==2.3.1
 speedtest-cli==2.1.3
+topggpy==1.4.0
 typing-extensions==3.10.0.2
 urllib3==1.26.7
 wikipedia==1.4.0

@@ -215,12 +215,12 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     @commands.command(name="akinator", aliases=['aki', 'ak', 'akinat'])
     async def akinator_(self, ctx: commands.Context):
         """Play a game of akinator\nHow to play: Think of a character it can either be a fictional or non-fictional character.\nThe bot will ask questions, just give them the right answer!"""
-        await ctx.send(embed=discord.Embed(description="**Yukinator is here to guess!\n--------------------------------\nOptions: y: `yes\n`no: `n`\nidk: `Don't know`\np: `probably`\npn: `probably not`\nb: `previous question`**", color=discord.Color.green()).set_image(url="https://static.wikia.nocookie.net/video-game-character-database/images/9/9f/Akinator.png/revision/latest?cb=20200817020737"))
+        await ctx.send(embed=discord.Embed(description="**Yukinator is here to guess!\n--------------------------------\nOptions: y: `yes\n`no: `n`\nidk: `Don't know`\np: `probably`\npn: `probably not`\nb: `previous question`\nq: `quit the game`**", color=discord.Color.green()).set_image(url="https://static.wikia.nocookie.net/video-game-character-database/images/9/9f/Akinator.png/revision/latest?cb=20200817020737"))
         def check(msg):
             return (
                 msg.author == ctx.author
                 and msg.channel == ctx.channel
-                and msg.content.lower() in ["y", "n", "idk", "p", "pn", "b"]
+                and msg.content.lower() in ["y", "n", "idk", "p", "pn", "b", "q"]
             )
 
         try:
@@ -228,19 +228,25 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             q = aki.start_game()
             while aki.progression <= 80:
                 await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[`y` | `n` | `idk` | `p` | `pn` | `b`]**", color=discord.Color.embed_background(theme="dark")))
-                msg = await self.bot.wait_for("message", check=check)
-                if msg.content.lower() == "b":
-                    try:
-                        q = aki.back()
-                    except ak.CantGoBackAnyFurther:
-                        await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
-                        continue
-                else:
-                    try:
-                        q = aki.answer(msg.content.lower())
-                    except ak.InvalidAnswerError as e:
-                        await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
-                        continue
+                try:
+                    msg = await self.bot.wait_for("message", check=check, timeout=60)
+                    if msg.content.lower() == "b":
+                        try:
+                            q = aki.back()
+                        except ak.CantGoBackAnyFurther:
+                            await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
+                            continue
+                    else:
+                        try:
+                            q = aki.answer(msg.content.lower())
+                        except ak.InvalidAnswerError as e:
+                            await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> {e}**"))
+                            continue
+                except asyncio.TimeoutError:
+                    return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> The game timed-out.. try plsying a new one**"))
+
+                except Exception as e:
+                    await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured\n`{str(e).capitalize()}`**"))
             aki.win()
             await ctx.send(
                 embed=discord.Embed(description=f"**Is it {aki.first_guess['name']}\n({aki.first_guess['description']})!\nWas I correct?(y/n)\n\t**", color=discord.Color.orange()).set_image(url=aki.first_guess['absolute_picture_path'])

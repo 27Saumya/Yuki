@@ -97,10 +97,13 @@ class TicTacToeButton(discord.ui.Button["TicTacToe"]):
         if winner is not None:
             if winner == view.X:
                 content = f"{view.player1.mention} won!"
+                view.ended = True
             elif winner == view.O:
                 content = f"{view.player2.mention} won!"
+                view.ended = True
             else:
                 content = "It's a tie!"
+                view.ended = True
 
             for child in view.children:
                 child.disabled = True
@@ -167,9 +170,8 @@ class TicTacToe(discord.ui.View):
         return None
 
     async def on_timeout(self):
-        for child in self.children:
-            if child.disabled:  
-                return
+        if self.ended == True:
+            return
         for child in self.children:
             child.disabled = True
         

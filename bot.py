@@ -37,6 +37,7 @@ import sqlite3
 from utils.helpers.help import Help_Embed
 from utils.helpers.configuration import get_prefix
 import giphy_client
+import topgg
 
 
 class Bot(commands.Bot):
@@ -47,6 +48,7 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
         self.giphy = giphy_client.DefaultApi()
         self.DEFAULT_PREFIX = '+'
+        self.topgg = topgg.DBLClient(self, config.TOPGG_TOKEN)
 
         super().__init__(
             command_prefix=get_prefix,
@@ -62,6 +64,7 @@ class Bot(commands.Bot):
         self.load_extension("jishaku")
 
         self.updateactivity.start()
+        self.update_topgg_stats.start()
 
 
     async def on_ready(self):
@@ -144,7 +147,20 @@ class Bot(commands.Bot):
     async def wait_for_ready(self):
         """Waits until the bot is ready"""
         await self.wait_until_ready()
-            
+
+    @tasks.loop(minutes=30)
+    async def update_topgg_stats(self):
+        """Updates the bot's stats on [top.gg](https://top.gg)"""
+        try:
+            await self.topgg.post_guild_count()
+            print("Successfully updated bot stats on top.gg")
+        except Exception as e:
+            print(str(e).capitalize())
+
+    @update_topgg_stats.before_loop
+    async def before_update_topgg_stats(self):
+        """Waits for the bot to be ready"""
+        await self.wait_until_ready()
 
 bot = Bot()
 

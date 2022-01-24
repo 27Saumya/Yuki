@@ -232,7 +232,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def source(self, ctx: commands.Context):
         await ctx.send("Here is my source code", view=SourceView())
 
-    @commands.command(aliases=['support', 'botserver', 'supportguild', 'supportserverinvite'])
+    @commands.command(aliases=['support', 'botserver', 'supportguild', 'supportserverinvite', 'server'])
     async def supportserver(self, ctx: commands.Context):
         await ctx.send("Here is my support server invite", view=SupportView())
 
