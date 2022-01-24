@@ -340,7 +340,7 @@ class Music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not volume:
-            return await ctx.send(f"🔈 | {player.volume}%")
+            return await ctx.send(embed=discord.Embed(description=f"🔈 | {player.volume}%", color=discord.Color.green()))
 
         if volume > 200:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't keep the volume above `200%`!**", color=discord.Color.red()))

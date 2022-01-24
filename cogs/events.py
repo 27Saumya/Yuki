@@ -10,7 +10,7 @@ class EventsCog(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing required arguments!\nMissing parameter: `{error.param}`**", color=discord.Color.red())
+            embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing required arguments!\nMissing argument: `{error.param}`**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.errors.CommandNotFound):
             if ctx.message.content.startswith("{0}jsk".format(ctx.clean_prefix)) or ctx.message.content.lower().startswith("{0}rep".format(ctx.clean_prefix)):
