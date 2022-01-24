@@ -127,13 +127,14 @@ class Bot(commands.Bot):
         except Exception as e:
             print(e)
         
-        self.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
-        prefixes = self.dbcursor.fetchone()
-        if not prefixes:
-            self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (message.guild.id, "+"))
-            self.db.commit()
+        if message.guild is not None:
+            self.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
+            prefixes = self.dbcursor.fetchone()
+            if not prefixes:
+                self.dbcursor.execute('INSERT INTO guilds(guild_id, prefix) VALUES (?,?)', (message.guild.id, "+"))
+                self.db.commit()
         
-        await bot.process_commands(message)
+        await self.process_commands(message)
 
     @tasks.loop(seconds=10)
     async def updateactivity(self):
