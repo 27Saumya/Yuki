@@ -49,7 +49,7 @@ class Bot(commands.Bot):
         self.DEFAULT_PREFIX = '+'
 
         super().__init__(
-            command_prefix=(get_prefix),
+            command_prefix=get_prefix,
             description="Yuki ✨ has many features! Try it Out INVITE ME now!",
             intents=discord.Intents().all(), 
             case_insensitiv1e=True,
