@@ -43,12 +43,6 @@ import topgg
 class Bot(commands.Bot):
     """Subclass of `commands.Bot` (This will be our Yuki Bot)"""
     def __init__(self):
-        self.db = sqlite3.connect("utils/databases/main.db")
-        self.dbcursor = self.db.cursor()
-        self.persistent_views_added = False
-        self.giphy = giphy_client.DefaultApi()
-        self.DEFAULT_PREFIX = '+'
-        self.topggpy = topgg.DBLClient(Bot(), config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
 
         super().__init__(
             command_prefix=get_prefix,
@@ -62,6 +56,13 @@ class Bot(commands.Bot):
                 self.load_extension(f"cogs.{filename[:-3]}")
         self.load_extension("utils.buttons")
         self.load_extension("jishaku")
+
+        self.db = sqlite3.connect("utils/databases/main.db")
+        self.dbcursor = self.db.cursor()
+        self.persistent_views_added = False
+        self.giphy = giphy_client.DefaultApi()
+        self.DEFAULT_PREFIX = '+'
+        self.topggpy = topgg.DBLClient(self, config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
 
         self.updateactivity.start()
         self.update_topgg_stats.start()
