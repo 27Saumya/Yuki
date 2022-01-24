@@ -40,6 +40,7 @@ import giphy_client
 
 
 class Bot(commands.Bot):
+    """Subclass of `commnads.Bot` (This will be our Yuki Bot)"""
     def __init__(self):
         self.db = sqlite3.connect("utils/databases/main.db")
         self.dbcursor = self.db.cursor()
@@ -137,7 +138,7 @@ class Bot(commands.Bot):
     @tasks.loop(seconds=10)
     async def updateactivity(self):
         """Updates the bot's activity"""
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} members."))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"+help in {len(self.guilds)} servers for {members(self)} users."))
 
     @updateactivity.before_loop
     async def wait_for_ready(self):

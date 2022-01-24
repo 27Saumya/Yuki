@@ -1,7 +1,9 @@
 *config.py
 *.db
 *.pyc
+*.swp
 *json/
 *__pycache__/
+*logs/
 Lavalink.jar
 application.yml

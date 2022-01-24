@@ -1,9 +1,10 @@
 import discord
 from discord.ext import commands
+from bot import Bot
 
 
 class EventsCog(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -31,8 +32,9 @@ class EventsCog(commands.Cog):
         elif isinstance(error, commands.errors.TooManyArguments):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Too many arguments {ctx.author.mention}!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
-        elif isinstance(error, commands.errors.MissingPermissions):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permission(s)!**", color=discord.Color.red())
+        elif isinstance(error, commands.MissingPermissions):
+            permissions = "\n".join(error.missing_permissions)
+            embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permission(s)!\n{permissions}**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Keep cool!\nThe **{ctx.command.name}** command is on a cooldown. Wait for `{error.retry_after:.1f}`s**", color=discord.Color.red())
