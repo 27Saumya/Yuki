@@ -5,8 +5,6 @@ POWERED_BY_GIPHY = "https://images-ext-1.discordapp.net/external/FW8Emlcxhqqi1Ys
 
 def get_prefix(bot, message):
     """Gets the prefix for the server"""
-    if message.guild is None or message.guild == None:
-        return commands.when_mentioned_or(bot.DEFAULT_PREFIX)
     try:
         bot.dbcursor.execute('SELECT prefix FROM guilds WHERE guild_id=?', (message.guild.id,))
         prefixes = bot.dbcursor.fetchone()
