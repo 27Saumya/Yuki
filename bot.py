@@ -48,7 +48,7 @@ class Bot(commands.Bot):
         self.persistent_views_added = False
         self.giphy = giphy_client.DefaultApi()
         self.DEFAULT_PREFIX = '+'
-        self.topgg = topgg.DBLClient(self, config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
+        self.topggpy = topgg.DBLClient(self, config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
 
         super().__init__(
             command_prefix=get_prefix,
@@ -152,7 +152,7 @@ class Bot(commands.Bot):
     async def update_topgg_stats(self):
         """Updates the bot's stats on [top.gg](https://top.gg)"""
         try:
-            await self.topgg.post_guild_count()
+            await self.topggpy.post_guild_count()
             print("Successfully updated bot stats on top.gg")
         except Exception as e:
             print(str(e).capitalize())
