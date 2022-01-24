@@ -40,7 +40,7 @@ import giphy_client
 
 
 class Bot(commands.Bot):
-    """Subclass of `commnads.Bot` (This will be our Yuki Bot)"""
+    """Subclass of `commands.Bot` (This will be our Yuki Bot)"""
     def __init__(self):
         self.db = sqlite3.connect("utils/databases/main.db")
         self.dbcursor = self.db.cursor()

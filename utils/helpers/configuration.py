@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
-from bot import Bot
 
 POWERED_BY_GIPHY = "https://images-ext-1.discordapp.net/external/FW8Emlcxhqqi1YsZoXVHfC6c58tPptohhqNz0GNmdYQ/https/image.ibb.co/b0Gkwo/Poweredby_640px_Black_Vert_Text.png"
 
-def get_prefix(bot: Bot, message):
+def get_prefix(bot, message):
     """Gets the prefix for the server"""
     if not message.guild:
         return commands.when_mentioned_or(bot.DEFAULT_PREFIX)
