@@ -6,7 +6,6 @@ from utils.helpers.help import Help_Embed, cog_help
 import asyncio
 import time
 import datetime
-import os
 import psutil
 import platform
 import sys
@@ -119,7 +118,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             ctx = self.context
             signature = self.get_command_signature(
                 command
-            )  # get_command_signature gets the signature of a command in <required> [optional]
+            )
             embed = HelpEmbed(
                 title=signature, description=command.help or "No help found..."
             )
@@ -127,7 +126,6 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             if cog := command.cog:
                 embed.add_field(name="Category", value=cog.qualified_name)
 
-            # use of internals to get the cooldown of the command
             if command._buckets and (cooldown := command._buckets._cooldown):
                 embed.add_field(
                     name="Cooldown",
@@ -166,7 +164,7 @@ class HelpCog(commands.Cog, name="Help"):
         memory = "{:.4} MB".format(psutil.Process().memory_info().rss / 1024 ** 2)
         py_ver = ".".join([str(v) for v in sys.version_info[:3]])
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Servers**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.respond(embed=embed)
 
@@ -176,7 +174,7 @@ class HelpCog(commands.Cog, name="Help"):
         memory = "{:.4} MB".format(psutil.Process().memory_info().rss / 1024 ** 2)
         py_ver = ".".join([str(v) for v in sys.version_info[:3]])
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
-        embed = discord.Embed(title="Bot Info!", description=f"**Guilds**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
+        embed = discord.Embed(title="Bot Info!", description=f"**Servers**\n{len(list(self.bot.guilds))}\n\n**Users**\n{members(self.bot)}\n\n**System**\n{platform.release()}\n\n**Memory**\n{memory}\n\n**Python Version**\n{py_ver}\n\n**Uptime**\n{uptime}\n\n**Owner/Creator**\n27Saumya", color=discord.Color.green())
         embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
         

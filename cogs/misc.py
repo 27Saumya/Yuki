@@ -93,7 +93,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         """Test the bot's speed... Currently disabled (fixing some bugs)
         Return of the command: N/A"""
         return await ctx.send("Sorry... This command is currently disabled :(")
-        #Archived code for some time
+        # Archived code for some time
         # message = await ctx.send(
         #     embed=discord.Embed(description="**<a:loading:911568431315292211> Starting Speed Test!**", color=discord.Color.embed_background(theme="dark"))
         # )
