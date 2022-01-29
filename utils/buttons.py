@@ -7,7 +7,7 @@ import asyncio
 def joins(list: list):
     return "\n".join([f"<@{i}>" for i in list])
 
-async def memberCheck(guild: discord.Guild) -> List[discord.Member.id]:
+async def memberCheck(guild: discord.Guild) -> List[int]:
     """Returns the memberList which contains memberIDs of all members combined"""
     memberList = []
     for member in guild.members:
