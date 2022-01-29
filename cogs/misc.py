@@ -269,7 +269,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         url = "https://some-random-api.ml/img/dog"
         r = requests.get(url)
         data = r.json()
-        embed = discord.Embed(description="*Here's a random dog image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
+        embed = discord.Embed(description="**Here's a random dog image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['catpic'])
@@ -278,7 +278,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         url = "https://some-random-api.ml/img/cat"
         r = requests.get(url)
         data = r.json()
-        embed = discord.Embed(description="*Here's a random cat image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
+        embed = discord.Embed(description="**Here's a random cat image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['pandapic'])
@@ -287,7 +287,7 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         url = "https://some-random-api.ml/img/panda"
         r = requests.get(url)
         data = r.json()
-        embed = discord.Embed(description="*Here's a random panda image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
+        embed = discord.Embed(description="**Here's a random panda image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
 def setup(bot):
