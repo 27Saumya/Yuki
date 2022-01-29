@@ -36,6 +36,9 @@ Miscellaneous bot commands!
 `source` - View the bot's source code
 `whois` - Get information about a user of yourself
 `serverinfo` - Show information about the server
+`dog` - Get a random dog image
+`cat` - Get a random cat image
+`panda` - Get a random panda image
 `youtube download`- Download a youtube video (Currently Closed)""",
     "Info": """
 Information related commands!
@@ -97,10 +100,7 @@ To view more about me use `+botinfo`
 Invite me using the `invite` command or clicking on the button below!
 
 **What's New:**
-- Added `_` option in `changeprefix`. You can use `_` that means the `_` will be considered as a space.
-So that means now your prefix can have spaces too!
-
-- Music commands are now available! Use the `play` command to play a song more command details are avaialble by either doing `help [command]` or by clicking in the **Music** option from the seclect menu given below!
+- Added animal images command
 
 **HOPE YOU HAVE GREAT TIME USING ME!
 

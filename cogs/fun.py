@@ -10,6 +10,7 @@ from config import GIPHY_API_KEY
 from bot import Bot
 from giphy_client.rest import ApiException
 from utils.helpers.configuration import *
+import requests
 
 def w(name, desc, picture):
     embed_win = discord.Embed(description=f"**Is it {name}\n{desc}**", color=discord.Color.orange()).set_image(url=picture)
@@ -227,9 +228,12 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             aki = ak.Akinator()
             q = aki.start_game()
             while aki.progression <= 80:
-                await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[`y` | `n` | `idk` | `p` | `pn` | `b`]**", color=discord.Color.embed_background(theme="dark")))
+                await ctx.send(embed=discord.Embed(description=f"**{q}\n\n[`y` | `n` | `idk` | `p` | `pn` | `b` | `q`]**", color=discord.Color.embed_background(theme="dark")))
                 try:
                     msg = await self.bot.wait_for("message", check=check, timeout=60)
+                    if msg.content.lower() == "q":
+                        await ctx.send(embed=discord.Embed(description="**You have quit the game!**", color=discord.Color.red()))
+                        break
                     if msg.content.lower() == "b":
                         try:
                             q = aki.back()
@@ -421,7 +425,6 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
 
         embed = discord.Embed(description="**<:zerolove:920425612613660753> Zerotwo is just so cute!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

@@ -445,7 +445,7 @@ class TicketControlsView(discord.ui.View):
             return await interaction.response.send_message(embed=discord.Embed(description=f"<:error:897382665781669908> You can't do that {interaction.user.mention}!", color=discord.Color.red()))
         self.bot.dbcursor.execute('SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (interaction.guild_id, interaction.channel_id))
         member_id = self.bot.dbcursor.fetchone()
-        if member_id not in memberCheck(interaction.guild):
+        if member_id not in await memberCheck(interaction.guild):
             return await interaction.response.send_message(embed=discord.Embed(description="**<:error:897382665781669908> This user is no more in this server!\n------------------------------------------\nThere is no use of opening this ticket!**", color=discord.Color.red()))
         member = interaction.guild.get_member(member_id[2])
         perms = interaction.channel.overwrites_for(member)
