@@ -79,6 +79,7 @@ It instead has unique commands!
         await ctx.respond(embed=embed)
 
     @slash_command(description="Nuke a channel")
+    @commands.bot_has_permissions(manage_channels=True)
     async def nuke(self, ctx, channel: Option(discord.TextChannel, "The channel you want to nuke", required=False, default=None)):
         channel = channel if channel else ctx.channel
         interaction: discord.Interaction = ctx.interaction
@@ -92,6 +93,7 @@ It instead has unique commands!
         await message.edit(embed=embed1, view=NukeView(ctx, channel, message))
 
     @commands.command(name="nuke")
+    @commands.bot_has_permissions(manage_channels=True)
     async def nuke_(self, ctx, *, channel: discord.TextChannel=None):
         """Delete all messages in a channel\nExample: `nuke [channel]\nIf channel is None then it will nuke the channel the command is used in`"""
         channel = channel if channel else ctx.channel
@@ -110,6 +112,8 @@ It instead has unique commands!
             await ctx.send(embed=discord.Embed(title="Invalid Usage", description="**Usage: `{0}purge user <member> <amount>`**", color=discord.Color.red()))
 
     @purge_.command(aliases=['member', 'mem'])
+    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_messages=True)
     async def user(self, ctx: commands.Context, user: discord.Member, amount):
         """Delete message of a user in the channel"""
         def is_user(m):
@@ -122,7 +126,8 @@ It instead has unique commands!
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['mute'])
-    @commands.has_permissions(mute_members=True)
+    @commands.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
     async def timeout(self, ctx: commands.Context, user: discord.Member, time, *, reason: str = "No reason provided"):
         """Timeout/Mute a user in the server"""
         if user == ctx.author:
@@ -138,7 +143,8 @@ It instead has unique commands!
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> This user has a higher or equal role to me. **", color=discord.Color.red()))
 
     @commands.command(aliases=['um'])
-    @commands.has_permissions(manage_channels=True)
+    @commands.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
     async def unmute(self, ctx: commands.Context, user: discord.Member, *, reason: str = "No reason provided"):
         """Unmutes a user from the server"""
         if user == ctx.author:

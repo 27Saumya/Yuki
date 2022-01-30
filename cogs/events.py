@@ -21,7 +21,8 @@ class EventsCog(commands.Cog):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Invalid datatype passed in.\nError: `{str(error)}`**", color=discord.Color.red())
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.BotMissingPermissions):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> I am missing required permissions!**", color=discord.Color.red())
+            permissions = "\n".join([i.upper() for i in error.missing_permissions])
+            embed = discord.Embed(description=f"**<:error:897382665781669908> I am missing required permissions!\n*{permissions}***", color=discord.Color.red())
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.MemberNotFound):
             embed = discord.Embed(description=f"**<:error:897382665781669908> I can't find that user!**", color=discord.Color.red())
@@ -57,7 +58,8 @@ class EventsCog(commands.Cog):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Invalid datatype passed in.\nError: `{str(error)}`**", color=discord.Color.red())
             await ctx.respond(embed=embed)
         elif isinstance(error, commands.errors.BotMissingPermissions):
-            embed = discord.Embed(description=f"**<:error:897382665781669908> I am missing required permissions!**", color=discord.Color.red())
+            permissions = "\n".join([i.upper() for i in error.missing_permissions])
+            embed = discord.Embed(description=f"**<:error:897382665781669908> I am missing required permissions!\n*{permissions}***", color=discord.Color.red())
             await ctx.respond(embed=embed)
         elif isinstance(error, commands.errors.MemberNotFound):
             embed = discord.Embed(description=f"**<:error:897382665781669908> I can't find that user!**", color=discord.Color.red())
