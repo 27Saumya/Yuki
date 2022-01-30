@@ -33,7 +33,7 @@ class EventsCog(commands.Cog):
             embed = discord.Embed(description=f"**<:error:897382665781669908> Too many arguments {ctx.author.mention}!**", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.MissingPermissions):
-            permissions = "\n".join([i.upper for i in error.missing_permissions])
+            permissions = "\n".join([i.upper() for i in error.missing_permissions])
             embed = discord.Embed(description=f"**<:error:897382665781669908> You are missing reqired permission(s)!\n*{permissions}***", color=discord.Color.red())
             await ctx.send(embed=embed, delete_after=10)
         elif isinstance(error, commands.CommandOnCooldown):
