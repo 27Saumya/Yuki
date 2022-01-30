@@ -274,19 +274,13 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't hug yourself!\n--------------------------\nTry hugging someone else.**", color=discord.Color.red()))
 
         if user.bot:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat a bot!\n--------------------------\nTry hugging an human.**", color=discord.Color.red()))
+            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't hug a bot!\n--------------------------\nTry hugging an human.**", color=discord.Color.red()))
 
-        query = "anime hug"
-        lmt = 50
-
-        try:
-            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
-            gif= random.choice(list(r.data))
-            url = giphyUrl(gif.id)
-        except ApiException:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
-        
-        embed = discord.Embed(description=f"**<:hug:922213806027968573> {ctx.author.mention} hugged {user.mention}!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        url = "https://some-random-api.ml/animu/hug"
+        r = requests.get(url)
+        data = r.json()
+        embed = discord.Embed(description=f"**<:hug:922213806027968573> {ctx.author.mention} hugged {user.mention}**", color=discord.Color.embed_background(theme="dark"))
+        embed.set_image(url=data['link'])
         await ctx.send(embed=embed)
 
     @commands.command(name="pat", aliases=['pats', 'headpat', 'headpats'])
@@ -297,18 +291,12 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat a bot.**"))
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry patting someone else.**", color=discord.Color.red()))
-        
-        query = "anime pat"
-        lmt = 50
 
-        try:
-            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
-            gif = random.choice(list(r.data))
-            url = giphyUrl(gif.id)
-        except ApiException:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**", color=discord.Color.red()))
-
-        embed = discord.Embed(description=f"**{ctx.author.mention} patted {user.mention}**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
+        url = "https://some-random-api.ml/animu/hug"
+        r = requests.get(url)
+        data = r.json()
+        embed = discord.Embed(description=f"**{ctx.author.mention} patted {user.mention}**", color=discord.Color.embed_background(theme="dark"))
+        embed.set_image(url=data['link'])
         await ctx.send(embed=embed)
 
     @commands.command(name="gif")
@@ -413,7 +401,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     @commands.command(aliases=['02'])
     async def zerotwo(self, ctx: commands.Context):
         """Gives a random zerotwo gif <:zerolove:920425612613660753>!"""
-        query = "zerotwo"
+        query = "zerotwo anime"
         lmt = 50
 
         try:

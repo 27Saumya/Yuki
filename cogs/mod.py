@@ -122,13 +122,13 @@ It instead has unique commands!
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['mute'])
-    @commands.has_permissions(manage_channels=True)
+    @commands.has_permissions(mute_members=True)
     async def timeout(self, ctx: commands.Context, user: discord.Member, time, *, reason: str = "No reason provided"):
         """Timeout/Mute a user in the server"""
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't timeout yourself!**", color=discord.Color.red()))
 
-        if user.guild_permissions.administrator or user.guild_permissions.manage_channels:
+        if user.guild_permissions.administrator or user.guild_permissions.mute_members:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> The user is a MOD/ADMIN!**", color=discord.Color.red()))
 
         try:        
