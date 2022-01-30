@@ -96,6 +96,10 @@ class Bot(commands.Bot):
             await botOwner.send(str(e).capitalize())
 
     async def on_message(self, message: discord.Message):
+        if message.content.lower().startswith(f"<@!{self.user.id}>") or message.content.lower().startswith(f"<@{self.user.id}>"):
+            self.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (message.guild.id,))
+            prefix = self.dbcursor.fetchone()[1]
+            await message.channel.send(embed=discord.Embed(description=f"**My prefix for this server is {prefix}**", color=discord.Color.embed_background()))
         try:
             if message.author.id == bot.user.id and len(message.embeds) > 0 and message.embeds[0].description.startswith('**Ticket closed by'):
                 bot.dbcursor.execute(f'SELECT * FROM tickets WHERE guild_id=? AND channel_id=?', (message.guild.id, message.channel.id))
@@ -104,7 +108,7 @@ class Bot(commands.Bot):
                 embed = discord.Embed(description="```py\n[Support team ticket controls]```", color=discord.Color.embed_background(theme="dark"))
                 await message.channel.send(embed=embed, view=TicketControlsView(bot))
         except AttributeError:
-            print("That wasn't a ticket close message.")
+            pass
 
         if message.author == bot.user:
             return
