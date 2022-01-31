@@ -292,7 +292,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         if user == ctx.author:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> You can't pat yourself!\n--------------------------\nTry patting someone else.**", color=discord.Color.red()))
 
-        url = "https://some-random-api.ml/animu/hug"
+        url = "https://some-random-api.ml/animu/pat"
         r = requests.get(url)
         data = r.json()
         embed = discord.Embed(description=f"**{ctx.author.mention} patted {user.mention}**", color=discord.Color.embed_background(theme="dark"))
