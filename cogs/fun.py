@@ -12,10 +12,6 @@ from giphy_client.rest import ApiException
 from utils.helpers.configuration import *
 import requests
 
-def w(name, desc, picture):
-    embed_win = discord.Embed(description=f"**Is it {name}\n{desc}**", color=discord.Color.orange()).set_image(url=picture)
-    return embed_win
-
 class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
     """Fun commands that you would enjoy to use!"""
     def __init__(self, bot: Bot):
@@ -399,6 +395,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
             return await ctx.send(embed=embed)
 
     @commands.command(aliases=['02'])
+    @commands.cooldown(1, 10, BucketType.user)
     async def zerotwo(self, ctx: commands.Context):
         """Gives a random zerotwo gif <:zerolove:920425612613660753>!"""
         query = "zerotwo anime"
