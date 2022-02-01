@@ -39,7 +39,32 @@ Miscellaneous bot commands!
 `dog` - Get a random dog image
 `cat` - Get a random cat image
 `panda` - Get a random panda image
-`youtube download`- Download a youtube video (Currently Closed)""",
+`youtube download`- Download a youtube video (Currently Closed)
+`image gay`- Get the gay touch in a user's avatar
+`image glass` - Get the glass touch in a user's avatar
+`image wasted` - Get the wasted touch in a user's avatar
+`image missionpassed` - Get the mission-passed touch in a user's avatar
+`image jail` - Get the jail touch in a user's avatar
+`image comrade` - Get the comrade touch in a user's avatar
+`image triggered` - Get the triggered touch in a user's avatar
+`image filter greyscale` - Get the greyscale filter in a user's avatar
+`image filter invert` - Get the invert filter in a user's avatar
+`image filter invertgreyscale` - Get the inverted greyscale filter in a user's avatar
+`image filter brightness` - Set a specific amount of brightness in a user's avatar
+`image filter threshold` - Set a specific amount of threshold in a user's avatar
+`image filter sepia` - Get the sepia filter in a user's avatar
+`image filter red` - Get the red filter in a user's avatar
+`image filter green` - Get the green filter in a user's avatar
+`image filter blue` - Get the blue filter in a user's avatar
+`image filter blurple` - Get the blurple filter in a user's avatar
+`image filter blurple2` - Get the blurple2 filter in a user's avatar
+`pixelate` - Pixelate a user's avatar
+`blur` - Blur a user's avatar
+`comment` - Comment something
+`tweet` - Tweet something
+`simpcard` - Get a simpcard
+`hornycard` - Get a hornycard
+`lolipolice` - """,
     "Info": """
 Information related commands!
         
