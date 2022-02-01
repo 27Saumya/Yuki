@@ -1,9 +1,7 @@
 import discord
-from discord.ext import tasks, commands
+from discord.ext import commands
 from discord.commands import slash_command, Option
 from utils.buttons import Google
-import requests
-import json
 import wikipedia
 
 
@@ -38,8 +36,8 @@ These include google, covid info and much more
         em = discord.Embed(description="**Fetching information <a:loading:911568431315292211>**", color=discord.Color.green())
         message = await ctx.send(embed=em)
         url = f"https://coronavirus-19-api.herokuapp.com/countries/{country}"
-        stats = requests.get(url)
-        json_stats = stats.json()
+        stats = await self.bot.session.get(url)
+        json_stats = await stats.json()
         country = json_stats["country"]
         totalCases = json_stats["cases"]
         todayCases = json_stats["todayCases"]
@@ -77,8 +75,8 @@ These include google, covid info and much more
         em = discord.Embed(description="**Fetching information <a:loading:911568431315292211>**", color=discord.Color.green())
         message = await ctx.send(embed=em)
         url = f"https://coronavirus-19-api.herokuapp.com/countries/world"
-        stats = requests.get(url)
-        json_stats = stats.json()
+        stats = await self.bot.session.get(url)
+        json_stats = await stats.json()
         totalCases = json_stats["cases"]
         todayCases = json_stats["todayCases"]
         totalDeaths = json_stats["deaths"]

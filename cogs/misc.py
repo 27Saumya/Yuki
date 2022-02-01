@@ -11,7 +11,6 @@ import aiohttp
 from io import BytesIO
 from utils.buttons import *
 from discord.ext.commands import BucketType
-import requests
 
 
 class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
@@ -267,8 +266,11 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def dog(self, ctx: commands.Context):
         """Gives a random dog image"""
         url = "https://some-random-api.ml/img/dog"
-        r = requests.get(url)
-        data = r.json()
+        r = await self.bot.session.get(url)
+        if 300 > r.status >= 200:
+            data = await r.json()
+        else:
+            return await ctx.send(embed=discord.Embed(description="Something went wrong", color=discord.Color.red()))
         embed = discord.Embed(description="**Here's a random dog image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
@@ -276,8 +278,11 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def cat(self, ctx: commands.Context):
         """Gives a random cat image"""
         url = "https://some-random-api.ml/img/cat"
-        r = requests.get(url)
-        data = r.json()
+        r = await self.bot.session.get(url)
+        if 300 > r.status >= 200:
+            data = await r.json()
+        else:
+            return await ctx.send(embed=discord.Embed(description="Something went wrong", color=discord.Color.red()))
         embed = discord.Embed(description="**Here's a random cat image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
@@ -285,8 +290,11 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
     async def panda(self, ctx: commands.Context):
         """Gives a random panda image"""
         url = "https://some-random-api.ml/img/panda"
-        r = requests.get(url)
-        data = r.json()
+        r = await self.bot.session.get(url)
+        if 300 > r.status >= 200:
+            data = await r.json()
+        else:
+            return await ctx.send(embed=discord.Embed(description="Something went wrong", color=discord.Color.red()))
         embed = discord.Embed(description="**Here's a random panda image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 

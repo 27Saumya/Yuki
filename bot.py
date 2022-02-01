@@ -28,7 +28,6 @@ from discord.ext import tasks, commands
 import os
 from discord.commands import Option, SlashCommandGroup
 from pytube import YouTube
-import requests
 import asyncio
 import config
 from utils.buttons import TicketPanelView, TicketControlsView, TicketCloseTop
@@ -38,6 +37,8 @@ from utils.helpers.help import Help_Embed
 from utils.helpers.configuration import get_prefix
 import giphy_client
 import topgg
+import aiohttp
+from typing import *
 
 
 class Bot(commands.Bot):
@@ -63,6 +64,7 @@ class Bot(commands.Bot):
         self.giphy = giphy_client.DefaultApi()
         self.DEFAULT_PREFIX = '+'
         self.topggpy = topgg.DBLClient(self, config.TOPGG_TOKEN, autopost=True, post_shard_count=True)
+        self.session = aiohttp.ClientSession()
 
         self.updateactivity.start()
         self.update_topgg_stats.start()
@@ -210,8 +212,8 @@ async def country(ctx, *, country: Option(str, "Name of the Country you want the
     await interaction.response.send_message(embed=em)
     message = await interaction.original_message()
     url = f"https://coronavirus-19-api.herokuapp.com/countries/{country}"
-    stats = requests.get(url)
-    json_stats = stats.json()
+    stats = await bot.session.get(url)
+    json_stats = await stats.json()
     country = json_stats["country"]
     totalCases = json_stats["cases"]
     todayCases = json_stats["todayCases"]
@@ -250,9 +252,8 @@ async def global_(ctx):
     await interaction.response.send_message(embed=em)
     message = await interaction.original_message()
     url = f"https://coronavirus-19-api.herokuapp.com/countries/world"
-    stats = requests.get(url)
-    json_stats = stats.json()
-    country = json_stats["country"]
+    stats = await bot.session.get(url)
+    json_stats = await stats.json()
     totalCases = json_stats["cases"]
     todayCases = json_stats["todayCases"]
     totalDeaths = json_stats["deaths"]

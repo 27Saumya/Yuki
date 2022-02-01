@@ -18,7 +18,6 @@ py-cord @ git+https://github.com/Pycord-Development/pycord@2601fd05ca749c0ec5d56
 pycparser==2.20
 pytube==11.0.2
 qrcode==7.3.1
-requests==2.26.0
 six==1.15.0
 soupsieve==2.3.1
 speedtest-cli==2.1.3
