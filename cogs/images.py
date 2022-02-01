@@ -21,6 +21,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/gay?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -40,6 +42,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/gay?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -59,6 +63,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/wasted?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -78,6 +84,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/missionpassed?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -97,6 +105,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/jail?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -116,6 +126,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/comrade?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -135,6 +147,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/triggered?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -159,6 +173,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/greyscale?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -178,6 +194,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/invert?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -197,6 +215,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/invertgreyscale?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -216,6 +236,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/brightness?avatar={avatar}&brightness={brightness}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -235,6 +257,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/threshold?avatar={avatar}&threshold={threshold}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -254,6 +278,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/sepia?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -273,6 +299,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/red?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -292,6 +320,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/green?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -311,6 +341,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/blue?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -330,6 +362,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/blurple?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -349,6 +383,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/blurple2?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -368,6 +404,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/pixelate?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -387,6 +425,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/blur?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -436,6 +476,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/simpcard?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -455,6 +497,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/horny?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -474,6 +518,8 @@ class Images(commands.Cog):
             avatar = user.avatar.with_format("png").url
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
+        except Exception as e:
+            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/lolice?avatar={avatar}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
