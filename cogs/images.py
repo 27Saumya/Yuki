@@ -18,7 +18,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `gay` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -39,7 +39,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `glass` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -60,7 +60,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `wasted` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -81,7 +81,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `mission passed` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -102,7 +102,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `jail` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -123,7 +123,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `comrade` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -144,7 +144,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `triggered` touch"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -170,7 +170,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `greyscale` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -191,7 +191,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `invert` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -212,7 +212,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `invertgreyscale` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -233,7 +233,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `brightness` filter.. according to the brightness value"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -254,7 +254,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `threshold` filter... according to the threshold value"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -275,7 +275,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `sepia` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -296,7 +296,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `red` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -317,7 +317,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `green` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -338,7 +338,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `blue` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -359,7 +359,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `blurple` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -380,7 +380,7 @@ class Images(commands.Cog):
         """Get the avatar formatted in the `blurple2` filter"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -401,7 +401,7 @@ class Images(commands.Cog):
         """`Pixelate` the avatar of the user"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -422,7 +422,7 @@ class Images(commands.Cog):
         """`Blur` the avatar of the user"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -473,7 +473,7 @@ class Images(commands.Cog):
         """Get an offically verified Simp Card... which provides license to simp"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -494,7 +494,7 @@ class Images(commands.Cog):
         """Get an offically verified Horny Card... which provides license to be horny"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
@@ -515,7 +515,7 @@ class Images(commands.Cog):
         """LOLICE (LOLI POLICE)"""
         user = user or ctx.author
         try:
-            avatar = user.avatar.with_format("png").url
+            avatar = user.avatar.with_format("png").url[:-10]
         except AttributeError:
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
