@@ -391,10 +391,10 @@ class Images(commands.Cog):
         )
 
     @commands.command()
-    async def tweet(self, ctx: commands.Context, tweet: str):
+    async def tweet(self, ctx: commands.Context, *, tweet: str):
         """Tweet Something"""
         avatar = ctx.author.avatar.with_format("png") if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
-        url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&tweet={tweet}"
+        url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&displayname={ctx.author}&tweet={tweet}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured!**", color=discord.Color.red()))
