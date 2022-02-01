@@ -64,7 +64,7 @@ Miscellaneous bot commands!
 `tweet` - Tweet something
 `simpcard` - Get a simpcard
 `hornycard` - Get a hornycard
-`lolipolice` - """,
+`lolipolice` - LOLI-POLICE""",
     "Info": """
 Information related commands!
         
