@@ -401,7 +401,7 @@ class Images(commands.Cog):
     @commands.command(name="comment", aliases=['ytcomment'])
     async def youtubecomment(self, ctx: commands.Context, comment: str):
         """Comment Something"""
-        avatar = ctx.author.avatar_url_as(format="png").url if user.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
+        avatar = ctx.author.avatar_url_as(format="png").url if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
         url = f"https://some-random-api.ml/canvas/youtube-comment?avatar={avatar}&username={ctx.author.name}&comment={comment}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
@@ -416,7 +416,7 @@ class Images(commands.Cog):
     @commands.command()
     async def tweet(self, ctx: commands.Context, tweet: str):
         """Tweet Something"""
-        avatar = ctx.author.avatar_url_as(format="png").url if user.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
+        avatar = ctx.author.avatar_url_as(format="png").url if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
         url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&tweet={tweet}"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
