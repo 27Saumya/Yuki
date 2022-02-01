@@ -10,8 +10,7 @@ class Images(commands.Cog):
 
     @commands.group(aliases=['img'], invoke_without_command=True)
     async def image(self, ctx: commands.Context):
-        """Command group to get images use `help` and then checkout the MISC category for sub commands. These commands work on an avatar. Basic Usage: `image <command> [user]`. If user is not specified, the command will use the author's avatar."""
-        await ctx.send_help(ctx.command)
+        await ctx.send("""Command group to get images use `help` and then checkout the MISC category for sub commands. These commands work on an avatar. Basic Usage: `image <command> [user]`. If user is not specified, the command will use the author's avatar.""")
 
     @image.command(aliases=['lgbt', 'lbtq'])
     async def gay(self, ctx: commands.Context, user: Optional[discord.Member]):
@@ -70,7 +69,7 @@ class Images(commands.Cog):
             embed=discord.Embed(color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         )
     
-    @image.command(aliases=['mp', 'passed'])
+    @image.command(aliases=['mp', 'passed', 'respect', 'respect+'])
     async def missionpassed(self, ctx: commands.Context, user: Optional[discord.Member]):
         """Get the avatar formatted in the `mission passed` touch"""
         user = user or ctx.author
@@ -148,10 +147,9 @@ class Images(commands.Cog):
     
     @image.group(invoke_without_command=True)
     async def filter(self, ctx: commands.Context):
-        """Image filters. Has the same syntax as the image command. `image filter <name_of_filter> [user]`"""
-        await ctx.send_help(ctx.command)
+        await ctx.send("""Image filters. Has the same syntax as the image command. `image filter <name_of_filter> [user]`""")
 
-    @filter.command()
+    @filter.command(aliases=['gs'])
     async def greyscale(self, ctx: commands.Context, user: Optional[discord.Member]):
         """Get the avatar formatted in the `greyscale` filter"""
         user = user or ctx.author
@@ -181,25 +179,6 @@ class Images(commands.Cog):
         except Exception as e:
             return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
         url = f"https://some-random-api.ml/canvas/invert?avatar={avatar}"
-        r = await self.bot.session.get(url)
-        if not r.status == 200:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured!**", color=discord.Color.red()))
-        
-        await ctx.send(
-            embed=discord.Embed(color=discord.Color.embed_background(theme="dark")).set_image(url=url)
-        )
-    
-    @filter.command(aliases=['igs'])
-    async def invertgreyscale(self, ctx: commands.Context, user: Optional[discord.Member]):
-        """Get the avatar formatted in the `invertgreyscale` filter"""
-        user = user or ctx.author
-        try:
-            avatar = user.avatar.with_format("png").url
-        except AttributeError:
-            return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
-        except Exception as e:
-            return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
-        url = f"https://some-random-api.ml/canvas/invertgreyscale?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured!**", color=discord.Color.red()))
@@ -360,7 +339,7 @@ class Images(commands.Cog):
             embed=discord.Embed(color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         )
     
-    @commands.command()
+    @commands.command(aliases=['pixelize', 'pixelise'])
     async def pixelate(self, ctx: commands.Context, user: discord.Member=None):
         """`Pixelate` the avatar of the user"""
         user = user or ctx.author
@@ -399,9 +378,9 @@ class Images(commands.Cog):
         )
     
     @commands.command(name="comment", aliases=['ytcomment'])
-    async def youtubecomment(self, ctx: commands.Context, comment: str):
+    async def youtubecomment(self, ctx: commands.Context, *, comment: str):
         """Comment Something"""
-        avatar = ctx.author.avatar_url_as(format="png").url if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
+        avatar = ctx.author.avatar.with_format("png").url if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
         url = f"https://some-random-api.ml/canvas/youtube-comment?avatar={avatar}&username={ctx.author.name}&comment={comment}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
@@ -414,7 +393,7 @@ class Images(commands.Cog):
     @commands.command()
     async def tweet(self, ctx: commands.Context, tweet: str):
         """Tweet Something"""
-        avatar = ctx.author.avatar_url_as(format="png").url if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
+        avatar = ctx.author.avatar.with_format("png") if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
         url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&tweet={tweet}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
@@ -464,7 +443,7 @@ class Images(commands.Cog):
 
     @commands.command(aliases=['lolipolice'])
     async def lolice(self, ctx: commands.Context, user: discord.Member=None):
-        """LOLICE (LOLI POLICE)"""
+        """Become a lolipolice (LOLI POLICE)"""
         user = user or ctx.author
         try:
             avatar = user.avatar.with_format("png").url
