@@ -70,7 +70,7 @@ class Images(commands.Cog):
             embed=discord.Embed(color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         )
     
-    @image.command(aliases=['mp'])
+    @image.command(aliases=['mp', 'passed'])
     async def missionpassed(self, ctx: commands.Context, user: Optional[discord.Member]):
         """Get the avatar formatted in the `mission passed` touch"""
         user = user or ctx.author
@@ -80,7 +80,7 @@ class Images(commands.Cog):
             return await ctx.send(embed=discord.Embed(description="**<:error:89738266578166908> That user doesn't have any avatar!**", color=discord.Color.red()))
         except Exception as e:
             return await ctx.send(embed=discord.Embed(description=f"**<:error:89738266578166908> An error occured\n{str(e).capitalize()}**", color=discord.Color.red()))
-        url = f"https://some-random-api.ml/canvas/missionpassed?avatar={avatar}"
+        url = f"https://some-random-api.ml/canvas/passed?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured!**", color=discord.Color.red()))
