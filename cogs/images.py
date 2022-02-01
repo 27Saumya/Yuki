@@ -25,7 +25,7 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/gay?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error_msg = r.json()["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
