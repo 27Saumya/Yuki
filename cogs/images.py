@@ -25,7 +25,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/gay?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -45,7 +46,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/glass?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -65,7 +67,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/wasted?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -85,7 +88,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/passed?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -105,7 +109,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/jail?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -125,7 +130,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/comrade?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -145,7 +151,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/triggered?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -169,7 +176,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/greyscale?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -189,7 +197,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/invert?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -209,7 +218,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/brightness?avatar={avatar}&brightness={brightness}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -229,7 +239,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/threshold?avatar={avatar}&threshold={threshold}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -249,7 +260,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/sepia?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -269,7 +281,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/red?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -289,7 +302,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/green?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -309,7 +323,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/blue?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -329,7 +344,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/blurple?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -349,7 +365,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/blurple2?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -369,7 +386,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/pixelate?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -389,7 +407,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/blur?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -403,7 +422,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/youtube-comment?avatar={avatar}&username={ctx.author.name}&comment={comment}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -417,7 +437,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&displayname={ctx.author}&tweet={tweet}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -437,7 +458,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/simpcard?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -457,7 +479,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/horny?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
@@ -477,7 +500,8 @@ class Images(commands.Cog):
         url = f"https://some-random-api.ml/canvas/lolice?avatar={avatar}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
-            error_msg = await r.json()["error"]
+            error = await r.json()
+            error_msg = error["error"]
             return await ctx.send(embed=discord.Embed(description=f"**<:error:897382665781669908> An error occured!\n`{error_msg}`**", color=discord.Color.red()))
         
         await ctx.send(
