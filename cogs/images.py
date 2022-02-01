@@ -434,7 +434,7 @@ class Images(commands.Cog):
     async def tweet(self, ctx: commands.Context, *, tweet: str):
         """Tweet Something"""
         avatar = ctx.author.avatar.with_format("png") if ctx.author.avatar else "https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png"
-        url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author.name}&displayname={ctx.author}&comment={tweet}"
+        url = f"https://some-random-api.ml/canvas/tweet?avatar={avatar}&username={ctx.author}&displayname={ctx.author.name}&comment={tweet}"
         r = await self.bot.session.get(url)
         if not r.status == 200:
             error = await r.json()
