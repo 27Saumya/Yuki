@@ -98,7 +98,7 @@ class Bot(commands.Bot):
             await botOwner.send(str(e).capitalize())
 
     async def on_message(self, message: discord.Message):
-        if message.content.lower().startswith(f"<@!{self.user.id}>") or message.content.lower().startswith(f"<@{self.user.id}>"):
+        if message.content.lower() == f"<@!{self.user.id}>" or message.content.lower() == f"<@{self.user.id}>":
             self.dbcursor.execute('SELECT * FROM guilds WHERE guild_id=?', (message.guild.id,))
             prefix = self.dbcursor.fetchone()[1]
             await message.channel.send(embed=discord.Embed(description=f"**My prefix for this server is {prefix}**", color=discord.Color.embed_background()))
