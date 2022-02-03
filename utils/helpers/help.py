@@ -90,24 +90,7 @@ Ticket related commands!
 `ticket add` - Adds a user to the ticket
 `ticket remove` - Removes a user from the ticket
 `ticket role add` - Adds a role to the ticket
-`ticket role remove` - Removes a role from the ticket""",
-    "Music": """
-Music related commands!
-        
-`play` - Play a song
-`disconnect` - Disconnects the bot from the voice chat and delete the current queue
-`pause` - Pause the current song
-`resume` - Resume the current song
-`seek` Go to a specific number of seconds in the song
-`skip` Skip the current song and play the next song
-`now` - Shows the currently playing song
-`save` - DMs you the currently playing song
-`queue` - View the queue of songs in the current session
-`volume` - Adjust the volume
-`shuffle` - Shuffle the queue
-`repeat` - Repeat the current song
-`remove` - Remove a song from the queue
-`lyrics` - Get the lyrics for the current song"""
+`ticket role remove` - Removes a role from the ticket"""
 }
 
 def Help_Embed():

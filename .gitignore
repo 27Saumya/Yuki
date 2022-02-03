@@ -7,3 +7,4 @@
 *logs/
 Lavalink.jar
 application.yml
+*secret.py

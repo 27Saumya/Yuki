@@ -415,23 +415,6 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
 
         embed = discord.Embed(description="**<:zerolove:920425612613660753> Zerotwo is just so cute!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
         await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.cooldown(1, 10, BucketType.user)
-    async def waifu(self, ctx: commands.Context):
-        """Gives a random waifu gif!"""
-        query = "waifu"
-        lmt = 50
-
-        try:
-            r = self.bot.giphy.gifs_search_get(GIPHY_API_KEY, query, limit=lmt)
-            gif = random.choice(list(r.data))
-            url = giphyUrl(gif.id)        
-        except ApiException:
-            return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> Couldn't generate a gif. Please try again later.**"))
-
-        embed = discord.Embed(description="**<:waifu:920425605059094528> Waifu is just so cute!**", color=discord.Color.embed_background(theme="dark")).set_image(url=url)
-        await ctx.send(embed=embed)
-
+        
 def setup(bot):
     bot.add_cog(FunCog(bot))

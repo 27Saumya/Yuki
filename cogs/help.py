@@ -70,11 +70,6 @@ class HelpOptions(discord.ui.View):
                 label="Tickets",
                 description="View all ticket system commands!",
                 emoji="📩"
-            ),
-            discord.SelectOption(
-                label="Music",
-                description="View all Music commands!",
-                emoji="🎶"
             )
         ])
     async def select_callback(self, select, interaction: discord.Interaction):

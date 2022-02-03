@@ -298,5 +298,11 @@ class Misc(commands.Cog, name="Misc", description="Miscellaneous commands!"):
         embed = discord.Embed(description="**Here's a random panda image!**", color=discord.Color.embed_background(theme="dark")).set_image(url=data['link'])
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['memcount'])
+    @commands.guild_only()
+    async def membercount(self, ctx: commands.Context):
+        """Gives the member count of the server"""
+        await ctx.send(embed=discord.Embed(title="Members", description=f"{ctx.guild.member_count}", color=discord.Color.green()).set_footer(text=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url))
+
 def setup(bot):
     bot.add_cog(Misc(bot))
