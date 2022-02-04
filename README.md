@@ -37,9 +37,7 @@ Change the following:
 
 # Running the bot
 
-• First use `java -jar Lavalink.jar` to run the Lavalink Node for Music System!
-
-• Then use `python bot.py` and you are good to go!
+• Use `python bot.py` and you are good to go!
 
 ## Built With
 
