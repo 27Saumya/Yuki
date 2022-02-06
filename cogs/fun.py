@@ -293,7 +293,7 @@ class FunCog(commands.Cog, name="Fun", description="Fun Stuff!"):
         url = "https://some-random-api.ml/animu/pat"
         r = await self.bot.session.get(url)
         if 300 > r.status >= 200:
-            data = r.json()
+            data = await r.json()
         else:
             return await ctx.send(embed=discord.Embed(description="**<:error:897382665781669908> An error occured while fetching the GIF**", color=discord.Color.red()))
         embed = discord.Embed(description=f"**{ctx.author.mention} patted {user.mention}**", color=discord.Color.embed_background(theme="dark"))
