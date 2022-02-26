@@ -1,4 +1,5 @@
-<p align='center'><a href = "https://discord.gg/RqKvY5MQgb" target = "_blank"><img src = "https://img.shields.io/discord/922112505625600020?color=blue&label=Support%20Server&style=for-the-badge">
+<p align='center'>Code no longer being updated here!
+  <a href = "https://discord.gg/RqKvY5MQgb" target = "_blank"><img src = "https://img.shields.io/discord/922112505625600020?color=blue&label=Support%20Server&style=for-the-badge">
 </a></p>
 
 <p align='center'><a href="https://top.gg/bot/919314151535419463">
